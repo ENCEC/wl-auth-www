@@ -1,0 +1,7 @@
+const RowStatus = {
+  ROW_STATUS_UNCHANGED: 2,
+  ROW_STATUS_ADDED: 4,
+  ROW_STATUS_DELETED: 8,
+  ROW_STATUS_MODIFIED: 16,
+};
+export {RowStatus};

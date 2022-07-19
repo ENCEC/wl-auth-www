@@ -1,0 +1,100 @@
+.fcos-page {
+    // background-color: #d0dcec !important;
+    padding: 5px !important;
+    height: 100%;
+    width: 100%;
+    overflow: auto
+}
+
+.i-body {
+    // background-color: #d0dcec;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+}
+
+.i-left {
+    padding: 0px 5px;
+    // background-color: #d0dcec !important;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.i-right {
+    padding: 0px 5px;
+}
+
+.i-panel-head {
+    // background-color: #b8c8e4;
+    height: 24px;
+    line-height: 24px;
+    border: 1px solid #a0b4d6;
+    border-bottom: 0px;
+    margin: 0px 4px;
+    text-align: left;
+    overflow: inherit;
+}
+
+.i-panel-head h3 {
+    font-size: 12px;
+    padding: 0px 8px;
+    color: #000000;
+    font-weight: bold;
+    margin: 0px;
+}
+.fcos-card {
+    // background-color: #d0dcec;
+    border-radius: 0px;
+    border: 1px solid #a0b4d6;
+    margin: 0px 4px 4px 4px;
+    overflow: hidden;
+    color: #303133;
+    transition: 0.3s;
+    width: calc(100% - 8px);
+}
+
+.fcos-card > .el-card__body {
+    height: 100%;
+    width:100%;
+    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.i-panel-content {
+    overflow: auto !important;
+}
+
+.demo-form-inline {
+    margin: 3px 0px;
+}
+
+.common_label {
+    font: 12px Arial 宋体;
+    margin-bottom: 0px;
+    line-height: 24px !important;
+    text-align: right;
+    padding-right: 10px;
+    color: #303133;
+}
+.common_label > .el-checkbox > .el-checkbox__label {
+    font: 12px Arial 宋体;
+    color: #303133;
+}
+
+.fcos-form-item {
+    margin-bottom: 8px !important;
+    font: 12px Arial 宋体 !important;
+    min-height: 42px;
+    width: 100%;
+    margin-right: 0px;
+}
+
+.i-content {
+    flex: 1;
+}
+
+.i-foot {
+    height: 32px;
+}
