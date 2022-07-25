@@ -39,12 +39,20 @@ module.exports = {
     },
     // before: require('./mock/mock-server.js'),
     proxy: {
-      '/ec-demo': {
-        target: 'http://localhost:8080/',
+      // '/ec-demo': {
+      //   target: 'http://localhost:8080/',
+      //   ws: true,
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     '^/ec-demo': '/ec-demo'
+      //   }
+      // },
+      '/': {
+        target: 'http://172.16.7.146:8082/',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/ec-demo': '/ec-demo'
+          '^/': '/'
         }
       }
     }
