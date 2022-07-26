@@ -1,27 +1,33 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-07-25 10:36:16
+ * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 15:09:24
- * @Description: 系统管理-用户管理
+ * @LastEditTime: 2022-07-26 16:11:41
+ * @Description:
 -->
-
 <template>
-  <div class="app-container user-manage">
+  <div class="app-container menu-manage">
     <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="mini">
-      <el-form-item label="用户名" prop="account">
+      <el-form-item label="菜单标题" prop="resourceTitle">
         <el-input
-          v-model="filterForm.account"
-          placeholder="请输入用户名"
+          v-model="filterForm.resourceTitle"
+          placeholder="请输入菜单标题"
           clearable
         />
       </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input
-          v-model="filterForm.name"
-          placeholder="请输入姓名"
+      <el-form-item label="父级菜单" prop="resourcePid">
+        <el-select
+          v-model="filterForm.resourcePid"
+          placeholder="请选择父级菜单"
           clearable
-        />
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="isValid">
         <el-select
@@ -43,7 +49,7 @@
             type="primary"
             size="mini"
             @click="handleOpen"
-          >新增用户</el-button>
+          >新增菜单</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -53,10 +59,7 @@
           >查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button
-            size="mini"
-            @click="resetQueryForm('filterFormRef')"
-          >重置</el-button>
+          <el-button size="mini" @click="resetQueryForm('filterFormRef')">重置</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -68,26 +71,26 @@
       style="width: 100%"
     >
       <el-table-column type="index" label="序号" />
-      <el-table-column prop="account" label="用户名" />
-      <el-table-column prop="name" label="姓名" />
-      <el-table-column prop="mobile" label="联系电话" />
-      <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="resourceTitle" label="菜单标题" />
+      <el-table-column prop="resourcePid" label="父级菜单" />
+      <el-table-column prop="resourceUrl" label="资源地址" />
+      <el-table-column prop="resourceSort" label="菜单序号" />
+      <el-table-column prop="creatorName" label="创建人" />
+      <el-table-column prop="createTime" label="创建时间" />
+      <el-table-column prop="isValid" label="状态">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
             active-color="#13ce66"
             @change="changeStatus"
           />
-          <!-- {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }} -->
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <span @click="handleOpen(scope.row.uemUserId)">编辑</span>
-            <span @click="resetPassword(scope.row.uemUserId)">重置密码</span>
-            <span @click="handleDelete(scope.row.uemUserId)">删除</span>
+            <span @click="handleOpen(scope.row.id)">编辑</span>
+            <span @click="handleDelete(scope.row.id)">删除</span>
           </div>
         </template>
       </el-table-column>
@@ -98,6 +101,7 @@
       class="pagination-wrap"
       :current-page.sync="currentPage"
       :page-sizes="[10, 20, 30, 40]"
+      :page-size="100"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
@@ -105,33 +109,14 @@
     />
     <!-- 新增/修改用户 -->
     <CreateDialog :visible.sync="dialogVisible" />
-    <!-- 密码重置 Start -->
-    <el-dialog center title="消息提示" :visible.sync="show" width="30%">
-      <div class="password-dialog">
-        密码重置成功！重置后的密码为<span class="password">123456</span> 。
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button
-          size="mini"
-          type="primary"
-          @click="show = false"
-        >确 定</el-button>
-      </span>
-    </el-dialog>
-    <!-- 密码重置 End -->
   </div>
 </template>
 <script>
 import CreateDialog from './component/create-dialog';
-import {
-  queryUemUser,
-  resetUemUserPassword,
-  uemUserStartStop,
-  deleteUemUser
-} from '@/api/user-manege';
+import { queryResourceByPage, deleteResourceById, updateResourceStatus } from '@/api/menu-manege';
 import tableMix from '@/mixins/table-mixin';
 export default {
-  name: 'UserManage',
+  name: 'MenuManage',
   components: {
     CreateDialog
   },
@@ -148,67 +133,52 @@ export default {
           label: '禁用'
         }
       ],
-      show: false,
       dialogVisible: false,
       filterForm: {
-        account: '',
-        name: '',
-        isValid: ''
+        resourceTitle: 'ss',
+        resourcePid: ''
+        // isValid: false
       },
       records: [{}],
-      total: 0,
-      VALID_STATUS: {
-        ON: true,
-        OFF: false
-      }
+      total: 0
     };
   },
   computed: {},
   created() {
     this.getTableData();
   },
-  mounted() {
-    console.log('【 this.$dictionary 】-157', this.$dictionary);
-  },
   methods: {
     // 获取表格数据
     getTableData() {
-      queryUemUser({
+      queryResourceByPage({
         currentPage: this.params.currentPage,
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
+        console.log('【 res 】-158', res)
         this.records = res.data.records;
-        this.total = res.data.totalRecord;
+        this.total = res.data.total;
       });
     },
-    // 关闭弹框
     handleClose() {
       this.dialogVisible = false;
     },
-    // 打开弹框
     handleOpen() {
       this.dialogVisible = true;
     },
-    // 重置密码
-    resetPassword(uemUserId) {
-      resetUemUserPassword({ uemUserId }).then(res => {
-        this.show = true;
-      });
-    },
-    // 启用/禁用用户
+    // 启用禁用
     changeStatus(isValid) {
-      uemUserStartStop({ isValid }).then(res => {
+      updateResourceStatus({ isValid }).then(res => {
         console.log('【 res 】-200', res);
         this.$message.success('操作成功');
       });
       console.log('【 isValid 】-178', isValid);
     },
-    // 删除用户信息
-    handleDelete(uemUserId) {
-      console.log('【 uemUserId 】-178');
+    // 删除
+    handleDelete(sysResourceId) {
+      console.log('【 id 】-178', sysResourceId);
       this.$confirm(
-        '您确定要删除该用户吗？删除后该用户信息不可恢复。',
+        '您确定要删除该菜单信息吗？删除后该菜单信息不可恢复。',
         '删除提示',
         {
           confirmButtonText: '确定',
@@ -216,7 +186,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteUemUser({ uemUserId }).then(res => {
+        deleteResourceById({ sysResourceId }).then(res => {
           this.$message.success('操作成功');
         });
       });
@@ -225,7 +195,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.user-manage {
+.menu-manage {
   .btn-wrap {
     display: flex;
     justify-content: flex-end;
@@ -241,14 +211,6 @@ export default {
   .pagination-wrap {
     margin: 10px;
     float: right;
-  }
-  // 重置密码
-  .password-dialog {
-    height: 55px;
-    text-align: center;
-    .password {
-      color: rgb(194, 22, 22);
-    }
   }
 }
 </style>

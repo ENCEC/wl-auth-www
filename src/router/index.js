@@ -95,6 +95,13 @@ export const asyncRoutes = [
         name: 'UserManage',
         meta: { title: '用户管理' }
       },
+      // 系统管理-菜单管理
+      {
+        path: 'menu-manage',
+        component: () => import('@/views/menu-manage/index'),
+        name: 'MenuManage',
+        meta: { title: '菜单管理' }
+      },
       {
         path: 'list',
         component: () => import('@/views/demo-page/index'),
