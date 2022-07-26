@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 14:37:34
+ * @LastEditTime: 2022-07-26 11:27:15
  * @Description: 系统管理-用户管理
 -->
 <template>
@@ -52,10 +52,7 @@
           >查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button
-            size="mini"
-            @click="resetQueryForm('filterFormRef')"
-          >重置</el-button>
+          <el-button size="mini" @click="resetQueryForm('filterFormRef')">重置</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -71,14 +68,9 @@
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="mobile" label="联系电话" />
       <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="状态">
         <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isValid"
-            active-color="#13ce66"
-            @change="changeStatus"
-          />
-          <!-- {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }} -->
+          {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }}
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -86,14 +78,14 @@
           <div class="operate-wrap">
             <span @click="handleOpen(scope.row.uemUserId)">编辑</span>
             <span @click="resetPassword(scope.row.uemUserId)">重置密码</span>
-            <!-- <span
+            <span
               v-if="scope.row.isValid === VALID_STATUS.OFF"
-              @click="changeStatus(VALID_STATUS.ON)"
+              @click="changeStatus(1)"
             >启用</span>
             <span
               v-if="scope.row.isValid === VALID_STATUS.ON"
-              @click="changeStatus(VALID_STATUS.OFF)"
-            >禁用</span> -->
+              @click="changeStatus(2)"
+            >禁用</span>
             <span @click="handleDelete(scope.row.uemUserId)">删除</span>
           </div>
         </template>
@@ -111,7 +103,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" />
+    <CreateDialog :visible.sync="dialogShow" />
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
@@ -130,13 +122,9 @@
 </template>
 <script>
 import CreateDialog from './component/create-dialog';
-import {
-  queryUemUser,
-  resetUemUserPassword,
-  uemUserStartStop,
-  deleteUemUser
-} from '@/api/user-manege';
+import { queryUemUser } from '@/api/user-manege';
 import tableMix from '@/mixins/table-mixin';
+
 export default {
   name: 'UserManage',
   components: {
@@ -156,13 +144,15 @@ export default {
         }
       ],
       show: false,
-      dialogVisible: false,
+      dialogShow: false,
       filterForm: {
-        account: '',
-        name: '',
-        isValid: ''
+        // account: '',
+        // name: '',
+        // isValid: null,
+        currentPage: 1,
+        pageSize: 10
       },
-      records: [{}],
+      records: [],
       total: 0,
       currentRow: '',
       VALID_STATUS: {
@@ -182,39 +172,34 @@ export default {
     // 获取表格数据
     getTableData() {
       queryUemUser({
-        currentPage: this.params.currentPage,
-        pageSize: this.params.pageSize,
+        // currentPage: this.params.currentPage,
+        // pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
         this.records = res.data.records;
         this.total = res.data.totalRecord;
       });
     },
-    // 关闭弹框
-    handleClose() {
-      this.dialogVisible = false;
+    handleCurrentChange(val) {
+      this.currentPage = val;
     },
-    // 打开弹框
+    handleClose() {
+      this.dialogShow = false;
+    },
     handleOpen() {
-      this.dialogVisible = true;
+      this.dialogShow = true;
     },
     // 重置密码
-    resetPassword(uemUserId) {
-      resetUemUserPassword({ uemUserId }).then(res => {
-        this.show = true;
-      });
+    resetPassword() {
+      this.show = true;
     },
-    // 启用/禁用用户
+    // 启用禁用
     changeStatus(isValid) {
-      uemUserStartStop({ isValid }).then(res => {
-        console.log('【 res 】-200', res);
-        this.$message.success('操作成功');
-      });
       console.log('【 isValid 】-178', isValid);
     },
-    // 删除用户信息
+    // 删除
     handleDelete(uemUserId) {
-      console.log('【 uemUserId 】-178');
+      console.log('【 uemUserId 】-178', uemUserId);
       this.$confirm(
         '您确定要删除该用户吗？删除后该用户信息不可恢复。',
         '删除提示',
@@ -223,11 +208,9 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }
-      ).then(() => {
-        deleteUemUser({ uemUserId }).then(res => {
-          this.$message.success('操作成功');
-        });
-      });
+      )
+        .then(() => {})
+        .catch(() => {});
     }
   }
 };

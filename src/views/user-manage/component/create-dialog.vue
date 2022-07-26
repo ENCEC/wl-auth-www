@@ -2,20 +2,18 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-25 17:32:42
+ * @LastEditTime: 2022-07-26 14:29:01
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
   <div>
     <el-dialog
-      v-bind="$attrs"
       :title="dialogTitle"
+      v-bind="$attrs"
       width="700px"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
-      @open="onOpen"
-      @close="onClose"
     >
       <el-form
         ref="elForm"
@@ -80,11 +78,11 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="在职状态:" prop="status">
-                <el-radio-group v-model="formData.status">
+              <el-form-item label="在职状态:" prop="jobStatus">
+                <el-radio-group v-model="formData.jobStatus">
                   <el-radio
-                    v-for="(item, index) in statusOptions"
-                    :key="index"
+                    v-for="item in jobStatusOptions"
+                    :key="item.value"
                     :label="item.value"
                   >{{ item.label }}</el-radio>
                 </el-radio-group>
@@ -93,18 +91,18 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="工作年限:" prop="workyear">
+              <el-form-item label="工作年限:" prop="seniority">
                 <el-input
-                  v-model="formData.workyear"
+                  v-model="formData.seniority"
                   placeholder="请输入工作年限"
                   clearable
                 />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="入职时间:" prop="startTime">
+              <el-form-item label="入职时间:" prop="entryDate">
                 <el-date-picker
-                  v-model="formData.startTime"
+                  v-model="formData.entryDate"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
                   :style="{ width: '180px' }"
@@ -116,9 +114,9 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="入职岗位:" prop="staffType">
+              <el-form-item label="入职岗位:" prop="staffDutyCode">
                 <el-select
-                  v-model="formData.staffType"
+                  v-model="formData.staffDutyCode"
                   placeholder="请选择入职岗位"
                   clearable
                 >
@@ -132,9 +130,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="归属项目:" prop="projectType">
+              <el-form-item label="归属项目:" prop="projectId">
                 <el-select
-                  v-model="formData.projectType"
+                  v-model="formData.projectId"
                   placeholder="请选择归属项目"
                   clearable
                 >
@@ -162,7 +160,8 @@
   </div>
 </template>
 <script>
-import { saveUemUser } from '@/api/user-manege';
+import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manege';
+import { formRules } from './rules';
 
 export default {
   components: {},
@@ -176,131 +175,54 @@ export default {
   },
   data() {
     return {
+      rules: formRules, // 验证规则
       editData: {},
       formData: {
-        account: '',
-        name: '',
-        mobile: '',
-        sex: 'man',
-        email: '',
-        status: 2,
-        workyear: undefined,
-        startTime: null,
-        staffType: undefined,
-        projectType: undefined
+        account: 'hzf',
+        name: 'hzf',
+        mobile: '13960081319',
+        sex: true,
+        email: '1628415507@qq.com',
+        jobStatus: 1, // 在职状态（0：试用员工 1：正式员工 2：离职员工）
+        seniority: 1,
+        entryDate: null,
+        staffDutyCode: 'ssss',
+        projectId: 2
       },
-      rules: {
-        account: [
-          {
-            required: true,
-            message: '请输入用户名',
-            trigger: 'blur'
-          }
-        ],
-        name: [
-          {
-            required: true,
-            message: '请输入姓名',
-            trigger: 'blur'
-          }
-        ],
-        mobile: [
-          {
-            required: true,
-            message: '请输入联系电话',
-            trigger: 'blur'
-          },
-          {
-            pattern: /^1(3|4|5|7|8|9)\d{9}$/,
-            message: '手机号格式错误',
-            trigger: 'blur'
-          }
-        ],
-        sex: [
-          {
-            required: true,
-            message: '性别不能为空',
-            trigger: 'change'
-          }
-        ],
-        email: [
-          {
-            required: true,
-            message: '请输入电子邮箱',
-            trigger: 'blur'
-          },
-          {
-            pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-            message: '电子邮箱格式错误',
-            trigger: 'blur'
-          }
-        ],
-        status: [
-          {
-            required: true,
-            message: '在职状态不能为空',
-            trigger: 'change'
-          }
-        ],
-        workyear: [
-          {
-            required: true,
-            message: '请输入工作年限',
-            trigger: 'blur'
-          }
-        ],
-        startTime: [
-          {
-            required: true,
-            message: '请选择入职时间',
-            trigger: 'change'
-          }
-        ],
-        staffType: [
-          {
-            required: true,
-            message: '请选择入职岗位',
-            trigger: 'change'
-          }
-        ],
-        projectType: [
-          {
-            required: true,
-            message: '请选择归属项目',
-            trigger: 'change'
-          }
-        ]
-      },
+      // TODO（0男，1女）
       sexOptions: [
         {
           label: '男',
-          value: 'man'
+          value: 0
         },
         {
           label: '女',
-          value: 'women'
+          value: 1
         }
       ],
-      statusOptions: [
+      // 在职状态 //TODO
+      jobStatusOptions: [
         {
           label: '试用员工',
-          value: 1
+          value: 0
         },
         {
           label: ' 正式员工',
-          value: 2
+          value: 1
         }
       ],
+      // TODO
       staffTypeOptions: [
         {
           label: '选项一',
-          value: 1
+          value: '1'
         },
         {
           label: '选项二',
-          value: 2
+          value: '2'
         }
       ],
+      // TODO
       projectTypeOptions: [
         {
           label: '选项一',
@@ -316,30 +238,38 @@ export default {
   computed: {
     // 弹框标题
     dialogTitle() {
-      return this.editData.id ? '编辑用户信息' : '新增用户';
+      return this.editData.uemUserId ? '编辑用户信息' : '新增用户';
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.editData.uemUserId && this.getDetailInfo();
+  },
   mounted() {},
   methods: {
-    onOpen() {},
-    onClose() {
-      this.$refs['elForm'].resetFields();
-    },
+    // 关闭弹框
     close() {
       this.$emit('update:visible', false);
+      this.$refs['elForm'].resetFields();
     },
-    // 提交信息
+    // 获取用户信息
+    getDetailInfo() {
+      getUemUser({
+        uemUserId: this.editData.uemUserId
+      }).then(res => {
+        console.log('【 res 】-258', res)
+      });
+    },
+    // 提交表单信息
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          saveUemUser(this.formData).then(res => {
+          const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
+          funcName(this.formData).then(res => {
             console.log('【 res 】-337', res);
-            // this.close();
+            this.close();
           });
         }
-        // return;
       });
     }
   }
