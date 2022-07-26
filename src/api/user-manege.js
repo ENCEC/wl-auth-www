@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 13:53:17
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 14:23:31
+ * @LastEditTime: 2022-07-26 17:18:27
  * @Description: 系统管理-用户管理
  */
 import request from '@/utils/request';
@@ -15,11 +15,11 @@ export function queryUemUser(data) {
   });
 }
 // 获取用户信息
-export function getUemUser(data) {
+export function getUemUser(query) {
   return request({
     url: '/uemUserManage/getUemUser',
     method: 'get',
-    data
+    params: query
   });
 }
 // 管理员新增用户

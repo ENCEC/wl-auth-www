@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 14:29:01
+ * @LastEditTime: 2022-07-26 18:41:50
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -59,8 +59,8 @@
               <el-form-item label="性别:" prop="sex">
                 <el-radio-group v-model="formData.sex">
                   <el-radio
-                    v-for="(item, index) in sexOptions"
-                    :key="index"
+                    v-for="item in sexOptions"
+                    :key="'sex' + item.value"
                     :label="item.value"
                   >{{ item.label }}</el-radio>
                 </el-radio-group>
@@ -82,7 +82,7 @@
                 <el-radio-group v-model="formData.jobStatus">
                   <el-radio
                     v-for="item in jobStatusOptions"
-                    :key="item.value"
+                    :key="'jobStatus' + item.value"
                     :label="item.value"
                   >{{ item.label }}</el-radio>
                 </el-radio-group>
@@ -104,7 +104,6 @@
                 <el-date-picker
                   v-model="formData.entryDate"
                   format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
                   :style="{ width: '180px' }"
                   placeholder="请选择入职时间"
                   clearable
@@ -168,24 +167,23 @@ export default {
   inheritAttrs: false,
   props: {
     // 编辑信息
-    // editData: {
-    //   default: () => {
-    //   }
-    // }
+    editData: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
       rules: formRules, // 验证规则
-      editData: {},
       formData: {
         account: 'hzf',
         name: 'hzf',
         mobile: '13960081319',
-        sex: true,
+        sex: 0,
         email: '1628415507@qq.com',
-        jobStatus: 1, // 在职状态（0：试用员工 1：正式员工 2：离职员工）
+        jobStatus: '', // 在职状态（0：试用员工 1：正式员工 2：离职员工）
         seniority: 1,
-        entryDate: null,
+        entryDate: '', // 入职时间
         staffDutyCode: 'ssss',
         projectId: 2
       },
@@ -204,11 +202,11 @@ export default {
       jobStatusOptions: [
         {
           label: '试用员工',
-          value: 0
+          value: '0'
         },
         {
           label: ' 正式员工',
-          value: 1
+          value: '1'
         }
       ],
       // TODO
@@ -238,13 +236,13 @@ export default {
   computed: {
     // 弹框标题
     dialogTitle() {
+      this.editData.uemUserId && this.getDetailInfo();
+      console.log('【 this.editData 】-246', this.editData);
       return this.editData.uemUserId ? '编辑用户信息' : '新增用户';
     }
   },
   watch: {},
-  created() {
-    this.editData.uemUserId && this.getDetailInfo();
-  },
+  created() {},
   mounted() {},
   methods: {
     // 关闭弹框
@@ -257,7 +255,7 @@ export default {
       getUemUser({
         uemUserId: this.editData.uemUserId
       }).then(res => {
-        console.log('【 res 】-258', res)
+        this.formData = { ...this.formData, ...res.data };
       });
     },
     // 提交表单信息
@@ -266,7 +264,8 @@ export default {
         if (valid) {
           const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
           funcName(this.formData).then(res => {
-            console.log('【 res 】-337', res);
+            this.$message.success(res.data);
+            this.$emit('getTableData', '');
             this.close();
           });
         }

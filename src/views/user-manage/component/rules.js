@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 13:37:31
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 13:40:28
+ * @LastEditTime: 2022-07-26 18:26:07
  * @Description:
  */
 export const formRules = {
@@ -62,6 +62,11 @@ export const formRules = {
     {
       required: true,
       message: '请输入工作年限',
+      trigger: 'blur'
+    },
+    {
+      pattern: /^[0-9]*$/,
+      message: '请输入数字',
       trigger: 'blur'
     }
   ],
