@@ -65,7 +65,7 @@ export const constantRoutes = [
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
-    hidden: true,
+    // hidden: true,
     children: [
       {
         path: 'index',
@@ -84,10 +84,22 @@ export const constantRoutes = [
 export const asyncRoutes = [
   // hotRouter,
   {
-    path: '/demo',
+    path: '/system',
     component: Layout,
-    meta: { title: 'demo', icon: 'user' },
+    meta: { title: '系统管理', icon: 'tools' },
     children: [
+      {
+        path: 'hello',
+        component: () => import('@/views/hello-world/index'),
+        name: 'Hello',
+        meta: { title: '世界' }
+      },
+      {
+        path: 'post-manage',
+        component: () => import('@/views/post-manage/index'),
+        name: 'PostManage',
+        meta: { title: '岗位管理' }
+      },
       {
         path: 'list',
         component: () => import('@/views/demo-page/index'),
@@ -117,7 +129,7 @@ export const asyncRoutes = [
         component: () => import('@/views/export'),
         name: 'export',
         meta: { title: '导入导出示例' }
-      },
+      }
       // {
       //   path: 'tabindex',
       //   component: () => import('@/views/demo-page/tabindex'),

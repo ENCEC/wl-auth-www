@@ -1,8 +1,8 @@
 <template>
   <div class="filter-container">
-    <el-form :inline="filterConfig.inline">
+    <el-form :inline="filterConfig.inline" :label-width="filterConfig.labelWidth">
       <el-row :gutter="filterConfig.gutter">
-        <slot name="formItem"></slot>
+        <slot name="formItem" />
 
         <el-col
           v-for="(item, index) in filterConfig.filterList"
@@ -24,10 +24,11 @@
               :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
               :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
               :clearable="item.clearable ? item.clearable : false"
+              :style="{width:item.width?item.width:'100%'}"
             />
             <!-- radio -->
             <el-radio-group v-if="item.type === 'radio'" v-model="value[item.prop]" @change="radioVal => {item.changeRadio? item.changeRadio(radioVal, item, index): ''}">
-              <el-radio v-for="(radio, index) in item.radioArr" :key="index" :label="radio[item.radioLabel?item.radioLabel:'label']":disabled="radio.disabled">{{ radio[item.radioLabel?item.radioLabel:'label'] }}</el-radio>
+              <el-radio v-for="(radio, index) in item.radioArr" :key="index" :label="radio[item.radioLabel?item.radioLabel:'label']" :disabled="radio.disabled">{{ radio[item.radioLabel?item.radioLabel:'label'] }}</el-radio>
             </el-radio-group>
             <!-- checkbox -->
             <el-checkbox-group
@@ -35,7 +36,7 @@
               v-model="value[item.prop]"
               @change="checkVal => { item.changeCheck? item.changeCheck(checkVal, item, index): ''}"
             >
-              <el-checkbox v-for="(checkbox,index) in item.checkboxArr" :key="index" :label="checkbox[item.checkLabel?item.checkLabel:'label']" :disabled="checkbox.disabled" >{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
+              <el-checkbox v-for="(checkbox,index) in item.checkboxArr" :key="index" :label="checkbox[item.checkLabel?item.checkLabel:'label']" :disabled="checkbox.disabled">{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
             </el-checkbox-group>
             <!-- select -->
             <el-select
@@ -45,6 +46,7 @@
               :clearable="item.clearable"
               :multiple="item.multiple"
               :placeholder="item.placeholder"
+              :style="{width:item.width?item.width:'200px'}"
               @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
             >
               <el-option
@@ -133,8 +135,11 @@
         </el-col>
         <el-col :span="filterConfig.operateCol ? filterConfig.operateCol : filterConfig.col">
           <el-form-item>
-            <el-button v-for="(item,index) in filterConfig.operates" :key="index" :type="item.type" :size="item.size" :disabled="item.disabled" :plain="item.plain" :icon="item.icon" @click.native.prevent="item.method ? item.method(item, index) : ''">{{ item.buttonLabel }}</el-button>
-            <slot name="operate"></slot>
+            <div class="operate-area">
+              <el-button v-for="(item,index) in filterConfig.operates" :key="index" :type="item.type" :size="item.size" :disabled="item.disabled" :plain="item.plain" :icon="item.icon" @click.native.prevent="item.method ? item.method(item, index) : ''">{{ item.buttonLabel }}</el-button>
+
+            </div>
+            <!-- <slot name="operate"></slot> -->
           </el-form-item>
         </el-col>
       </el-row>

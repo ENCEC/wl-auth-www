@@ -9,6 +9,7 @@ import * as ElementUi from 'ec-light-vue'
 import './styles/element-variables.scss'
 
 import '@/styles/index.scss' // global css
+import '@/styles/common.scss' // global css
 
 import App from './App'
 import store from './store'
@@ -21,7 +22,9 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
-import {getDict} from '@/api/demo'
+import { getDict } from '@/api/demo'
+
+import 'font-awesome/css/font-awesome.min.css';
 
 /**
  * If you don't want to use mock-server
@@ -32,7 +35,7 @@ import {getDict} from '@/api/demo'
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === 'development') {
-  const {mockXHR} = require('../mock')
+  const { mockXHR } = require('../mock')
   mockXHR()
 }
 
