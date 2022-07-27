@@ -29,7 +29,7 @@
                 <span v-html="column.formatter(scope.row, column)" />
               </template>
               <template v-if="column.component==='switch'">
-                <el-switch v-model="scope.row[column.prop]" @change="column.method(scope)" />
+                <el-switch v-model="scope.row[column.prop]" @change="column.method(scope.row,scope.row[column.prop])" />
               </template>
               <template v-else>
                 <span>{{ scope.row[column.prop] }}</span>

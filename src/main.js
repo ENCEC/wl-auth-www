@@ -24,8 +24,6 @@ import './utils/error-log' // error log
 import * as filters from './filters' // global filters
 import { getDict } from '@/api/demo'
 
-import 'font-awesome/css/font-awesome.min.css';
-
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

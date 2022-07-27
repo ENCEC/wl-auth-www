@@ -35,7 +35,7 @@ $--color-white: #FFFFFF;
         background-color: $--color-primary;
         font-size: 14px;
         border-radius: 6px;
-    
+
 
         &:hover {
             background-color: $--color-mouse-hover;
@@ -244,7 +244,7 @@ $--color-white: #FFFFFF;
 .el-select {
     .el-input {
         .el-input__inner {
-            width: 200px;
+            width: 100%;
             padding: 10px 11px;
             border-radius: 6px;
             color: $--color-placeholder;
@@ -310,22 +310,24 @@ $--color-white: #FFFFFF;
 
     .el-picker-panel__content {
         margin: 20px;
-        span{
+
+        span {
 
             width: 30px;
             height: 30px;
             line-height: 30px !important;
         }
+
         &.is-left {
             margin: 0;
             padding: 0;
             padding: 0 20px;
         }
 
-        &.is-right  {
+        &.is-right {
             margin: 0;
             padding: 0;
-            padding:0px  20px;
+            padding: 0px 20px;
         }
 
         .available {
@@ -340,7 +342,9 @@ $--color-white: #FFFFFF;
                 }
             }
 
-            &.current,&.start-date,&.end-date {
+            &.current,
+            &.start-date,
+            &.end-date {
                 span {
                     color: $--color-white;
                     font-weight: bold;
@@ -348,10 +352,11 @@ $--color-white: #FFFFFF;
                 }
 
             }
-            &.in-range{
-                div{
+
+            &.in-range {
+                div {
                     padding: 0;
-                background-color: #E9F4FF;
+                    background-color: #E9F4FF;
 
                 }
             }
@@ -360,19 +365,45 @@ $--color-white: #FFFFFF;
 }
 
 // 表单
-.el-form-item__content{
-    margin-left: 0px !important;
+.el-form {
+    .el-form-item {
+        .el-form-item__content {
+            margin-left: 80px !important;
+        }
+
+        &.is-error {
+            .el-form-item__error{
+                color: $--color-danger;
+            }
+            .el-input__inner {
+                border-color: $--color-danger;
+                color: $--color-common;
+
+                &:focus {
+                    border-color: $--color-danger;
+                    color: $--color-common;
+                }
+            }
+        }
+    }
+
 }
 
+
 // 封装的查询组件的样式
-.operate-area{
+.operate-area {
     float: right;
 }
 
 
 // 弹窗
-.el-dialog{
-    .dialog-footer{
+.el-dialog {
+    .dialog-footer {
         text-align: center;
     }
+}
+
+// 分页
+.el-pagination{
+    float: right;
 }

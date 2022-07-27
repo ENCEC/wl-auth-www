@@ -22,7 +22,7 @@
             :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
             :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
             :clearable="item.clearable ? item.clearable : false"
-            :style="{width:'calc(100% - 100px)'}"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
           />
           <!-- radio -->
           <el-radio-group

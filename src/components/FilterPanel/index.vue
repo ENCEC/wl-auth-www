@@ -1,6 +1,6 @@
 <template>
   <div class="filter-container">
-    <el-form :inline="filterConfig.inline" :label-width="filterConfig.labelWidth">
+    <el-form :inline="filterConfig.inline" :label-width="filterConfig.labelWidth" :label-position="filterConfig.labelPosition">
       <el-row :gutter="filterConfig.gutter">
         <slot name="formItem" />
 
@@ -24,7 +24,7 @@
               :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
               :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
               :clearable="item.clearable ? item.clearable : false"
-              :style="{width:item.width?item.width:'100%'}"
+              :style="{width:item.width?item.width:'calc(100% - 80px)'}"
             />
             <!-- radio -->
             <el-radio-group v-if="item.type === 'radio'" v-model="value[item.prop]" @change="radioVal => {item.changeRadio? item.changeRadio(radioVal, item, index): ''}">
@@ -46,7 +46,7 @@
               :clearable="item.clearable"
               :multiple="item.multiple"
               :placeholder="item.placeholder"
-              :style="{width:item.width?item.width:'200px'}"
+              :style="{width:item.width?item.width:'calc(100% - 80px)'}"
               @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
             >
               <el-option

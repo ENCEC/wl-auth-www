@@ -102,10 +102,16 @@ export const asyncRoutes = [
         meta: { title: '世界' }
       },
       {
-        path: 'post-manage',
-        component: () => import('@/views/post-manage/index'),
-        name: 'PostManage',
+        path: 'sys-post',
+        component: () => import('@/views/sys-post/index'),
+        name: 'SysPost',
         meta: { title: '岗位管理' }
+      },
+      {
+        path: 'sys-technical-title',
+        component: () => import('@/views/sys-technical-title/index'),
+        name: 'SysTechnicalTitle',
+        meta: { title: '岗位职称' }
       },
       {
         path: 'list',
