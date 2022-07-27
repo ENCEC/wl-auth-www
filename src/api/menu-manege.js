@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:46:15
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 11:37:05
+ * @LastEditTime: 2022-07-27 15:45:29
  * @Description: 系统管理-菜单管理
  */
 
@@ -11,7 +11,15 @@ import request from '@/utils/request';
 export function queryResourceByPage(data) {
   return request({
     url: '/sysResource/queryResourceByPage',
-    method: 'get',
+    method: 'post',
+    data
+  });
+}
+// 查询父级菜单信息
+export function queryParentResource(data) {
+  return request({
+    url: '/queryParentResource',
+    method: 'post',
     data
   });
 }
@@ -40,11 +48,11 @@ export function updateResource(data) {
   });
 }
 // 逻辑删除菜单信息
-export function deleteResourceById(data) {
+export function deleteResourceById(query) {
   return request({
     url: '/deleteResourceById',
     method: 'get',
-    data
+    params: query
   });
 }
 // 更改状态

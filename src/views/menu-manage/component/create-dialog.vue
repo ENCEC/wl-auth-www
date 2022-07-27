@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 11:44:02
+ * @LastEditTime: 2022-07-27 15:50:05
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -42,13 +42,13 @@
                   v-model="formData.resourcePid"
                   placeholder="请选择父级菜单"
                   clearable
+                  style="width:180px"
                 >
                   <el-option
-                    v-for="(item, index) in staffTypeOptions"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="item.disabled"
+                    v-for="item in parentResourceList"
+                    :key="item.resourcePid"
+                    :label="item.resourceTitle"
+                    :value="item.resourcePid"
                   />
                 </el-select>
               </el-form-item>
@@ -114,7 +114,8 @@
 import {
   saveResource,
   updateResource,
-  queryResourceById
+  queryResourceById,
+  queryParentResource
 } from '@/api/menu-manege';
 export default {
   components: {},
@@ -129,10 +130,10 @@ export default {
   data() {
     return {
       formData: {
-        resourceTitle: '',
+        resourceTitle: '一级菜单',
         resourcePid: '',
-        resourceUrl: '',
-        resourceSort: '',
+        resourceUrl: 'baidu',
+        resourceSort: '1',
         resourceRemark: ''
       },
       rules: {
@@ -163,17 +164,7 @@ export default {
           }
         ]
       },
-      // TODO
-      staffTypeOptions: [
-        {
-          label: '选项一',
-          value: 1
-        },
-        {
-          label: '选项二',
-          value: 2
-        }
-      ]
+      parentResourceList: []
     };
   },
   computed: {
@@ -184,11 +175,19 @@ export default {
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.getParentResource();
+  },
   mounted() {},
   methods: {
+    // 获取父级菜单下拉
+    getParentResource() {
+      queryParentResource().then(res => {
+        this.parentResourceList = res;
+      });
+    },
+    // 关闭弹框
     close() {
-      // 关闭弹框
       this.$emit('update:visible', false);
       this.$refs['elForm'].resetFields();
     },
@@ -197,10 +196,10 @@ export default {
       queryResourceById({
         sysResourceId: this.editData.sysResourceId
       }).then(res => {
-        this.formData = { ...this.formData, ...res.data };
+        this.formData = { ...this.formData, ...res };
       });
     },
-    // 提交信息
+    // 提交表单
     handelConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {

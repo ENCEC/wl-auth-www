@@ -2,12 +2,13 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 11:27:15
+ * @LastEditTime: 2022-07-27 13:57:35
  * @Description: 系统管理-用户管理
 -->
+
 <template>
   <div class="app-container user-manage">
-    <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="mini">
+    <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="medium">
       <el-form-item label="用户名" prop="account">
         <el-input
           v-model="filterForm.account"
@@ -40,19 +41,24 @@
         <el-form-item>
           <el-button
             type="primary"
-            size="mini"
+            size="medium"
             @click="handleOpen"
           >新增用户</el-button>
         </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
-            size="mini"
+            size="medium"
             @click="handleQuery"
           >查询</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" @click="resetQueryForm('filterFormRef')">重置</el-button>
+          <el-button
+            type="primary"
+            size="medium"
+            :plain="true"
+            @click="resetQueryForm('filterFormRef')"
+          >重置</el-button>
         </el-form-item>
       </div>
     </el-form>
@@ -68,24 +74,21 @@
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="mobile" label="联系电话" />
       <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="状态">
+      <el-table-column prop="isValid" label="是否禁用">
         <template slot-scope="scope">
-          {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }}
+          <el-switch
+            v-model="scope.row.isValid"
+            active-color="#13ce66"
+            @change="changeStatus(scope.row)"
+          />
+          <!-- {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }} -->
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <span @click="handleOpen(scope.row.uemUserId)">编辑</span>
+            <span @click="handleOpen(scope.row)">编辑</span>
             <span @click="resetPassword(scope.row.uemUserId)">重置密码</span>
-            <span
-              v-if="scope.row.isValid === VALID_STATUS.OFF"
-              @click="changeStatus(1)"
-            >启用</span>
-            <span
-              v-if="scope.row.isValid === VALID_STATUS.ON"
-              @click="changeStatus(2)"
-            >禁用</span>
             <span @click="handleDelete(scope.row.uemUserId)">删除</span>
           </div>
         </template>
@@ -103,7 +106,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogShow" />
+    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
@@ -122,9 +125,13 @@
 </template>
 <script>
 import CreateDialog from './component/create-dialog';
-import { queryUemUser } from '@/api/user-manege';
+import {
+  queryUemUser,
+  resetUemUserPassword,
+  uemUserStartStop,
+  deleteUemUser
+} from '@/api/user-manege';
 import tableMix from '@/mixins/table-mixin';
-
 export default {
   name: 'UserManage',
   components: {
@@ -133,6 +140,7 @@ export default {
   mixins: [tableMix],
   data() {
     return {
+      editData: {},
       options: [
         {
           value: true,
@@ -144,17 +152,14 @@ export default {
         }
       ],
       show: false,
-      dialogShow: false,
+      dialogVisible: false,
       filterForm: {
-        // account: '',
-        // name: '',
-        // isValid: null,
-        currentPage: 1,
-        pageSize: 10
+        account: '',
+        name: '',
+        isValid: ''
       },
       records: [],
       total: 0,
-      currentRow: '',
       VALID_STATUS: {
         ON: true,
         OFF: false
@@ -172,34 +177,49 @@ export default {
     // 获取表格数据
     getTableData() {
       queryUemUser({
-        // currentPage: this.params.currentPage,
-        // pageSize: this.params.pageSize,
+        currentPage: this.params.currentPage,
+        pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
         this.records = res.data.records;
         this.total = res.data.totalRecord;
       });
     },
-    handleCurrentChange(val) {
-      this.currentPage = val;
-    },
+    // 关闭弹框
     handleClose() {
-      this.dialogShow = false;
+      this.dialogVisible = false;
     },
-    handleOpen() {
-      this.dialogShow = true;
+    // 打开弹框
+    handleOpen(item = null) {
+      this.dialogVisible = true;
+      this.editData = { uemUserId: item.uemUserId } || {}
     },
     // 重置密码
-    resetPassword() {
-      this.show = true;
+    resetPassword(uemUserId) {
+      this.$confirm(
+        '您确定要重置密码吗？',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        resetUemUserPassword({ uemUserId }).then(res => {
+          this.show = true;
+        });
+      });
     },
-    // 启用禁用
-    changeStatus(isValid) {
-      console.log('【 isValid 】-178', isValid);
+    // 启用/禁用用户
+    changeStatus(item) {
+      const uemUserId = item.uemUserId
+      const isValid = item.isValid
+      uemUserStartStop({ uemUserId, isValid }).then(res => {
+        this.$message.success('操作成功');
+      });
     },
-    // 删除
+    // 删除用户信息
     handleDelete(uemUserId) {
-      console.log('【 uemUserId 】-178', uemUserId);
       this.$confirm(
         '您确定要删除该用户吗？删除后该用户信息不可恢复。',
         '删除提示',
@@ -208,9 +228,12 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }
-      )
-        .then(() => {})
-        .catch(() => {});
+      ).then(() => {
+        deleteUemUser({ uemUserId }).then(res => {
+          this.$message.success('操作成功');
+          this.getTableData()
+        });
+      });
     }
   }
 };

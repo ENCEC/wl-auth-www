@@ -2,64 +2,14 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 18:38:10
+ * @LastEditTime: 2022-07-27 16:35:53
  * @Description: 系统管理-用户管理
 -->
 
 <template>
   <div class="app-container user-manage">
-    <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="mini">
-      <el-form-item label="用户名" prop="account">
-        <el-input
-          v-model="filterForm.account"
-          placeholder="请输入用户名"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input
-          v-model="filterForm.name"
-          placeholder="请输入姓名"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="isValid">
-        <el-select
-          v-model="filterForm.isValid"
-          placeholder="请选择状态"
-          clearable
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <div class="btn-wrap">
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleOpen"
-          >新增用户</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="mini"
-            @click="handleQuery"
-          >查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            size="mini"
-            @click="resetQueryForm('filterFormRef')"
-          >重置</el-button>
-        </el-form-item>
-      </div>
-    </el-form>
+    <!-- 查询组件 -->
+    <filter-panel :filter-config="filterConfig" :value="filterForm" />
     <!-- 表格 Start -->
     <el-table
       highlight-current-row
@@ -76,18 +26,17 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
-            active-color="#13ce66"
+            active-color="#0050AC"
             @change="changeStatus(scope.row)"
           />
-          <!-- {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }} -->
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <span @click="handleOpen(scope.row)">编辑</span>
-            <span @click="resetPassword(scope.row.uemUserId)">重置密码</span>
-            <span @click="handleDelete(scope.row.uemUserId)">删除</span>
+            <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
+            <el-button type="text" @click="resetPassword(scope.row.uemUserId)">重置密码</el-button>
+            <el-button type="text" @click="handleDelete(scope.row.uemUserId)">删除</el-button>
           </div>
         </template>
       </el-table-column>
@@ -122,6 +71,8 @@
   </div>
 </template>
 <script>
+import filterPanel from '@/components/FilterPanel'
+import { filterConfig } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
   queryUemUser,
@@ -133,29 +84,23 @@ import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'UserManage',
   components: {
-    CreateDialog
+    filterPanel, CreateDialog
   },
   mixins: [tableMix],
   data() {
     return {
+      filterConfig: filterConfig(this),
+      filterForm: {
+        // page: 1,
+        // size: 20,
+        // total: 0,
+        account: undefined,
+        name: undefined,
+        isValid: undefined
+      },
       editData: {},
-      options: [
-        {
-          value: true,
-          label: '启用'
-        },
-        {
-          value: false,
-          label: '禁用'
-        }
-      ],
       show: false,
       dialogVisible: false,
-      filterForm: {
-        account: '',
-        name: '',
-        isValid: ''
-      },
       records: [],
       total: 0,
       VALID_STATUS: {
@@ -188,9 +133,9 @@ export default {
       this.dialogVisible = false;
     },
     // 打开弹框
-    handleOpen(item = null) {
+    handleOpen(item = {}) {
       this.dialogVisible = true;
-      this.editData = { uemUserId: item.uemUserId } || {}
+      this.editData = { uemUserId: item.uemUserId || '' }
     },
     // 重置密码
     resetPassword(uemUserId) {
@@ -238,10 +183,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-manage {
-  .btn-wrap {
-    display: flex;
-    justify-content: flex-end;
-  }
   // 操作栏
   .operate-wrap {
     span {
