@@ -48,8 +48,8 @@ module.exports = {
       //   }
       // },
       '/': {
-        // target: 'http://172.16.8.147:8082/', //子睿
-        target: 'http://172.16.7.146:8082/', // 梓桐
+        target: 'http://172.16.8.147:8082/', // 子睿
+        // target: 'http://172.16.7.146:8082/', // 梓桐
         ws: true,
         changeOrigin: true,
         pathRewrite: {

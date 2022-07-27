@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 15:59:02
+ * @LastEditTime: 2022-07-27 11:44:02
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -111,26 +111,29 @@
   </div>
 </template>
 <script>
-import { saveResource, updateResource } from '@/api/menu-manege';
+import {
+  saveResource,
+  updateResource,
+  queryResourceById
+} from '@/api/menu-manege';
 export default {
   components: {},
-  inheritAttrs: false,
+  // inheritAttrs: false,
   props: {
     // 编辑信息
-    // editData: {
-    //   default: () => {
-    //   }
-    // }
+    editData: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
-      editData: {},
       formData: {
-        resourceTitle: '管理标题',
-        resourcePid: '1',
-        resourceUrl: 'www.baidu.com',
-        resourceSort: 3,
-        resourceRemark: '管理备注'
+        resourceTitle: '',
+        resourcePid: '',
+        resourceUrl: '',
+        resourceSort: '',
+        resourceRemark: ''
       },
       rules: {
         resourceTitle: [
@@ -146,16 +149,16 @@ export default {
             message: '请输入资源地址',
             trigger: 'blur'
           }
-          // {
-          //   pattern: /^1(3|4|5|7|8|9)\d{9}$/,
-          //   message: "手机号格式错误",
-          //   trigger: "blur"
-          // }
         ],
         resourceSort: [
           {
             required: true,
             message: '请输入菜单序号',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^[0-9]*$/,
+            message: '请输入数字',
             trigger: 'blur'
           }
         ]
@@ -176,30 +179,38 @@ export default {
   computed: {
     // 弹框标题
     dialogTitle() {
-      return this.editData.id ? '编辑菜单信息' : '新增菜单';
+      this.editData.sysResourceId && this.getDetailInfo();
+      return this.editData.sysResourceId ? '编辑菜单信息' : '新增菜单';
     }
   },
   watch: {},
   created() {},
   mounted() {},
   methods: {
-    onClose() {
+    close() {
+      // 关闭弹框
+      this.$emit('update:visible', false);
       this.$refs['elForm'].resetFields();
     },
-    close() {
-      this.$emit('update:visible', false);
+    // 获取用户信息
+    getDetailInfo() {
+      queryResourceById({
+        sysResourceId: this.editData.sysResourceId
+      }).then(res => {
+        this.formData = { ...this.formData, ...res.data };
+      });
     },
     // 提交信息
     handelConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          saveResource(this.formData).then(res => {
-            console.log('【 res 】-200', res)
-          })
-          const funcName = this.editData.sysResourceId ? updateResource : saveResource;
+          const funcName = this.editData.sysResourceId
+            ? updateResource
+            : saveResource;
           funcName(this.formData).then(res => {
-            console.log('【 res 】-337', res);
-            // this.close();
+            this.$message.success(res.data);
+            this.$emit('getTableData', '');
+            this.close();
           });
         }
       });

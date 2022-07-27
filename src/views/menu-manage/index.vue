@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 16:11:41
+ * @LastEditTime: 2022-07-27 11:34:35
  * @Description:
 -->
 <template>
@@ -72,7 +72,8 @@
     >
       <el-table-column type="index" label="序号" />
       <el-table-column prop="resourceTitle" label="菜单标题" />
-      <el-table-column prop="resourcePid" label="父级菜单" />
+      <!-- TODO -->
+      <el-table-column prop="resourceTitle" label="父级菜单" />
       <el-table-column prop="resourceUrl" label="资源地址" />
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
@@ -82,15 +83,15 @@
           <el-switch
             v-model="scope.row.isValid"
             active-color="#13ce66"
-            @change="changeStatus"
+            @change="changeStatus(scope.row)"
           />
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <span @click="handleOpen(scope.row.id)">编辑</span>
-            <span @click="handleDelete(scope.row.id)">删除</span>
+            <span @click="handleOpen(scope.row)">编辑</span>
+            <span @click="handleDelete(scope.row.sysResourceId)">删除</span>
           </div>
         </template>
       </el-table-column>
@@ -108,7 +109,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" />
+    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
   </div>
 </template>
 <script>
@@ -123,6 +124,8 @@ export default {
   mixins: [tableMix],
   data() {
     return {
+      editData: {},
+      dialogVisible: false,
       options: [
         {
           value: true,
@@ -133,13 +136,12 @@ export default {
           label: '禁用'
         }
       ],
-      dialogVisible: false,
       filterForm: {
-        resourceTitle: 'ss',
-        resourcePid: ''
-        // isValid: false
+        resourceTitle: '',
+        resourcePid: '',
+        isValid: ''
       },
-      records: [{}],
+      records: [],
       total: 0
     };
   },
@@ -155,28 +157,29 @@ export default {
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
-        console.log('【 res 】-158', res)
         this.records = res.data.records;
-        this.total = res.data.total;
+        this.total = res.data.totalRecord;
       });
     },
     handleClose() {
       this.dialogVisible = false;
     },
-    handleOpen() {
+    // 打开弹框
+    handleOpen(item = null) {
       this.dialogVisible = true;
+      this.editData = { sysResourceId: item.sysResourceId } || {}
     },
     // 启用禁用
-    changeStatus(isValid) {
-      updateResourceStatus({ isValid }).then(res => {
-        console.log('【 res 】-200', res);
+    changeStatus(item) {
+      const sysResourceId = item.sysResourceId
+      const isValid = item.isValid
+      updateResourceStatus({ sysResourceId, isValid }).then(res => {
         this.$message.success('操作成功');
       });
-      console.log('【 isValid 】-178', isValid);
     },
     // 删除
     handleDelete(sysResourceId) {
-      console.log('【 id 】-178', sysResourceId);
+      console.log('【 sysResourceId 】-178', sysResourceId);
       this.$confirm(
         '您确定要删除该菜单信息吗？删除后该菜单信息不可恢复。',
         '删除提示',

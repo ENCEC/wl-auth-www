@@ -36,7 +36,6 @@ $--color-white: #FFFFFF;
         font-size: 14px;
         border-radius: 6px;
     
-
         &:hover {
             background-color: $--color-mouse-hover;
         }
@@ -77,7 +76,7 @@ $--color-white: #FFFFFF;
         }
     }
 }
-
+// 输入框
 .el-input {
     &.el-input--medium {
 
@@ -240,11 +239,11 @@ $--color-white: #FFFFFF;
     }
 }
 
-
+// 下拉框
 .el-select {
     .el-input {
         .el-input__inner {
-            width: 200px;
+            width: 100%;
             padding: 10px 11px;
             border-radius: 6px;
             color: $--color-placeholder;
@@ -273,7 +272,7 @@ $--color-white: #FFFFFF;
 .el-date-editor--daterange {
     // width: 354px !important;
     height: 38px;
-    margin-left: 10px;
+    // margin-left: 10px;
     border-color: $--color-border;
     border-radius: 6px;
     color: $--color-placeholder;

@@ -86,7 +86,7 @@ export const asyncRoutes = [
   {
     path: '/system',
     component: Layout,
-    meta: { title: '系统管理', icon: 'tools' },
+    meta: { title: '系统管理', icon: 'user' }, // tools
     children: [
       // 系统管理-用户管理
       {

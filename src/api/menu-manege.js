@@ -2,27 +2,25 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:46:15
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 16:03:03
+ * @LastEditTime: 2022-07-27 11:37:05
  * @Description: 系统管理-菜单管理
  */
 
 import request from '@/utils/request';
 // 带条件分页查询菜单信息
-export function queryResourceByPage(query) {
-  console.log('【 data 】-12', query)
+export function queryResourceByPage(data) {
   return request({
     url: '/sysResource/queryResourceByPage',
     method: 'get',
-    params: query
+    data
   });
 }
 // 根据id查询菜单信息
-export function queryResourceById(data) {
-  console.log('【 data 】-12', data)
+export function queryResourceById(query) {
   return request({
     url: '/queryResourceById',
     method: 'get',
-    data
+    params: query
   });
 }
 // 新增菜单
