@@ -28,6 +28,9 @@
               <template v-if="column.formatter">
                 <span v-html="column.formatter(scope.row, column)" />
               </template>
+              <template v-if="column.component==='switch'">
+                <el-switch v-model="scope.row[column.prop]" @change="column.method(scope)" />
+              </template>
               <template v-else>
                 <span>{{ scope.row[column.prop] }}</span>
               </template>
@@ -70,7 +73,7 @@
       v-if="options.pagination"
       :total="pagination.total"
       :page-sizes="[10, 20, 50]"
-      :page-size.sync="pagination.limit"
+      :page-size.sync="pagination.size"
       :current-page.sync="pagination.page"
       layout="total, sizes, prev, pager, next, jumper"
       prev-text="上一页"
@@ -136,6 +139,7 @@ export default {
   // 数据
   data() {
     return {
+      status: false,
       pageIndex: 1,
       multipleSelection: [] // 多行选中
     };

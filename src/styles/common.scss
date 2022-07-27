@@ -1,0 +1,378 @@
+// elementUI组件主要颜色
+$color-primary: #0050AC;
+
+
+$--color-primary: #0050AC;
+$--color-danger: #DA251D;
+$--color-mouse-hover: #1860B3;
+$--color-assist-background: #F6F6F6;
+$--color-assist: #FCEEED;
+$--color-border: #DDDDDD;
+
+
+$--font-primary: #333333;
+$--color-common: #666666;
+$--color-placeholder: #999999;
+$--color-white: #FFFFFF;
+
+.el-button {
+    &.el-button--text {
+        color: $--color-primary;
+
+        &.text-danger {
+            color: $--color-danger;
+        }
+    }
+}
+
+.el-button--primary {
+    &.el-button--medium {
+        padding: 0px !important;
+        width: 90px;
+        height: 36px;
+        line-height: 36px;
+        max-height: 36px;
+        background-color: $--color-primary;
+        font-size: 14px;
+        border-radius: 6px;
+    
+
+        &:hover {
+            background-color: $--color-mouse-hover;
+        }
+
+    }
+
+    &.el-button--mini {
+        min-width: 92px;
+        height: 28px;
+        max-height: 28px;
+        background-color: $--color-primary;
+        font-size: 14px;
+        border-radius: 4px;
+        padding: 7px 17px;
+
+        &:hover {
+            background-color: $--color-mouse-hover;
+        }
+
+    }
+
+    &.is-plain {
+        background-color: $--color-white;
+        border-color: $--color-primary;
+        color: $--color-primary;
+    }
+
+    // 失效按钮样式
+    &.is-disabled {
+        background-color: $--color-assist-background;
+        border-color: $--color-border ;
+        color: $--color-placeholder;
+
+        &:hover {
+            background-color: $--color-assist-background;
+            border-color: $--color-border ;
+            color: $--color-placeholder;
+        }
+    }
+}
+
+.el-input {
+    &.el-input--medium {
+
+        .el-input__inner {
+            height: 36px;
+            padding: 11px 10px;
+            border-color: $--color-border;
+            color: $--font-primary;
+            border-radius: 6px;
+
+            &:focus {
+                border-color: $--color-primary;
+                color: $--font-primary;
+            }
+        }
+
+        &.auto-input {
+            .el-input__inner {
+                border-color: $--color-border;
+                color: $--color-common;
+                background-color: #F5F7FA;
+
+                &:focus {
+                    border-color: $--color-primary;
+                    color: $--font-primary;
+                }
+            }
+
+        }
+
+        &.is-disabled {
+            .el-input__inner {
+                border-color: $--color-border;
+                color: $--color-placeholder;
+                background-color: #F4F4F4;
+            }
+        }
+    }
+
+}
+
+
+// 单选框
+.el-radio {
+    .el-radio__input {
+        .el-radio__inner {
+            border-color: #BBBBBB;
+
+            &:hover {
+                border-color: $--color-primary;
+            }
+        }
+    }
+
+    &.is-disabled {
+        .el-radio__input {
+            .el-radio__inner {
+                border-color: $--color-border;
+                background-color: #EEEEEE;
+
+                &:hover {
+                    border-color: $--color-border;
+                    background-color: #EEEEEE;
+                }
+            }
+        }
+
+        &.is-checked {
+            .el-radio__input {
+                .el-radio__inner {
+                    background-color: #EEEEEE;
+                    border-color: $--color-border;
+
+                    &::after {
+                        width: 8px;
+                        height: 8px;
+                        background-color: #B0B0B0;
+                    }
+
+                    &:hover {
+                        border-color: $--color-primary;
+                    }
+                }
+            }
+
+        }
+    }
+
+    &.is-checked {
+        .el-radio__input {
+            .el-radio__inner {
+                background-color: $--color-white;
+                border-color: $--color-primary;
+
+                &::after {
+                    width: 8px;
+                    height: 8px;
+                    background-color: $--color-primary;
+                }
+
+                &:hover {
+                    border-color: $--color-primary;
+                }
+            }
+        }
+
+    }
+
+    &.is-checked {
+        .el-radio__label {
+            color: $--color-primary;
+        }
+    }
+}
+
+
+// 多选框
+.el-checkbox {
+    .el-checkbox__input {
+        .el-checkbox__inner {
+            border-color: #BBBBBB;
+            border-radius: 3px;
+
+            &:hover {
+                border-color: $--color-primary;
+            }
+        }
+    }
+
+    &.is-checked {
+        &.is-disabled {
+            .el-checkbox__inner {
+                &::after {
+                    border-color: #B0B0B0;
+                }
+            }
+
+        }
+
+        .el-checkbox__inner {
+            background-color: $--color-primary;
+
+        }
+
+        .el-checkbox__label {
+            color: $--color-common;
+        }
+    }
+
+    &.is-disabled {
+        .el-checkbox__inner {
+            background-color: #EEEEEE;
+            border-color: #DDDDDD;
+            border-radius: 3px;
+
+            &:hover {
+                border-color: #DDDDDD;
+            }
+        }
+    }
+}
+
+
+.el-select {
+    .el-input {
+        .el-input__inner {
+            width: 200px;
+            padding: 10px 11px;
+            border-radius: 6px;
+            color: $--color-placeholder;
+            border-color: #DDDDDD;
+        }
+    }
+}
+
+.el-select-dropdown {
+    .el-select-dropdown__item {
+        height: 34px;
+        // padding: 10px 11px;
+        font-weight: 400;
+        color: $--font-primary;
+
+        &.selected {
+            color: $--color-primary;
+            background-color: #E9F4FF;
+        }
+    }
+}
+
+// 日期选择器
+.el-date-editor--date,
+.el-date-editor--datetime,
+.el-date-editor--daterange {
+    // width: 354px !important;
+    height: 38px;
+    margin-left: 10px;
+    border-color: $--color-border;
+    border-radius: 6px;
+    color: $--color-placeholder;
+
+    .el-input__prefix {
+        left: calc(100% - 10px - 25px);
+    }
+
+    &:hover {
+        border-color: $--color-primary;
+    }
+
+    &:focus {
+        border-color: $--color-primary;
+    }
+}
+
+.el-date-picker,
+.el-date-range-picker {
+    color: $--font-primary;
+
+    .el-date-picker__header {
+        .el-picker-panel__icon-btn {
+            color: $--color-primary;
+            padding: 6px;
+            border-radius: 50%;
+            background-color: #E9F4FF;
+
+            &::before {
+                transform: translateY(5px)
+            }
+        }
+    }
+
+    .el-picker-panel__content {
+        margin: 20px;
+        span{
+
+            width: 30px;
+            height: 30px;
+            line-height: 30px !important;
+        }
+        &.is-left {
+            margin: 0;
+            padding: 0;
+            padding: 0 20px;
+        }
+
+        &.is-right  {
+            margin: 0;
+            padding: 0;
+            padding:0px  20px;
+        }
+
+        .available {
+            &:hover {
+                color: $--color-primary;
+            }
+
+            &.today {
+                span {
+                    color: $--color-primary;
+
+                }
+            }
+
+            &.current,&.start-date,&.end-date {
+                span {
+                    color: $--color-white;
+                    font-weight: bold;
+                    background-color: $--color-primary;
+                }
+
+            }
+            &.in-range{
+                div{
+                    padding: 0;
+                background-color: #E9F4FF;
+
+                }
+            }
+        }
+    }
+}
+
+// 表单
+.el-form-item__content{
+    margin-left: 0px !important;
+}
+
+// 封装的查询组件的样式
+.operate-area{
+    float: right;
+}
+
+
+// 弹窗
+.el-dialog{
+    .dialog-footer{
+        text-align: center;
+    }
+}

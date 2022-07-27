@@ -22,6 +22,7 @@
             :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
             :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
             :clearable="item.clearable ? item.clearable : false"
+            :style="{width:'calc(100% - 100px)'}"
           />
           <!-- radio -->
           <el-radio-group
@@ -57,6 +58,7 @@
             :clearable="item.clearable"
             :multiple="item.multiple"
             :placeholder="item.placeholder"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
             @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
           >
             <el-option
@@ -99,6 +101,7 @@
             :prefix-icon="item.prefixIcon ? item.prefixIcon : 'el-icon-time'"
             :clear-icon="item.clearIcon ? item.clearIcon : 'el-icon-circle-close'"
             :range-separator="item.rangeSeparator ? item.rangeSeparator : '至'"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
             @change="time => {item.changeTime ? item.changeTime(time, item, index) : ''}"
           />
           <!-- datePicker  --- subType:date daterange....-->
@@ -119,6 +122,7 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
             @change="date => {item.changeDate ? item.changeDate(date, item, index) : ''}"
           />
           <!-- dateTimePicker -->
@@ -139,6 +143,7 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
             @change="dateTime => {item.changeDateTime? item.changeDateTime(dateTime, item, index): ''}"
           />
         </el-form-item>

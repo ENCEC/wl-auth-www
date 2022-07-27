@@ -65,7 +65,7 @@ export const constantRoutes = [
     path: '/profile',
     component: Layout,
     redirect: '/profile/index',
-    hidden: true,
+    // hidden: true,
     children: [
       {
         path: 'index',
@@ -84,9 +84,9 @@ export const constantRoutes = [
 export const asyncRoutes = [
   // hotRouter,
   {
-    path: '/demo',
+    path: '/system',
     component: Layout,
-    meta: { title: 'demo', icon: 'user' },
+    meta: { title: '系统管理', icon: 'tools' },
     children: [
       // 系统管理-用户管理
       {
@@ -101,6 +101,18 @@ export const asyncRoutes = [
         component: () => import('@/views/menu-manage/index'),
         name: 'MenuManage',
         meta: { title: '菜单管理' }
+      },
+      {
+        path: 'hello',
+        component: () => import('@/views/hello-world/index'),
+        name: 'Hello',
+        meta: { title: '世界' }
+      },
+      {
+        path: 'post-manage',
+        component: () => import('@/views/post-manage/index'),
+        name: 'PostManage',
+        meta: { title: '岗位管理' }
       },
       {
         path: 'list',
