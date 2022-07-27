@@ -102,12 +102,12 @@ export const asyncRoutes = [
         name: 'MenuManage',
         meta: { title: '菜单管理' }
       },
-      {
-        path: 'hello',
-        component: () => import('@/views/hello-world/index'),
-        name: 'Hello',
-        meta: { title: '世界' }
-      },
+      // {
+      //   path: 'hello',
+      //   component: () => import('@/views/hello-world/index'),
+      //   name: 'Hello',
+      //   meta: { title: '世界' }
+      // },
       {
         path: 'post-manage',
         component: () => import('@/views/post-manage/index'),
