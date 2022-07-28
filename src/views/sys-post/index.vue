@@ -17,6 +17,7 @@
       />
       <div slot="footer" class="dialog-footer">
         <el-button
+        :loading="dialogButtonLoading"
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
@@ -31,28 +32,12 @@
       :pagination="listQuery"
       :columns="columns"
       :operates="operates"
+      :listLoading="listLoading"
       @handleRowClick="handleRowClick"
       @handleSelectionChange="handleSelectionChange"
       @handleIndexChange="handleIndexChange"
+      @handleSizeChange="handleSizeChange"
     />
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table
-        :data="pvData"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{
-          $t("table.confirm")
-        }}</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -70,7 +55,8 @@ import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
 const statusTypeOptions = [
   { key: '0', display_name: '启用' },
-  { key: '1', display_name: '禁用' }
+  { key: '1', display_name: '禁用' },
+  { key: '', display_name: '所有' }
 ];
 const departmentTypeOptions = [
   { key: '1', display_name: '开发部' },
@@ -103,6 +89,8 @@ export default {
   },
   data() {
     return {
+      // 弹窗表格的加载状态
+      dialogButtonLoading:false,
       formConfig: {
         inline: false,
         col: 12,
@@ -134,7 +122,7 @@ export default {
 
           {
             type: 'textarea',
-            prop: 'duty',
+            prop: 'remark',
             col: 24,
             label: '岗位职责',
             autopageSize: { minRows: 2, maxRows: 4 },
@@ -176,7 +164,7 @@ export default {
             prop: 'postName',
             width: '200px',
             clearable: false,
-            placeholder: '123',
+            placeholder: '请输入岗位职责',
             col: 8
           },
           // {
@@ -199,12 +187,14 @@ export default {
             prop: 'status',
             col: 8,
             width: '200px',
+            clearable:true,
+            placeholder:'请选择状态',
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
             options: statusTypeOptions,
             changeSelect: (optionVal, item, index) => {
-              debugger
+              this.listQuery.status=optionVal
             }
           }
         ],
@@ -267,7 +257,7 @@ export default {
           label: '岗位职责'
         },
         {
-          prop: 'updateBy',
+          prop: 'createBy',
           label: '创建人',
           width: '110'
         },
@@ -334,14 +324,14 @@ export default {
 
       tableKey: 0,
       list: null,
-      total: 0,
-      listLoading: true,
+      totalRecord: 0,
+      listLoading: false,
       listQuery: {
         currentPage: 1,
         pageSize: 20,
-        total: 0,
-        postName: undefined,
-        status: undefined
+        totalRecord: 0,
+        postName: '',
+        status: ''
       },
       importanceOptions: [1, 2, 3],
       statusTypeOptions,
@@ -356,12 +346,11 @@ export default {
         createBy: '',
         createTime: '',
         postCode: '',
-        postId: 0,
-        postName: '',
+        postId: '',
+        postName:null,
         postSort: 0,
         remark: '',
-        status: 0,
-        status: 'string'
+        status: '0',
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -372,11 +361,7 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [
-          { required: true, message: '请选择输入部门', trigger: 'change' }
-        ],
-
-        name: [
+        postName: [
           { required: true, message: '请输入岗位名称', trigger: 'change' }
         ]
       },
@@ -384,7 +369,7 @@ export default {
     };
   },
   created() {
-    // this.getList();
+    this.getList();
   },
   methods: {
     handleSelectionChange(val) {
@@ -412,7 +397,7 @@ export default {
       this.listQuery.currentPage = currentPage;
       this.getList();
     },
-    handlepageSizeChange(pageSize) {
+    handleSizeChange(pageSize) {
       this.listQuery.pageSize = pageSize;
       this.getList();
     },
@@ -420,12 +405,13 @@ export default {
     getList() {
       this.listLoading = true;
       querySysPost(this.listQuery).then((response) => {
-        this.list = response.data.items;
+        this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = this.listQuery.currentPage * this.listQuery.pageSize + count
+          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index+1
+          item.status=item.status==='0'?true:false
         })
-        this.total = response.data.total;
-        this.listQuery.total = response.data.total;
+        this.totalRecord = response.data.totalRecord;
+        this.listQuery.totalRecord = response.data.totalRecord;
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false;
@@ -437,9 +423,9 @@ export default {
       this.listQuery = {
         currentPage: 1,
         pageSize: 20,
-        total: 0,
-        postName: undefined,
-        status: undefined
+        totalRecord: 0,
+        postName: '',
+        status: ''
       };
       this.getList()
     },
@@ -452,7 +438,8 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      sysPostStartStop(row).then((res) => {
+      const params=Object.assign({},row,{status:row.status?'0':'1'})
+      sysPostStartStop(params).then((res) => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -466,8 +453,7 @@ export default {
     },
     handleAdd() {
       // this.temp = Object.assign({}, row); // copy obj
-      this.temp.createTime = parseTime(new Date());
-      console.log(this.temp.createTime);
+      // this.temp.createTime = parseTime(new Date());
       this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -483,23 +469,25 @@ export default {
       });
     },
     createData() {
-      debugger
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
+          this.dialogButtonLoading=true
           saveSysPost(this.temp)
             .then((res) => {
-              debugger
-              debugger;
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
+              this.handleResetForm()
               this.$message({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
-                duration: 2000
+                duration: 0
               });
+              this.dialogButtonLoading=false
+
+              this.getList()
             })
             .catch((err) => {
               this.$message({
@@ -515,16 +503,18 @@ export default {
     updateData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp);
+          const tempData = Object.assign({}, this.temp,{status:this.temp.status?'0':'1'});
           updateSysPost(tempData)
             .then(() => {
-              this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
                 message: '修改成功',
                 type: 'success',
                 duration: 2000
               });
+              this.handleResetForm()
+              this.dialogFormVisible = false;
+              this.getList()
             })
             .catch((err) => {
               this.$message({
@@ -548,12 +538,13 @@ export default {
         }
       )
         .then(() => {
-          deleteSysPost(row.id)
+          deleteSysPost(row.postId)
             .then((res) => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
+              this.getList()
             })
             .catch((err) => {
               this.$message({
@@ -579,55 +570,12 @@ export default {
         postSort: 0,
         remark: '',
         status: '',
-        status: 'string'
       };
     },
     handleDialogClose() {
-      debugger;
-      this.handleResetForm();
+      // this.handleResetForm();
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
     },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
-    },
-    handleDownload() {
-      this.downloadLoading = true;
-      import('@/vendor/Export2Excel').then((excel) => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status'];
-        const filterVal = [
-          'timestamp',
-          'title',
-          'type',
-          'importance',
-          'status'
-        ];
-        const data = this.formatJson(filterVal);
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        });
-        this.downloadLoading = false;
-      });
-    },
-    formatJson(filterVal) {
-      return this.list.map((v) =>
-        filterVal.map((j) => {
-          if (j === 'timestamp') {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
-    },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort;
-      return sort === `+${key}` ? 'ascending' : 'descending';
-    }
   }
 };
 </script>

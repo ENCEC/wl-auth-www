@@ -2,9 +2,9 @@
   <div class="table">
     <el-table
       id="iTable"
-      v-loading.iTable="options.loading"
       :height="options.height"
       :data="data"
+      v-loading="listLoading"
       :border="options.border"
       :cell-style="options.cellStyle"
       :stripe="options.stripe"
@@ -71,10 +71,10 @@
 
     <el-pagination
       v-if="options.pagination"
-      :total="pagination.total"
+      :total="pagination.totalRecord"
       :page-sizes="[10, 20, 50]"
-      :page-size.sync="pagination.size"
-      :current-page.sync="pagination.page"
+      :page-size.sync="pagination.pageSize"
+      :current-page.sync="pagination.currentPage"
       layout="total, sizes, prev, pager, next, jumper"
       prev-text="上一页"
       next-text="下一页"
@@ -111,6 +111,11 @@ export default {
     }
   },
   props: {
+    // 数据列表
+    listLoading: {
+      type: Boolean,
+      default: false
+    },
     // 数据列表
     data: {
       type: Array,

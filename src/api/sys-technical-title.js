@@ -2,45 +2,45 @@ import request from '@/utils/request'
 
 export function queryByTechnicalTitleName(params) {
   return request({
-    url: 'http://172.16.18.90:8082/sysTechnicalTitle/queryByTechnicalTitleName',
+    url: '/sysTechnicalTitle/queryByTechnicalTitleName',
     method: 'get',
-    params: params
+    params
   })
 }
 
 // 修改职称状态
 export function updateStatus(params) {
   return request({
-    url: '/SysTechnicalTitle/updateStatus',
+    url: '/sysTechnicalTitle/updateStatus',
     method: 'get',
-    params: {
-      ...params
-    }
+    params
   })
 }
 
 export function saveSysTechnicalTitle(data) {
   return request({
-    url: '/SysTechnicalTitle/addSysTechnicalTitle',
+    url: '/sysTechnicalTitle/saveSysTechnicalTitle',
     method: 'post',
     data
   })
 }
 
-export function updateSysTechnicalTitle(data) {
+export function updateSysTechnicalTitle({ technicalTitleId, technicalName, seniority, postName }) {
   return request({
-    url: '/SysTechnicalTitle/updateSysTechnicalTitle',
+    url: '/sysTechnicalTitle/updateSysTechnicalTitle',
     method: 'post',
-    data
+    data: {
+      technicalTitleId, technicalName, seniority, postName
+    }
   })
 }
 
-export function deleteSysTechnicalTitle(id) {
+export function deleteSysTechnicalTitle(technicalTitleId) {
   return request({
-    url: '/SysTechnicalTitle/deleteSysTechnicalTitle',
+    url: '/sysTechnicalTitle/deleteSysTechnicalTitle',
     method: 'delete',
     params: {
-      id
+      technicalTitleId
     }
   })
 }

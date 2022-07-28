@@ -32,6 +32,7 @@
       :pagination="listQuery"
       :columns="columns"
       :operates="operates"
+      :listLoading="listLoading"
       @handleRowClick="handleRowClick"
       @handleSelectionChange="handleSelectionChange"
       @handleIndexChange="handleIndexChange"
@@ -59,6 +60,9 @@
 
 <script>
 import {
+  querySysPost,
+} from '@/api/sys-post.js';
+import {
   queryByTechnicalTitleName,
   updateStatus,
   saveSysTechnicalTitle,
@@ -70,14 +74,11 @@ import tableComponent from "@/components/TableComponent";
 import filterPanel from "@/components/FilterPanel";
 import formPanel from "@/components/FormPanel";
 const statusTypeOptions = [
-  { key: "0", display_name: "启用" },
-  { key: "1", display_name: "禁用" },
+  { key: '0', display_name: '启用' },
+  { key: '1', display_name: '禁用' },
+  { key: '', display_name: '所有' }
 ];
-const technicalTypeOptions = [
-  { key: "1", display_name: "开发部" },
-  { key: "2", display_name: "财务部" },
-  { key: "3", display_name: "智慧物联部" },
-  { key: "4", display_name: "代理事务部" },
+const postTypeOptions = [
 ];
 
 // arr to obj, such as { CN : "China", US : "USA" }
@@ -114,7 +115,7 @@ export default {
         formItemList: [
           {
             type: "input",
-            prop: "postName",
+            prop: "technicalName",
             // width: "200px",
             label: "职称名称",
             placeholder: "职称名称",
@@ -122,7 +123,7 @@ export default {
           {
             type: "select",
             class: "filter-item",
-            prop: "type",
+            prop: "postName",
             // width: "200px",
 
             label: "所属职称",
@@ -130,7 +131,7 @@ export default {
             optionLabel: "display_name",
             optionValue: "key",
             optionKey: "key",
-            options: technicalTypeOptions,
+            options: postTypeOptions,
           },
 
           {
@@ -185,12 +186,13 @@ export default {
             prop: "postName",
             width: "200px",
             col: 8,
+            clearable:true,
             optionLabel: "display_name",
             optionValue: "key",
             optionKey: "key",
-            options: technicalTypeOptions,
+            options: postTypeOptions,
             changeSelect: (optionVal, item, index) => {
-              console.log(optionVal, item, index);
+              this.listQuery.postName=optionVal
             },
           },
           {
@@ -204,7 +206,7 @@ export default {
             optionKey: "key",
             options: statusTypeOptions,
             changeSelect: (optionVal, item, index) => {
-              debugger;
+              this.listQuery.status=optionVal
             },
           },
         ],
@@ -271,7 +273,7 @@ export default {
           label: "工作年限",
         },
         {
-          prop: "updateBy",
+          prop: "createBy",
           label: "创建人",
           width: "110",
         },
@@ -344,12 +346,12 @@ export default {
         currentPage: 1,
         pageSize: 20,
         total: 0,
-        technicalName: undefined,
-        postName: undefined,
-        status: undefined,
+        technicalName: '',
+        postName: '',
+        status: '',
       },
       statusTypeOptions,
-      technicalTypeOptions,
+      postTypeOptions,
       sortOptions: [
         { label: "ID Ascending", key: "+id" },
         { label: "ID Descending", key: "-id" },
@@ -378,8 +380,6 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        
-
         technicalName: [
           { required: true, message: "请输入职称名称", trigger: "change" },
         ],
@@ -394,11 +394,26 @@ export default {
     };
   },
   created() {
-    debugger
     this.getList();
+    this.initPostSelect()
   },
   methods: {
-    
+    initPostSelect(){
+      const params={
+        pageSize:1000,
+        currentPage:1,
+        status:'0',
+      }
+      querySysPost(params).then((res)=>{
+        res.data.records.filter((item)=>{
+          return item.status==='0'
+        }).forEach((item)=>{
+        this.postTypeOptions.push({key:item.postName,display_name:item.postName})
+        })
+      }).catch((err)=>{
+        this.$message.error('初始化岗位失败')
+      })
+    },
     handleIndexChange(currentPage) {
       this.listQuery.currentPage = currentPage;
       this.getList();
@@ -411,13 +426,13 @@ export default {
     getList() {
       this.listLoading = true;
       queryByTechnicalTitleName(this.listQuery).then((response) => {
-        debugger
-        this.list = response.data.items;
+        this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = this.listQuery.currentPage * this.listQuery.pageSize + count;
+          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index+1
+          item.status=item.status==='0'?true:false
         });
-        this.total = response.data.total;
-        this.listQuery.total = response.data.total;
+        this.totalRecord = response.data.totalRecord;
+        this.listQuery.totalRecord = response.data.totalRecord;
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false;
@@ -429,10 +444,10 @@ export default {
       this.listQuery = {
         currentPage: 1,
         pageSize: 20,
-        total: 0,
-        technicalName: undefined,
-        postName: undefined,
-        status: undefined,
+        totalRecord: 0,
+        technicalName: '',
+        postName: '',
+        status: '',
       };
       this.getList();
     },
@@ -445,7 +460,9 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      updateStatus(row)
+      const params=Object.assign({},row,{status:row.status?'0':'1'})
+      debugger
+      updateStatus(params)
         .then((res) => {
           this.$message({
             message: "操作成功",
@@ -461,7 +478,7 @@ export default {
     },
     handleAdd() {
       // this.temp = Object.assign({}, row); // copy obj
-      this.temp.createTime = parseTime(new Date());
+      // this.temp.createTime = parseTime(new Date());
       console.log(this.temp.createTime);
       this.dialogStatus = "create";
       this.dialogFormVisible = true;
@@ -471,6 +488,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
+      debugger
       this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -493,6 +511,7 @@ export default {
                 type: "success",
                 duration: 2000,
               });
+              this.getList()
             })
             .catch((err) => {
               this.$message({
@@ -506,9 +525,11 @@ export default {
       });
     },
     updateData() {
+      debugger
       this.$refs["formPanel"].$refs["dataForm"].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp);
+          const tempData = Object.assign({}, this.temp,{status:this.temp.status?'0':'1'});
+          debugger
           updateSysTechnicalTitle(tempData)
             .then(() => {
               this.dialogFormVisible = false;
@@ -518,8 +539,10 @@ export default {
                 type: "success",
                 duration: 2000,
               });
+              this.getList()
             })
             .catch((err) => {
+              debugger
               this.$message({
                 title: "失败",
                 message: "修改失败",
@@ -531,6 +554,7 @@ export default {
       });
     },
     handleDelete(row, index) {
+      debugger
       this.$confirm(
         "您确定要删除该职称信息吗?删除后该职称信息不可恢复",
         "提示",
@@ -541,12 +565,14 @@ export default {
         }
       )
         .then(() => {
-          deleteSysTechnicalTitle(row.id)
+          const _this=this
+          deleteSysTechnicalTitle(row.technicalTitleId)
             .then((res) => {
               this.$message({
                 type: "success",
                 message: "删除成功!",
               });
+              _this.getList()
             })
             .catch((err) => {
               this.$message({
@@ -578,24 +604,8 @@ export default {
       };
     },
     handleDialogClose() {
-      debugger;
-      this.handleResetForm();
+      // this.handleResetForm();
       this.$refs["formPanel"].$refs["dataForm"].clearValidate();
-    },
-    formatJson(filterVal) {
-      return this.list.map((v) =>
-        filterVal.map((j) => {
-          if (j === "timestamp") {
-            return parseTime(v[j]);
-          } else {
-            return v[j];
-          }
-        })
-      );
-    },
-    getSortClass: function (key) {
-      const sort = this.listQuery.sort;
-      return sort === `+${key}` ? "ascending" : "descending";
     },
   },
 };
