@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 10:35:16
+ * @LastEditTime: 2022-07-28 15:35:26
  * @Description:系统管理-角色管理
 -->
 
@@ -22,7 +22,7 @@
       <el-table-column prop="name" label="角色描述" />
       <el-table-column prop="mobile" label="创建人" />
       <el-table-column prop="email" label="创建时间" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
@@ -45,8 +45,9 @@
     <!-- 分页 -->
     <el-pagination
       class="pagination-wrap"
-      :current-page.sync="currentPage"
+      :current-page.sync="params.currentPage"
       :page-sizes="[10, 20, 30, 40]"
+      :page-size="params.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"

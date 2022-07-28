@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 09:47:02
+ * @LastEditTime: 2022-07-28 15:24:03
  * @Description:
 -->
 <template>
@@ -23,7 +23,7 @@
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
       <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
@@ -45,9 +45,9 @@
     <!-- 分页 -->
     <el-pagination
       class="pagination-wrap"
-      :current-page.sync="currentPage"
+      :current-page.sync="params.currentPage"
       :page-sizes="[10, 20, 30, 40]"
-      :page-size="100"
+      :page-size="params.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"

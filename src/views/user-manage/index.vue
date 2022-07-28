@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 18:02:20
+ * @LastEditTime: 2022-07-28 15:23:33
  * @Description: 系统管理-用户管理
 -->
 
@@ -22,12 +22,10 @@
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="mobile" label="联系电话" />
       <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
-            :active-value="false"
-            :inactive-value="true"
             active-color="#0050AC"
             @change="changeStatus(scope.row)"
           />
@@ -47,8 +45,9 @@
     <!-- 分页 -->
     <el-pagination
       class="pagination-wrap"
-      :current-page.sync="currentPage"
+      :current-page.sync="params.currentPage"
       :page-sizes="[10, 20, 30, 40]"
+      :page-size="params.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
@@ -117,7 +116,7 @@ export default {
     this.getTableData();
   },
   mounted() {
-    console.log('【 this.$dictionary 】-157', this.$dictionary);
+    // console.log('【 this.$dictionary 】-157', this.$dictionary);
   },
   methods: {
     // 获取表格数据

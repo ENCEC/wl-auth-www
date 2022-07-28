@@ -1,9 +1,9 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-07-27 17:05:05
+ * @Date: 2022-07-28 10:47:20
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 11:24:05
- * @Description:系统管理-角色管理-添加/编辑
+ * @LastEditTime: 2022-07-28 10:53:25
+ * @Description: 系统管理-权限管理-添加/编辑
 -->
 
 <template>
@@ -87,6 +87,8 @@
                   @check-change="handleCheckChange"
                 />
               </div>
+              <!--      @node-click="handleNodeClick"
+             -->
             </el-form-item>
           </div>
         </div>
@@ -238,8 +240,7 @@ export default {
       // console.log('【 data, checked, indeterminate 】-176', data, checked, indeterminate)
       this.getCheckedNodes();
       this.getCheckedKeys();
-    },
-    // 关闭弹框
+    }, // 关闭弹框
     close() {
       this.$emit('update:visible', false);
       this.$refs['elForm'].resetFields();
