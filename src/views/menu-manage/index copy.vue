@@ -2,12 +2,67 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 16:36:33
+ * @LastEditTime: 2022-07-27 11:34:35
  * @Description:
 -->
 <template>
   <div class="app-container menu-manage">
-    <filter-panel :filter-config="filterConfig" :value="filterForm" />
+    <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="mini">
+      <el-form-item label="菜单标题" prop="resourceTitle">
+        <el-input
+          v-model="filterForm.resourceTitle"
+          placeholder="请输入菜单标题"
+          clearable
+        />
+      </el-form-item>
+      <el-form-item label="父级菜单" prop="resourcePid">
+        <el-select
+          v-model="filterForm.resourcePid"
+          placeholder="请选择父级菜单"
+          clearable
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="isValid">
+        <el-select
+          v-model="filterForm.isValid"
+          placeholder="请选择状态"
+          clearable
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <div class="btn-wrap">
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleOpen"
+          >新增菜单</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            size="mini"
+            @click="handleQuery"
+          >查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" @click="resetQueryForm('filterFormRef')">重置</el-button>
+        </el-form-item>
+      </div>
+    </el-form>
     <!-- 表格 Start -->
     <el-table
       highlight-current-row
@@ -23,11 +78,11 @@
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
       <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="状态">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
-            active-color="#0050AC"
+            active-color="#13ce66"
             @change="changeStatus(scope.row)"
           />
         </template>
@@ -35,8 +90,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
-            <el-button type="text" @click="handleDelete(scope.row.sysResourceId)">删除</el-button>
+            <span @click="handleOpen(scope.row)">编辑</span>
+            <span @click="handleDelete(scope.row.sysResourceId)">删除</span>
           </div>
         </template>
       </el-table-column>
@@ -58,20 +113,17 @@
   </div>
 </template>
 <script>
-import filterPanel from '@/components/FilterPanel'
-import { filterConfig } from './config-data.js';
 import CreateDialog from './component/create-dialog';
-import { queryResourceByPage, queryParentResource, deleteResourceById, updateResourceStatus } from '@/api/menu-manege';
+import { queryResourceByPage, deleteResourceById, updateResourceStatus } from '@/api/menu-manege';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'MenuManage',
   components: {
-    filterPanel, CreateDialog
+    CreateDialog
   },
   mixins: [tableMix],
   data() {
     return {
-      filterConfig: filterConfig(this), // 查询条件配置
       editData: {},
       dialogVisible: false,
       options: [
@@ -95,16 +147,9 @@ export default {
   },
   computed: {},
   created() {
-    this.getParentResource()
     this.getTableData();
   },
   methods: {
-    // 获取父级菜单下拉
-    getParentResource() {
-      queryParentResource().then(res => {
-        this.filterConfig.filterList[1].options = res// 父级菜单下拉赋值
-      })
-    },
     // 获取表格数据
     getTableData() {
       queryResourceByPage({
@@ -120,9 +165,9 @@ export default {
       this.dialogVisible = false;
     },
     // 打开弹框
-    handleOpen(item = {}) {
+    handleOpen(item = null) {
       this.dialogVisible = true;
-      this.editData = { sysResourceId: item.sysResourceId || '' }
+      this.editData = { sysResourceId: item.sysResourceId } || {}
     },
     // 启用禁用
     changeStatus(item) {
@@ -134,6 +179,7 @@ export default {
     },
     // 删除
     handleDelete(sysResourceId) {
+      console.log('【 sysResourceId 】-178', sysResourceId);
       this.$confirm(
         '您确定要删除该菜单信息吗？删除后该菜单信息不可恢复。',
         '删除提示',
@@ -144,8 +190,7 @@ export default {
         }
       ).then(() => {
         deleteResourceById({ sysResourceId }).then(res => {
-          this.$message.success(res.data);
-          this.getTableData()
+          this.$message.success('操作成功');
         });
       });
     }
