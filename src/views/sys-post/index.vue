@@ -58,9 +58,9 @@
 
 <script>
 import {
-  page,
-  prohibit,
-  addSysPost,
+  querySysPost,
+  sysPostStartStop,
+  saveSysPost,
   updateSysPost,
   deleteSysPost
 } from '@/api/sys-post.js';
@@ -69,8 +69,8 @@ import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
 const statusTypeOptions = [
-  { key: '0', display_name: '禁用' },
-  { key: '1', display_name: '启用' }
+  { key: '0', display_name: '启用' },
+  { key: '1', display_name: '禁用' }
 ];
 const departmentTypeOptions = [
   { key: '1', display_name: '开发部' },
@@ -113,7 +113,7 @@ export default {
         formItemList: [
           {
             type: 'input',
-            prop: 'name',
+            prop: 'postName',
             // width: "200px",
             label: '岗位名称',
             placeholder: '请输入岗位名称'
@@ -137,7 +137,7 @@ export default {
             prop: 'duty',
             col: 24,
             label: '岗位职责',
-            autosize: { minRows: 2, maxRows: 4 },
+            autopageSize: { minRows: 2, maxRows: 4 },
             placeholder: '请输入岗位职责'
           }
           // {
@@ -173,7 +173,7 @@ export default {
           {
             type: 'input',
             label: '岗位名称',
-            prop: 'name',
+            prop: 'postName',
             width: '200px',
             clearable: false,
             placeholder: '123',
@@ -204,7 +204,7 @@ export default {
             optionKey: 'key',
             options: statusTypeOptions,
             changeSelect: (optionVal, item, index) => {
-              console.log(optionVal, item, index);
+              debugger
             }
           }
         ],
@@ -337,11 +337,11 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        size: 20,
+        currentPage: 1,
+        pageSize: 20,
         total: 0,
         postName: undefined,
-        rowStatus: undefined
+        status: undefined
       },
       importanceOptions: [1, 2, 3],
       statusTypeOptions,
@@ -360,7 +360,7 @@ export default {
         postName: '',
         postSort: 0,
         remark: '',
-        rowStatus: 0,
+        status: 0,
         status: 'string'
       },
       dialogFormVisible: false,
@@ -408,21 +408,21 @@ export default {
     handleRowClick(val) {
       console.log(val);
     },
-    handleIndexChange(page) {
-      this.listQuery.page = page;
+    handleIndexChange(currentPage) {
+      this.listQuery.currentPage = currentPage;
       this.getList();
     },
-    handleSizeChange(size) {
-      this.listQuery.size = size;
+    handlepageSizeChange(pageSize) {
+      this.listQuery.pageSize = pageSize;
       this.getList();
     },
     changePagination() {},
     getList() {
       this.listLoading = true;
-      page(this.listQuery).then((response) => {
+      querySysPost(this.listQuery).then((response) => {
         this.list = response.data.items;
         this.list.forEach((item, index) => {
-          item.count = this.listQuery.page * this.listQuery.size + count
+          item.count = this.listQuery.currentPage * this.listQuery.pageSize + count
         })
         this.total = response.data.total;
         this.listQuery.total = response.data.total;
@@ -435,11 +435,11 @@ export default {
 
     resetListQuery() {
       this.listQuery = {
-        page: 1,
-        size: 20,
+        currentPage: 1,
+        pageSize: 20,
         total: 0,
         postName: undefined,
-        rowStatus: undefined
+        status: undefined
       };
       this.getList()
     },
@@ -452,7 +452,7 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      prohibit(row).then((res) => {
+      sysPostStartStop(row).then((res) => {
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -483,12 +483,14 @@ export default {
       });
     },
     createData() {
+      debugger
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
-          addSysPost(this.temp)
+          saveSysPost(this.temp)
             .then((res) => {
+              debugger
               debugger;
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
@@ -576,7 +578,7 @@ export default {
         postName: '',
         postSort: 0,
         remark: '',
-        rowStatus: 0,
+        status: '',
         status: 'string'
       };
     },

@@ -19,7 +19,8 @@
         <el-button
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
-        >提交</el-button>
+          >提交</el-button
+        >
         <el-button @click="dialogFormVisible = false">取消</el-button>
       </div>
     </el-dialog>
@@ -58,25 +59,25 @@
 
 <script>
 import {
-  page,
-  prohibit,
-  addsysPost,
-  updatesysPost,
-  deletesysPost
-} from '@/api/sys-post.js';
-import { parseTime } from '@/utils';
-import tableComponent from '@/components/TableComponent';
-import filterPanel from '@/components/FilterPanel';
-import formPanel from '@/components/FormPanel';
+  queryByTechnicalTitleName,
+  updateStatus,
+  saveSysTechnicalTitle,
+  updateSysTechnicalTitle,
+  deleteSysTechnicalTitle,
+} from "@/api/sys-technical-title.js";
+import { parseTime } from "@/utils";
+import tableComponent from "@/components/TableComponent";
+import filterPanel from "@/components/FilterPanel";
+import formPanel from "@/components/FormPanel";
 const statusTypeOptions = [
-  { key: '0', display_name: '禁用' },
-  { key: '1', display_name: '启用' }
+  { key: "0", display_name: "启用" },
+  { key: "1", display_name: "禁用" },
 ];
-const departmentTypeOptions = [
-  { key: '1', display_name: '开发部' },
-  { key: '2', display_name: '财务部' },
-  { key: '3', display_name: '智慧物联部' },
-  { key: '4', display_name: '代理事务部' }
+const technicalTypeOptions = [
+  { key: "1", display_name: "开发部" },
+  { key: "2", display_name: "财务部" },
+  { key: "3", display_name: "智慧物联部" },
+  { key: "4", display_name: "代理事务部" },
 ];
 
 // arr to obj, such as { CN : "China", US : "USA" }
@@ -86,60 +87,59 @@ const calendarTypeKeyValue = statusTypeOptions.reduce((acc, cur) => {
 }, {});
 
 export default {
-  name: 'SysPost',
+  name: "SysTechniclTitle",
   components: { tableComponent, filterPanel, formPanel },
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
+        published: "success",
+        draft: "info",
+        deleted: "danger",
       };
       return statusMap[status];
     },
     typeFilter(type) {
       return calendarTypeKeyValue[type];
-    }
+    },
   },
   data() {
     return {
       formConfig: {
         inline: false,
         col: 12,
-        labelPosition: 'left',
-        ref: 'dataForm',
-        labelWidth: '80px',
-        style: 'width: 100%;',
+        labelPosition: "left",
+        ref: "dataForm",
+        labelWidth: "80px",
+        style: "width: 100%;",
         formItemList: [
           {
-            type: 'input',
-            prop: 'name',
+            type: "input",
+            prop: "postName",
             // width: "200px",
-            label: '岗位名称',
-            placeholder: '请输入岗位名称'
+            label: "职称名称",
+            placeholder: "职称名称",
           },
-          // {
-          //   type: "select",
-          //   class: "filter-item",
-          //   prop: "type",
-          //   // width: "200px",
+          {
+            type: "select",
+            class: "filter-item",
+            prop: "type",
+            // width: "200px",
 
-          //   label: "所属部门",
-          //   placeholder: "请选择所属部门",
-          //   optionLabel: "display_name",
-          //   optionValue: "key",
-          //   optionKey: "key",
-          //   options: departmentTypeOptions,
-          // },
+            label: "所属职称",
+            placeholder: "请选择所属职称",
+            optionLabel: "display_name",
+            optionValue: "key",
+            optionKey: "key",
+            options: technicalTypeOptions,
+          },
 
           {
-            type: 'textarea',
-            prop: 'duty',
-            col: 24,
-            label: '岗位职责',
-            autosize: { minRows: 2, maxRows: 4 },
-            placeholder: '请输入岗位职责'
-          }
+            type: "input",
+            prop: "seniority",
+            col: 12,
+            label: "工作年限",
+            placeholder: "请输入工作年限",
+          },
           // {
           //   type: "dateTimePicker",
           //   prop: "createTime",
@@ -159,7 +159,7 @@ export default {
           //   class: "filter-item",
           //   placeholder: "请输入创建人",
           // },
-        ]
+        ],
       },
 
       filterConfig: {
@@ -167,77 +167,77 @@ export default {
         gutter: 5, // 栅格的间隔
         col: 6, // 栅格的格数
         operateCol: 24,
-        labelWidth: '80px',
-        labelPosition: 'left',
+        labelWidth: "80px",
+        labelPosition: "left",
         filterList: [
           {
-            type: 'input',
-            label: '岗位名称',
-            prop: 'name',
-            width: '200px',
+            type: "input",
+            label: "职称名称",
+            prop: "technicalName",
+            width: "200px",
             clearable: false,
-            placeholder: '123',
-            col: 8
-          },
-          // {
-          //   type: "select",
-          //   label: "所属部门",
-          //   prop: "type",
-          //   width: "200px",
-          //   col: 8,
-          //   optionLabel: "display_name",
-          //   optionValue: "key",
-          //   optionKey: "key",
-          //   options: departmentTypeOptions,
-          //   changeSelect: (optionVal, item, index) => {
-          //     console.log(optionVal, item, index);
-          //   },
-          // },
-          {
-            type: 'select',
-            label: '状态',
-            prop: 'status',
+            placeholder: "请输入职称名称",
             col: 8,
-            width: '200px',
-            optionLabel: 'display_name',
-            optionValue: 'key',
-            optionKey: 'key',
-            options: statusTypeOptions,
+          },
+          {
+            type: "select",
+            label: "所属岗位",
+            prop: "postName",
+            width: "200px",
+            col: 8,
+            optionLabel: "display_name",
+            optionValue: "key",
+            optionKey: "key",
+            options: technicalTypeOptions,
             changeSelect: (optionVal, item, index) => {
               console.log(optionVal, item, index);
-            }
-          }
+            },
+          },
+          {
+            type: "select",
+            label: "状态",
+            prop: "status",
+            col: 8,
+            width: "200px",
+            optionLabel: "display_name",
+            optionValue: "key",
+            optionKey: "key",
+            options: statusTypeOptions,
+            changeSelect: (optionVal, item, index) => {
+              debugger;
+            },
+          },
         ],
         operates: [
           {
-            type: 'primary',
-            buttonLabel: '新增岗位',
-            btnType: 'primary',
+            type: "primary",
+            buttonLabel: "新增职称",
+            btnType: "primary",
             //   icon: 'el-icon-search',
             method: (item, index) => {
               this.handleAdd();
-            }
+            },
           },
           {
-            type: 'primary',
-            buttonLabel: '查询',
-            btnType: 'primary',
+            type: "primary",
+            buttonLabel: "查询",
+            btnType: "primary",
             //   icon: 'el-icon-edit',
             method: (item, index) => {
               this.getList();
-            }
+            },
           },
           {
-            type: 'primary',
-            buttonLabel: '重置',
-            btnType: 'primary',
+            type: "primary",
+            buttonLabel: "重置",
+            btnType: "primary",
             plain: true,
             //   icon: 'el-icon-download',
             method: (item, index) => {
               this.resetListQuery();
-            }
-          }
-        ]
+            },
+          },
+        ],
       },
       tableData: [],
       options: {
@@ -246,65 +246,69 @@ export default {
         loading: false, // 是否添加表格loading加载动画
         highlightCurrentRow: true, // 是否支持当前行高亮显示
         mutiSelect: false, // 是否支持列表项选中功能
-        pagination: true
+        pagination: true,
       }, // table 的参数
 
       columns: [
         {
-          prop: 'count',
-          label: '序号',
-          align: 'center',
-          width: '80'
+          prop: "count",
+          label: "序号",
+          align: "center",
+          width: "80",
         },
         {
-          prop: 'postName',
-          label: '岗位名称',
-          align: 'center',
-          width: '150'
+          prop: "technicalName",
+          label: "职称名称",
+          align: "center",
+          width: "150",
         },
         {
-          prop: 'remark',
-          label: '岗位职责'
+          prop: "postName",
+          label: "所属岗位",
         },
         {
-          prop: 'updateBy',
-          label: '创建人',
-          width: '110'
+          prop: "seniority",
+          label: "工作年限",
         },
         {
-          prop: 'createTime',
-          label: '创建时间',
-          width: '110'
+          prop: "updateBy",
+          label: "创建人",
+          width: "110",
         },
         {
-          prop: 'status',
-          label: '状态',
-          align: 'center',
-          width: '100',
-          component: 'switch',
+          prop: "createTime",
+          label: "创建时间",
+          width: "110",
+        },
+        {
+          prop: "status",
+          label: "状态",
+          align: "center",
+          width: "100",
+          component: "switch",
           method: (row, status) => {
             this.handleModifyStatus(row, status);
-          }
-        }
+          },
+        },
       ], // 需要展示的列
       operates: {
         list: [
           {
-            id: '1',
-            label: '编辑',
-            type: 'text',
+            id: "1",
+            label: "编辑",
+            type: "text",
             show: true,
             // icon: 'el-icon-edit',
             // plain: true,
             disabled: false,
             method: (index, row) => {
               this.handleUpdate(row);
-            }
+            },
           },
           {
-            id: '2',
-            label: '删除',
-            type: 'text',
+            id: "2",
+            label: "删除",
+            type: "text",
             // icon: 'el-icon-delete',
             // show: (index, row) => {
             //   return row.status !== 'draft'
@@ -312,9 +316,9 @@ export default {
             show: true,
             plain: false,
             method: (index, row) => {
-              this.handleDelete(row, 'draft');
-            }
-          }
+              this.handleDelete(row, "draft");
+            },
+          },
           //   {
           //     id: '3',
           //     label: '删除',
@@ -329,7 +333,7 @@ export default {
           //   }
         ],
         fixed: false,
-        width: 230
+        width: 230,
       }, // 列操作按钮
 
       tableKey: 0,
@@ -337,93 +341,81 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        size: 20,
+        currentPage: 1,
+        pageSize: 20,
         total: 0,
+        technicalName: undefined,
         postName: undefined,
-        rowStatus: undefined
+        status: undefined,
       },
-      importanceOptions: [1, 2, 3],
       statusTypeOptions,
-      departmentTypeOptions,
+      technicalTypeOptions,
       sortOptions: [
-        { label: 'ID Ascending', key: '+id' },
-        { label: 'ID Descending', key: '-id' }
+        { label: "ID Ascending", key: "+id" },
+        { label: "ID Descending", key: "-id" },
       ],
-      statusOptions: ['published', 'draft', 'deleted'],
+      statusOptions: ["published", "draft", "deleted"],
       showReviewer: false,
       temp: {
-        createBy: '',
-        createTime: '',
-        postCode: '',
+        technicalTitleId: 0,
+        createBy: "",
+        createTime: 0,
         postId: 0,
-        postName: '',
-        postSort: 0,
-        remark: '',
-        rowStatus: 0,
-        status: 'string'
+        remark: "",
+        seniority: "",
+        status: "0",
+        technicalName: "",
+        updateBy: "",
+        updateTime: "",
+        postName: "",
       },
       dialogFormVisible: false,
-      dialogStatus: '',
+      dialogStatus: "",
       textMap: {
-        update: '编辑岗位',
-        create: '新增岗位'
+        update: "编辑职称",
+        create: "新增职称",
       },
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [
-          { required: true, message: '请选择输入部门', trigger: 'change' }
-        ],
+        
 
-        name: [
-          { required: true, message: '请输入岗位名称', trigger: 'change' }
-        ]
+        technicalName: [
+          { required: true, message: "请输入职称名称", trigger: "change" },
+        ],
+        postName: [
+          { required: true, message: "请选择所属岗位", trigger: "change" },
+        ],
+        seniority: [
+          { required: true, message: "请输入工作年限", trigger: "change" },
+        ],
       },
-      downloadLoading: false
+      downloadLoading: false,
     };
   },
   created() {
-    // this.getList();
+    debugger
+    this.getList();
   },
   methods: {
-    handleSelectionChange(val) {
-      console.log('val:', val);
-    },
-    // 编辑
-    handleEdit(index, row) {
-      console.log(' index:', index);
-      console.log(' row:', row);
-    },
-    // 发布
-    handlePush(index, row) {
-      console.log(' index:', index);
-      console.log(' row:', row);
-    },
-    // 删除
-    handleDel(index, row) {
-      console.log(' index:', index);
-      console.log(' row:', row);
-    },
-    handleRowClick(val) {
-      console.log(val);
-    },
-    handleIndexChange(page) {
-      this.listQuery.page = page;
+    
+    handleIndexChange(currentPage) {
+      this.listQuery.currentPage = currentPage;
       this.getList();
     },
-    handleSizeChange(size) {
-      this.listQuery.size = size;
+    handleSizeChange(pageSize) {
+      this.listQuery.pageSize = pageSize;
       this.getList();
     },
     changePagination() {},
     getList() {
       this.listLoading = true;
-      page(this.listQuery).then((response) => {
+      queryByTechnicalTitleName(this.listQuery).then((response) => {
+        debugger
         this.list = response.data.items;
         this.list.forEach((item, index) => {
-          item.count = this.listQuery.page * this.listQuery.size + count
-        })
+          item.count = this.listQuery.currentPage * this.listQuery.pageSize + count;
+        });
         this.total = response.data.total;
         this.listQuery.total = response.data.total;
         // Just to simulate the time of the request
@@ -435,13 +427,14 @@ export default {
 
     resetListQuery() {
       this.listQuery = {
-        page: 1,
-        size: 20,
+        currentPage: 1,
+        pageSize: 20,
         total: 0,
+        technicalName: undefined,
         postName: undefined,
-        rowStatus: undefined
+        status: undefined,
       };
-      this.getList()
+      this.getList();
     },
     // getList() {
     //   this.resetTemp()
@@ -452,84 +445,86 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      prohibit(row).then((res) => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
+      updateStatus(row)
+        .then((res) => {
+          this.$message({
+            message: "操作成功",
+            type: "success",
+          });
+        })
+        .catch((err) => {
+          this.$message({
+            message: "操作失败",
+            type: "error",
+          });
         });
-      }).catch((err) => {
-        this.$message({
-          message: '操作失败',
-          type: 'error'
-        });
-      })
     },
     handleAdd() {
       // this.temp = Object.assign({}, row); // copy obj
       this.temp.createTime = parseTime(new Date());
       console.log(this.temp.createTime);
-      this.dialogStatus = 'create';
+      this.dialogStatus = "create";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['formPanel'].$refs['dataForm'].clearValidate();
+        this.$refs["formPanel"].$refs["dataForm"].clearValidate();
       });
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
-      this.dialogStatus = 'update';
+      this.dialogStatus = "update";
       this.dialogFormVisible = true;
       this.$nextTick(() => {
-        this.$refs['formPanel'].$refs['dataForm'].clearValidate();
+        this.$refs["formPanel"].$refs["dataForm"].clearValidate();
       });
     },
     createData() {
-      this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
+      this.$refs["formPanel"].$refs["dataForm"].validate((valid) => {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
-          addsysPost(this.temp)
+          saveSysTechnicalTitle(this.temp)
             .then((res) => {
               debugger;
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
               this.$message({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
+                title: "成功",
+                message: "创建成功",
+                type: "success",
+                duration: 2000,
               });
             })
             .catch((err) => {
               this.$message({
-                title: '失败',
-                message: '创建失败',
-                type: 'error',
-                duration: 2000
+                title: "失败",
+                message: "创建失败",
+                type: "error",
+                duration: 2000,
               });
             });
         }
       });
     },
     updateData() {
-      this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
+      this.$refs["formPanel"].$refs["dataForm"].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp);
-          updateSysPost(tempData)
+          updateSysTechnicalTitle(tempData)
             .then(() => {
               this.dialogFormVisible = false;
               this.$message({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+                title: "成功",
+                message: "修改成功",
+                type: "success",
+                duration: 2000,
               });
             })
             .catch((err) => {
               this.$message({
-                title: '失败',
-                message: '修改失败',
-                type: 'error',
-                duration: 2000
+                title: "失败",
+                message: "修改失败",
+                type: "error",
+                duration: 2000,
               });
             });
         }
@@ -537,84 +532,60 @@ export default {
     },
     handleDelete(row, index) {
       this.$confirm(
-        '您确定要删除该岗位信息吗?删除后该岗位信息不可恢复',
-        '提示',
+        "您确定要删除该职称信息吗?删除后该职称信息不可恢复",
+        "提示",
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
         }
       )
         .then(() => {
-          deleteSysPost(row.id)
+          deleteSysTechnicalTitle(row.id)
             .then((res) => {
               this.$message({
-                type: 'success',
-                message: '删除成功!'
+                type: "success",
+                message: "删除成功!",
               });
             })
             .catch((err) => {
               this.$message({
-                type: 'error',
-                message: '删除失败!'
+                type: "error",
+                message: "删除失败!",
               });
             });
         })
         .catch(() => {
           this.$message({
-            type: 'info',
-            message: '已取消删除'
+            type: "info",
+            message: "已取消删除",
           });
         });
     },
     handleResetForm() {
       this.temp = {
-        createBy: '',
-        createTime: '',
-        postCode: '',
+        technicalTitleId: 0,
+        createBy: "",
+        createTime: 0,
         postId: 0,
-        postName: '',
-        postSort: 0,
-        remark: '',
-        rowStatus: 0,
-        status: 'string'
+        remark: "",
+        seniority: "",
+        status: "0",
+        technicalName: "",
+        updateBy: "",
+        updateTime: "",
+        postName: "",
       };
     },
     handleDialogClose() {
       debugger;
       this.handleResetForm();
-      this.$refs['formPanel'].$refs['dataForm'].clearValidate();
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then((response) => {
-        this.pvData = response.data.pvData;
-        this.dialogPvVisible = true;
-      });
-    },
-    handleDownload() {
-      this.downloadLoading = true;
-      import('@/vendor/Export2Excel').then((excel) => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status'];
-        const filterVal = [
-          'timestamp',
-          'title',
-          'type',
-          'importance',
-          'status'
-        ];
-        const data = this.formatJson(filterVal);
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
-        });
-        this.downloadLoading = false;
-      });
+      this.$refs["formPanel"].$refs["dataForm"].clearValidate();
     },
     formatJson(filterVal) {
       return this.list.map((v) =>
         filterVal.map((j) => {
-          if (j === 'timestamp') {
+          if (j === "timestamp") {
             return parseTime(v[j]);
           } else {
             return v[j];
@@ -622,11 +593,11 @@ export default {
         })
       );
     },
-    getSortClass: function(key) {
+    getSortClass: function (key) {
       const sort = this.listQuery.sort;
-      return sort === `+${key}` ? 'ascending' : 'descending';
-    }
-  }
+      return sort === `+${key}` ? "ascending" : "descending";
+    },
+  },
 };
 </script>
 <style lang="scss" scope>

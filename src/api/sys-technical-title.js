@@ -2,11 +2,9 @@ import request from '@/utils/request'
 
 export function queryByTechnicalTitleName(params) {
   return request({
-    url: '/SysTechnicalTitle/queryByTechnicalTitleName',
+    url: 'http://172.16.18.90:8082/sysTechnicalTitle/queryByTechnicalTitleName',
     method: 'get',
-    params: {
-      ...params
-    }
+    params: params
   })
 }
 

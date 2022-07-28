@@ -1,28 +1,25 @@
 import request from '@/utils/request'
 
-export function page(params) {
+export function querySysPost(data) {
   return request({
-    url: '/SysPost/Page',
+    url: '/SysPost/querySysPost',
     method: 'get',
-    params: {
-
-    }
+    data
+    
   })
 }
 
-export function prohibit(params) {
+export function sysPostStartStop(data) {
   return request({
-    url: '/SysPost/Prohibit',
+    url: '/SysPost/sysPostStartStop',
     method: 'put',
-    params: {
-
-    }
+    data
   })
 }
 
-export function addSysPost(data) {
+export function saveSysPost(data) {
   return request({
-    url: '/SysPost/addSysPost',
+    url: '/SysPost/saveSysPost',
     method: 'post',
     data
   })
@@ -31,17 +28,17 @@ export function addSysPost(data) {
 export function updateSysPost(data) {
   return request({
     url: '/SysPost/updateSysPost',
-    method: 'put',
+    method: 'post',
     data
   })
 }
 
-export function deleteSysPost(id) {
+export function deleteSysPost(sysPostId) {
   return request({
     url: '/SysPost/deleteSysPost',
-    method: 'delete',
+    method: 'get',
     params: {
-      id
+      sysPostId
     }
   })
 }
