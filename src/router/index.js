@@ -114,6 +114,20 @@ export const asyncRoutes = [
         name: 'SysPost',
         meta: { title: '岗位管理' }
       },
+      // 系统管理-角色管理
+      {
+        path: 'role-manage',
+        component: () => import('@/views/role-manage/index'),
+        name: 'RoleManage',
+        meta: { title: '角色管理' }
+      },
+      // 系统管理-权限管理
+      {
+        path: 'right-manage',
+        component: () => import('@/views/right-manage/index'),
+        name: 'RightManage',
+        meta: { title: '权限管理' }
+      },
       {
         path: 'sys-technical-title',
         component: () => import('@/views/sys-technical-title/index'),

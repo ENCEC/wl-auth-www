@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 10:53:01
+ * @LastEditTime: 2022-07-27 18:24:02
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -130,6 +130,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
+              <!-- 联想控件 -->
               <el-form-item label="归属项目:" prop="projectId">
                 <el-select
                   v-model="formData.projectId"
@@ -155,7 +156,12 @@
           size="mini"
           @click="handleConfirm"
         >提交</el-button>
-        <el-button size="mini" @click="close">取消</el-button>
+        <el-button
+          type="primary"
+          :plain="true"
+          size="mini"
+          @click="close"
+        >取消</el-button>
       </div>
     </el-dialog>
   </div>

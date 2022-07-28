@@ -1,67 +1,15 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-07-25 10:36:16
+ * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 15:20:03
- * @Description: 系统管理-用户管理
+ * @LastEditTime: 2022-07-28 15:35:26
+ * @Description:系统管理-角色管理
 -->
 
 <template>
   <div class="app-container user-manage">
-    <el-form ref="filterFormRef" :model="filterForm" :inline="true" size="medium">
-      <el-form-item label="用户名" prop="account">
-        <el-input
-          v-model="filterForm.account"
-          placeholder="请输入用户名"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input
-          v-model="filterForm.name"
-          placeholder="请输入姓名"
-          clearable
-        />
-      </el-form-item>
-      <el-form-item label="状态" prop="isValid">
-        <el-select
-          v-model="filterForm.isValid"
-          placeholder="请选择状态"
-          clearable
-        >
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <div class="btn-wrap">
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="medium"
-            @click="handleOpen"
-          >新增用户</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="medium"
-            @click="handleQuery"
-          >查询</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="medium"
-            :plain="true"
-            @click="resetQueryForm('filterFormRef')"
-          >重置</el-button>
-        </el-form-item>
-      </div>
-    </el-form>
+    <!-- 查询组件 -->
+    <filter-panel :filter-config="filterConfig" :value="filterForm" />
     <!-- 表格 Start -->
     <el-table
       highlight-current-row
@@ -70,26 +18,25 @@
       style="width: 100%"
     >
       <el-table-column type="index" label="序号" />
-      <el-table-column prop="account" label="用户名" />
-      <el-table-column prop="name" label="姓名" />
-      <el-table-column prop="mobile" label="联系电话" />
-      <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="account" label="角色名称" />
+      <el-table-column prop="name" label="角色描述" />
+      <el-table-column prop="mobile" label="创建人" />
+      <el-table-column prop="email" label="创建时间" />
+      <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
-            active-color="#13ce66"
+            active-color="#0050AC"
             @change="changeStatus(scope.row)"
           />
-          <!-- {{ scope.row.isValid === VALID_STATUS.ON ? "启用" : "禁用" }} -->
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <span @click="handleOpen(scope.row)">编辑</span>
-            <span @click="resetPassword(scope.row.uemUserId)">重置密码</span>
-            <span @click="handleDelete(scope.row.uemUserId)">删除</span>
+            <el-button type="text" @click="handleOpen(scope.row,'edit')">编辑</el-button>
+            <el-button type="text" @click="handleOpen(scope.row,'detail')">查看</el-button>
+            <el-button type="text" @click="handleDelete(scope.row.uemUserId)">删除</el-button>
           </div>
         </template>
       </el-table-column>
@@ -107,7 +54,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
+    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" :type="openType" @getTableData="getTableData" />
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
@@ -125,6 +72,8 @@
   </div>
 </template>
 <script>
+import filterPanel from '@/components/FilterPanel'
+import { filterConfig } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
   queryUemUser,
@@ -136,35 +85,30 @@ import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'UserManage',
   components: {
-    CreateDialog
+    filterPanel, CreateDialog
   },
   mixins: [tableMix],
   data() {
     return {
+      filterConfig: filterConfig(this),
+      filterForm: {
+        // page: 1,
+        // size: 20,
+        // total: 0,
+        account: undefined,
+        name: undefined,
+        isValid: undefined
+      },
       editData: {},
-      options: [
-        {
-          value: true,
-          label: '启用'
-        },
-        {
-          value: false,
-          label: '禁用'
-        }
-      ],
       show: false,
       dialogVisible: false,
-      filterForm: {
-        account: '',
-        name: '',
-        isValid: ''
-      },
       records: [],
       total: 0,
       VALID_STATUS: {
         ON: true,
         OFF: false
-      }
+      },
+      openType: ''
     };
   },
   computed: {},
@@ -191,9 +135,10 @@ export default {
       this.dialogVisible = false;
     },
     // 打开弹框
-    handleOpen(item = null) {
+    handleOpen(item = {}, type = '') {
       this.dialogVisible = true;
-      this.editData = { uemUserId: item.uemUserId } || {}
+      this.openType = type
+      this.editData = { uemUserId: item.uemUserId || '' }
     },
     // 重置密码
     resetPassword(uemUserId) {
@@ -222,7 +167,7 @@ export default {
     // 删除用户信息
     handleDelete(uemUserId) {
       this.$confirm(
-        '您确定要删除该用户吗？删除后该用户信息不可恢复。',
+        '您确定要删除该角色信息吗？删除后该角色信息不可恢复。',
         '删除提示',
         {
           confirmButtonText: '确定',
@@ -241,10 +186,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-manage {
-  .btn-wrap {
-    display: flex;
-    justify-content: flex-end;
-  }
   // 操作栏
   .operate-wrap {
     span {

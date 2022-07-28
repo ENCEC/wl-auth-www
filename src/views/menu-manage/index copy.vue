@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 11:34:35
+ * @LastEditTime: 2022-07-28 15:19:36
  * @Description:
 -->
 <template>
@@ -100,9 +100,9 @@
     <!-- 分页 -->
     <el-pagination
       class="pagination-wrap"
-      :current-page.sync="currentPage"
+      :current-page.sync="params.currentPage"
       :page-sizes="[10, 20, 30, 40]"
-      :page-size="100"
+      :page-size="params.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"

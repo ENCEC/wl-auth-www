@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:46:15
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 15:45:29
+ * @LastEditTime: 2022-07-28 09:46:21
  * @Description: 系统管理-菜单管理
  */
 
@@ -10,7 +10,7 @@ import request from '@/utils/request';
 // 带条件分页查询菜单信息
 export function queryResourceByPage(data) {
   return request({
-    url: '/sysResource/queryResourceByPage',
+    url: '/queryResourceByPage',
     method: 'post',
     data
   });
@@ -34,7 +34,7 @@ export function queryResourceById(query) {
 // 新增菜单
 export function saveResource(data) {
   return request({
-    url: '/sysResource/saveResource',
+    url: '/saveResource',
     method: 'post',
     data
   });

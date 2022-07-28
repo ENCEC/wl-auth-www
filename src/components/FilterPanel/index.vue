@@ -14,6 +14,7 @@
             <el-input
               v-if="item.type === 'input' || item.type === 'textarea' || item.type === 'password'"
               v-model="value[item.prop]"
+              :size="item.size"
               :type="item.type"
               :rows="item.type === 'textarea' ? item.rows : ''"
               :show-password="item.type === 'password' && item.showPassword ? true : false"

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 16:35:53
+ * @LastEditTime: 2022-07-28 15:23:33
  * @Description: 系统管理-用户管理
 -->
 
@@ -22,7 +22,7 @@
       <el-table-column prop="name" label="姓名" />
       <el-table-column prop="mobile" label="联系电话" />
       <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否禁用">
+      <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
@@ -45,8 +45,9 @@
     <!-- 分页 -->
     <el-pagination
       class="pagination-wrap"
-      :current-page.sync="currentPage"
+      :current-page.sync="params.currentPage"
       :page-sizes="[10, 20, 30, 40]"
+      :page-size="params.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
@@ -57,7 +58,8 @@
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
-        密码重置成功！重置后的密码为<span class="password">123456</span> 。
+        密码重置成功！已发送至您的邮箱，请注意查收。
+        <!-- 重置后的密码为<span class="password">123456</span> 。 -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
@@ -114,7 +116,7 @@ export default {
     this.getTableData();
   },
   mounted() {
-    console.log('【 this.$dictionary 】-157', this.$dictionary);
+    // console.log('【 this.$dictionary 】-157', this.$dictionary);
   },
   methods: {
     // 获取表格数据
