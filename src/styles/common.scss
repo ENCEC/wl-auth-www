@@ -36,7 +36,6 @@ $--color-white: #FFFFFF;
         font-size: 14px;
         border-radius: 6px;
 
-
         &:hover {
             background-color: $--color-mouse-hover;
         }
@@ -78,6 +77,7 @@ $--color-white: #FFFFFF;
     }
 }
 
+// 输入框
 .el-input {
     &.el-input--medium {
 
@@ -240,7 +240,7 @@ $--color-white: #FFFFFF;
     }
 }
 
-
+// 下拉框
 .el-select {
     .el-input {
         .el-input__inner {
@@ -273,7 +273,7 @@ $--color-white: #FFFFFF;
 .el-date-editor--daterange {
     // width: 354px !important;
     height: 38px;
-    margin-left: 10px;
+    // margin-left: 10px;
     border-color: $--color-border;
     border-radius: 6px;
     color: $--color-placeholder;
@@ -372,9 +372,10 @@ $--color-white: #FFFFFF;
         }
 
         &.is-error {
-            .el-form-item__error{
+            .el-form-item__error {
                 color: $--color-danger;
             }
+
             .el-input__inner {
                 border-color: $--color-danger;
                 color: $--color-common;
@@ -404,6 +405,6 @@ $--color-white: #FFFFFF;
 }
 
 // 分页
-.el-pagination{
+.el-pagination {
     float: right;
 }

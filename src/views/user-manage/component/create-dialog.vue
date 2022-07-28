@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 18:41:50
+ * @LastEditTime: 2022-07-27 10:53:01
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -104,7 +104,7 @@
                 <el-date-picker
                   v-model="formData.entryDate"
                   format="yyyy-MM-dd"
-                  :style="{ width: '180px' }"
+                  class="input-width"
                   placeholder="请选择入职时间"
                   clearable
                 />
@@ -118,6 +118,7 @@
                   v-model="formData.staffDutyCode"
                   placeholder="请选择入职岗位"
                   clearable
+                  class="input-width"
                 >
                   <el-option
                     v-for="(item, index) in staffTypeOptions"
@@ -134,6 +135,7 @@
                   v-model="formData.projectId"
                   placeholder="请选择归属项目"
                   clearable
+                  class="input-width"
                 >
                   <el-option
                     v-for="(item, index) in projectTypeOptions"
@@ -164,7 +166,7 @@ import { formRules } from './rules';
 
 export default {
   components: {},
-  inheritAttrs: false,
+  // inheritAttrs: false,
   props: {
     // 编辑信息
     editData: {
@@ -179,7 +181,7 @@ export default {
         account: 'hzf',
         name: 'hzf',
         mobile: '13960081319',
-        sex: 0,
+        sex: '',
         email: '1628415507@qq.com',
         jobStatus: '', // 在职状态（0：试用员工 1：正式员工 2：离职员工）
         seniority: 1,
@@ -255,7 +257,7 @@ export default {
       getUemUser({
         uemUserId: this.editData.uemUserId
       }).then(res => {
-        this.formData = { ...this.formData, ...res.data };
+        this.formData = { ...this.formData, ...res.data, sex: res.data.sex ? 0 : 1 };
       });
     },
     // 提交表单信息
@@ -277,9 +279,18 @@ export default {
 <style lang="scss">
 .form-wrap {
   height: 240px;
+  .input-width {
+    width: 180px;
+  }
 }
+// 底部按钮
 .dialog-footer {
+  width: 100%;
+  // background: #bcf;
   display: flex;
   justify-content: center;
+  .el-button--default.el-button--mini {
+    min-width: 92px;
+  }
 }
 </style>

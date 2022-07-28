@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 15:59:02
+ * @LastEditTime: 2022-07-27 15:50:05
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -42,13 +42,13 @@
                   v-model="formData.resourcePid"
                   placeholder="请选择父级菜单"
                   clearable
+                  style="width:180px"
                 >
                   <el-option
-                    v-for="(item, index) in staffTypeOptions"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="item.disabled"
+                    v-for="item in parentResourceList"
+                    :key="item.resourcePid"
+                    :label="item.resourceTitle"
+                    :value="item.resourcePid"
                   />
                 </el-select>
               </el-form-item>
@@ -111,26 +111,30 @@
   </div>
 </template>
 <script>
-import { saveResource, updateResource } from '@/api/menu-manege';
+import {
+  saveResource,
+  updateResource,
+  queryResourceById,
+  queryParentResource
+} from '@/api/menu-manege';
 export default {
   components: {},
-  inheritAttrs: false,
+  // inheritAttrs: false,
   props: {
     // 编辑信息
-    // editData: {
-    //   default: () => {
-    //   }
-    // }
+    editData: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
-      editData: {},
       formData: {
-        resourceTitle: '管理标题',
-        resourcePid: '1',
-        resourceUrl: 'www.baidu.com',
-        resourceSort: 3,
-        resourceRemark: '管理备注'
+        resourceTitle: '一级菜单',
+        resourcePid: '',
+        resourceUrl: 'baidu',
+        resourceSort: '1',
+        resourceRemark: ''
       },
       rules: {
         resourceTitle: [
@@ -146,60 +150,66 @@ export default {
             message: '请输入资源地址',
             trigger: 'blur'
           }
-          // {
-          //   pattern: /^1(3|4|5|7|8|9)\d{9}$/,
-          //   message: "手机号格式错误",
-          //   trigger: "blur"
-          // }
         ],
         resourceSort: [
           {
             required: true,
             message: '请输入菜单序号',
             trigger: 'blur'
+          },
+          {
+            pattern: /^[0-9]*$/,
+            message: '请输入数字',
+            trigger: 'blur'
           }
         ]
       },
-      // TODO
-      staffTypeOptions: [
-        {
-          label: '选项一',
-          value: 1
-        },
-        {
-          label: '选项二',
-          value: 2
-        }
-      ]
+      parentResourceList: []
     };
   },
   computed: {
     // 弹框标题
     dialogTitle() {
-      return this.editData.id ? '编辑菜单信息' : '新增菜单';
+      this.editData.sysResourceId && this.getDetailInfo();
+      return this.editData.sysResourceId ? '编辑菜单信息' : '新增菜单';
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.getParentResource();
+  },
   mounted() {},
   methods: {
-    onClose() {
-      this.$refs['elForm'].resetFields();
+    // 获取父级菜单下拉
+    getParentResource() {
+      queryParentResource().then(res => {
+        this.parentResourceList = res;
+      });
     },
+    // 关闭弹框
     close() {
       this.$emit('update:visible', false);
+      this.$refs['elForm'].resetFields();
     },
-    // 提交信息
+    // 获取用户信息
+    getDetailInfo() {
+      queryResourceById({
+        sysResourceId: this.editData.sysResourceId
+      }).then(res => {
+        this.formData = { ...this.formData, ...res };
+      });
+    },
+    // 提交表单
     handelConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          saveResource(this.formData).then(res => {
-            console.log('【 res 】-200', res)
-          })
-          const funcName = this.editData.sysResourceId ? updateResource : saveResource;
+          const funcName = this.editData.sysResourceId
+            ? updateResource
+            : saveResource;
           funcName(this.formData).then(res => {
-            console.log('【 res 】-337', res);
-            // this.close();
+            this.$message.success(res.data);
+            this.$emit('getTableData', '');
+            this.close();
           });
         }
       });

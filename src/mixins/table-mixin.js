@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 11:00:24
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 12:28:29
+ * @LastEditTime: 2022-07-27 14:28:17
  * @Description: 表格公用方法
  */
 const mixin = {
@@ -28,7 +28,12 @@ const mixin = {
     // 重置表格查询条件
     resetQueryForm(filterForm) {
       console.log('【 mix-resetQueryForm-filterForm 】-33', filterForm);
-      this.$refs[filterForm].resetFields();
+      // this.$refs[filterForm].resetFields();
+      Object.keys(filterForm).forEach(key => {
+        if (key !== 'projectId') {
+          filterForm[key] = ''
+        }
+      })
       this.getTableData();
     },
     // 分页触发
