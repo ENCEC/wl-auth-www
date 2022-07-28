@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 15:50:05
+ * @LastEditTime: 2022-07-27 18:20:41
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -72,14 +72,6 @@
                   placeholder="请输入菜单序号"
                   clearable
                 />
-                <!-- <el-input-number
-                  v-model="formData.resourceSort"
-                  :controls="false"
-                  :min="1"
-                  :max="10"
-                  clearable
-                  :precision="0"
-                ></el-input-number> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -105,7 +97,12 @@
           size="mini"
           @click="handelConfirm"
         >提交</el-button>
-        <el-button size="mini" @click="close">取消</el-button>
+        <el-button
+          type="primary"
+          :plain="true"
+          size="mini"
+          @click="close"
+        >取消</el-button>
       </div>
     </el-dialog>
   </div>

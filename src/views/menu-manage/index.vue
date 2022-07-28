@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 16:36:33
+ * @LastEditTime: 2022-07-28 09:47:02
  * @Description:
 -->
 <template>
@@ -18,7 +18,7 @@
       <el-table-column type="index" label="序号" />
       <el-table-column prop="resourceTitle" label="菜单标题" />
       <!-- TODO -->
-      <el-table-column prop="resourceTitle" label="父级菜单" />
+      <el-table-column prop="parentName" label="父级菜单" />
       <el-table-column prop="resourceUrl" label="资源地址" />
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />

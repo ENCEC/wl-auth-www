@@ -102,6 +102,13 @@ export const asyncRoutes = [
         name: 'MenuManage',
         meta: { title: '菜单管理' }
       },
+      // 系统管理-角色管理
+      {
+        path: 'role-manage',
+        component: () => import('@/views/role-manage/index'),
+        name: 'RoleManage',
+        meta: { title: '角色管理' }
+      },
       // {
       //   path: 'hello',
       //   component: () => import('@/views/hello-world/index'),

@@ -1,9 +1,9 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-07-25 10:36:16
+ * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 18:02:20
- * @Description: 系统管理-用户管理
+ * @LastEditTime: 2022-07-28 10:35:16
+ * @Description:系统管理-角色管理
 -->
 
 <template>
@@ -18,16 +18,14 @@
       style="width: 100%"
     >
       <el-table-column type="index" label="序号" />
-      <el-table-column prop="account" label="用户名" />
-      <el-table-column prop="name" label="姓名" />
-      <el-table-column prop="mobile" label="联系电话" />
-      <el-table-column prop="email" label="电子邮箱" />
+      <el-table-column prop="account" label="角色名称" />
+      <el-table-column prop="name" label="角色描述" />
+      <el-table-column prop="mobile" label="创建人" />
+      <el-table-column prop="email" label="创建时间" />
       <el-table-column prop="isValid" label="是否禁用">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
-            :active-value="false"
-            :inactive-value="true"
             active-color="#0050AC"
             @change="changeStatus(scope.row)"
           />
@@ -36,8 +34,8 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <div class="operate-wrap">
-            <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
-            <el-button type="text" @click="resetPassword(scope.row.uemUserId)">重置密码</el-button>
+            <el-button type="text" @click="handleOpen(scope.row,'edit')">编辑</el-button>
+            <el-button type="text" @click="handleOpen(scope.row,'detail')">查看</el-button>
             <el-button type="text" @click="handleDelete(scope.row.uemUserId)">删除</el-button>
           </div>
         </template>
@@ -55,12 +53,11 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
+    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" :type="openType" @getTableData="getTableData" />
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
-        密码重置成功！已发送至您的邮箱，请注意查收。
-        <!-- 重置后的密码为<span class="password">123456</span> 。 -->
+        密码重置成功！重置后的密码为<span class="password">123456</span> 。
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
@@ -109,7 +106,8 @@ export default {
       VALID_STATUS: {
         ON: true,
         OFF: false
-      }
+      },
+      openType: ''
     };
   },
   computed: {},
@@ -136,8 +134,9 @@ export default {
       this.dialogVisible = false;
     },
     // 打开弹框
-    handleOpen(item = {}) {
+    handleOpen(item = {}, type = '') {
       this.dialogVisible = true;
+      this.openType = type
       this.editData = { uemUserId: item.uemUserId || '' }
     },
     // 重置密码
@@ -167,7 +166,7 @@ export default {
     // 删除用户信息
     handleDelete(uemUserId) {
       this.$confirm(
-        '您确定要删除该用户吗？删除后该用户信息不可恢复。',
+        '您确定要删除该角色信息吗？删除后该角色信息不可恢复。',
         '删除提示',
         {
           confirmButtonText: '确定',
