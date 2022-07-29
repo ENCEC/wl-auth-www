@@ -95,6 +95,20 @@ export const asyncRoutes = [
         name: 'UserManage',
         meta: { title: '用户管理' }
       },
+      // 系统管理-岗位管理
+      {
+        path: 'sys-post',
+        component: () => import('@/views/sys-post/index'),
+        name: 'SysPost',
+        meta: { title: '岗位管理' }
+      },
+            // 系统管理-岗位职称
+            {
+              path: 'sys-technical-title',
+              component: () => import('@/views/sys-technical-title/index'),
+              name: 'SysTechnicalTitle',
+              meta: { title: '岗位职称' }
+            },
       // 系统管理-菜单管理
       {
         path: 'menu-manage',
@@ -102,24 +116,20 @@ export const asyncRoutes = [
         name: 'MenuManage',
         meta: { title: '菜单管理' }
       },
-      // {
-      //   path: 'hello',
-      //   component: () => import('@/views/hello-world/index'),
-      //   name: 'Hello',
-      //   meta: { title: '世界' }
-      // },
-      {
-        path: 'sys-post',
-        component: () => import('@/views/sys-post/index'),
-        name: 'SysPost',
-        meta: { title: '岗位管理' }
-      },
+      
       // 系统管理-角色管理
       {
         path: 'role-manage',
         component: () => import('@/views/role-manage/index'),
         name: 'RoleManage',
         meta: { title: '角色管理' }
+      },
+      // 系统管理-项目管理
+      {
+        path: 'sys-project',
+        component: () => import('@/views/sys-project/index'),
+        name: 'SysProject',
+        meta: { title: '项目管理' }
       },
       // 系统管理-权限管理
       {
@@ -128,48 +138,6 @@ export const asyncRoutes = [
         name: 'RightManage',
         meta: { title: '权限管理' }
       },
-      {
-        path: 'sys-technical-title',
-        component: () => import('@/views/sys-technical-title/index'),
-        name: 'SysTechnicalTitle',
-        meta: { title: '岗位职称' }
-      },
-      {
-        path: 'list',
-        component: () => import('@/views/demo-page/index'),
-        name: 'List',
-        meta: { title: '表格' }
-      },
-      // {
-      //   path: 'form',
-      //   component: () => import('@/views/demo-page/create'),
-      //   name: 'Form',
-      //   meta: { title: 'demoForm' }
-      // },
-      {
-        path: 'myvue',
-        component: () => import('@/views/myVue'),
-        name: 'myVue',
-        meta: { title: '联想控件练习' }
-      },
-      {
-        path: 'uploadFile',
-        component: () => import('@/views/uploadImage'),
-        name: 'uploadFile',
-        meta: { title: '图片上传示例' }
-      },
-      {
-        path: 'export',
-        component: () => import('@/views/export'),
-        name: 'export',
-        meta: { title: '导入导出示例' }
-      }
-      // {
-      //   path: 'tabindex',
-      //   component: () => import('@/views/demo-page/tabindex'),
-      //   name: 'TabIndex',
-      //   meta: { title: '焦点切换' }
-      // }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
