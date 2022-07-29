@@ -36,31 +36,11 @@
       @handleSelectionChange="handleSelectionChange"
       @handleIndexChange="handleIndexChange"
     />
-
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table
-        :data="pvData"
-        border
-        fit
-        highlight-current-row
-        style="width: 100%"
-      >
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">{{
-          $t("table.confirm")
-        }}</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  querySysPost
-} from '@/api/sys-post.js';
+import { querySysPost } from '@/api/sys-post.js';
 import {
   queryByTechnicalTitleName,
   updateStatus,
@@ -68,26 +48,27 @@ import {
   updateSysTechnicalTitle,
   deleteSysTechnicalTitle
 } from '@/api/sys-technical-title.js';
-import { parseTime } from '@/utils';
+// import { parseTime } from '@/utils';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
-const statusTypeOptions = [
-  { key: '0', display_name: '启用' },
-  { key: '1', display_name: '禁用' },
-  { key: '', display_name: '所有' }
+const projectStatusOptions = [
+  { key: 0, display_name: '未开始' },
+  { key: 0, display_name: '进行中' },
+  { key: 0, display_name: '暂停中' },
+  { key: 0, display_name: '已完成' },
+  { key: 0, display_name: '延期' },
+  { key: 0, display_name: '终止' }
 ];
-const postTypeOptions = [
+const projectRolesColumns = [
+  {
+    title: '姓名',
+    field: 'cname'
+  }
 ];
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = statusTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
 
 export default {
-  name: 'SysTechniclTitle',
+  name: 'SysProject',
   components: { tableComponent, filterPanel, formPanel },
   filters: {
     statusFilter(status) {
@@ -99,7 +80,7 @@ export default {
       return statusMap[status];
     },
     typeFilter(type) {
-      return calendarTypeKeyValue[type];
+      // return calendarTypeKeyValue[type];
     }
   },
   data() {
@@ -107,58 +88,157 @@ export default {
       formConfig: {
         inline: false,
         col: 12,
-        labelPosition: 'left',
+        labelPosition: 'right',
         ref: 'dataForm',
-        labelWidth: '80px',
+        labelWidth: '100px',
         style: 'width: 100%;',
         formItemList: [
           {
             type: 'input',
-            prop: 'technicalName',
+            prop: 'projectName',
             // width: "200px",
-            label: '职称名称',
+            label: '项目名称',
             placeholder: '请输入职称名称'
           },
           {
-            type: 'select',
-            class: 'filter-item',
-            prop: 'postName',
+            type: 'input',
+            prop: 'customer',
             // width: "200px",
-
-            label: '所属职称',
-            placeholder: '请选择所属职称',
-            optionLabel: 'display_name',
-            optionValue: 'key',
-            optionKey: 'key',
-            options: postTypeOptions
+            label: '客户名称',
+            placeholder: '请输入客户名称'
+          },
+          {
+            type: 'input',
+            prop: 'fcy',
+            // width: "200px",
+            label: '项目金额',
+            placeholder: '请输入项目金额'
           },
 
           {
-            type: 'input',
-            prop: 'seniority',
-            col: 12,
-            label: '工作年限',
-            placeholder: '请输入工作年限'
+            type: 'select',
+            class: 'filter-item',
+            prop: 'status',
+            // width: "200px",
+
+            label: '项目状态',
+            placeholder: '请选择项目状态',
+            optionLabel: 'display_name',
+            optionValue: 'key',
+            optionKey: 'key',
+            options: projectStatusOptions
+          },
+
+          {
+            type: 'associate',
+            label: '项目总监',
+            prop: 'chiefName',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '项目经理',
+            prop: 'dutyName',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '开发经理',
+            prop: 'devDirectorName',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '需求组长',
+            prop: 'demandName',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '开发成员',
+            prop: 'genDevUsers',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '需求成员',
+            prop: 'genDemandUsers',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+
+          {
+            type: 'dateTimePicker',
+            prop: 'planStartEndDate',
+            label: '计划起止日期',
+            // labelWidth:'100px',
+            // width: "200px",
+            format: 'yyyy-MM-dd HH:mm:ss',
+            valueFormat: 'yyyy-MM-dd HH:mm:ss',
+            subType: 'daterange',
+            startPlaceholder: '开始日期',
+            endPlaceholder: '结束日期',
+            clearable: false
           }
-          // {
-          //   type: "dateTimePicker",
-          //   prop: "createTime",
-          //   label: "创建时间",
-          //   // width: "200px",
-          //   format:'yyyy-MM-dd HH:mm:ss',
-          //   valueFormat:'yyyy-MM-dd HH:mm:ss',
-          //   subType: "datetime",
-          //   placeholder: "请选择创建时间",
-          //   clearable: false,
-          // },
-          // {
-          //   type: "input",
-          //   prop: "createdPerson",
-          //   label: "创建人",
-          //   // width: "200px",
-          //   class: "filter-item",
-          //   placeholder: "请输入创建人",
-          // },
         ]
       },
 
@@ -172,47 +252,58 @@ export default {
         filterList: [
           {
             type: 'input',
-            label: '职称名称',
-            prop: 'technicalName',
+            label: '项目名称',
+            prop: 'projectName',
             width: '200px',
             clearable: false,
-            placeholder: '请输入职称名称',
+            placeholder: '请输入项目名称',
             col: 8
           },
+
           {
-            type: 'select',
-            label: '所属岗位',
-            prop: 'postName',
-            width: '200px',
-            col: 8,
+            type: 'associate',
+            label: '项目经理',
+            prop: 'dutyName',
+            // width: "200px",
+            valueProp: 'name',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            mulitiple: true,
             clearable: true,
-            optionLabel: 'display_name',
-            optionValue: 'key',
-            optionKey: 'key',
-            options: postTypeOptions,
-            changeSelect: (optionVal, item, index) => {
-              this.listQuery.postName = optionVal
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: (value, selectedRows) => {
+              //   this.listQuery.status=optionVal
             }
           },
           {
             type: 'select',
-            label: '状态',
+            label: '项目状态',
             prop: 'status',
             col: 8,
             width: '200px',
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
-            options: statusTypeOptions,
+            options: projectStatusOptions,
             changeSelect: (optionVal, item, index) => {
-              this.listQuery.status = optionVal
+              this.listQuery.status = optionVal;
             }
+          },
+          {
+            type: 'input',
+            label: '项目客户',
+            prop: 'customer',
+            col: 8,
+            width: '200px',
+            clearable: false,
+            placeholder: '请输入客户名称'
           }
         ],
         operates: [
           {
             type: 'primary',
-            buttonLabel: '新增职称',
+            buttonLabel: '新增项目',
             btnType: 'primary',
             //   icon: 'el-icon-search',
             method: (item, index) => {
@@ -259,36 +350,52 @@ export default {
         },
         {
           prop: 'technicalName',
-          label: '职称名称',
+          label: '项目名称',
           align: 'center',
           width: '150'
         },
         {
           prop: 'postName',
-          label: '所属岗位'
+          label: '客户名称'
         },
         {
           prop: 'seniority',
-          label: '工作年限'
+          label: '项目金额'
         },
         {
           prop: 'createBy',
-          label: '创建人',
+          label: '项目经理',
           width: '110'
         },
         {
           prop: 'createTime',
-          label: '创建时间',
+          label: '计划开始时间',
           width: '110'
         },
+        {
+          prop: 'createTime',
+          label: '计划结束时间',
+          width: '110'
+        },
+        {
+          prop: 'createTime',
+          label: '实际开始时间',
+          width: '110'
+        },
+        {
+          prop: 'createTime',
+          label: '实际结束时间',
+          width: '110'
+        },
+
         {
           prop: 'status',
           label: '状态',
           align: 'center',
           width: '100',
-          component: 'switch',
-          method: (row, status) => {
-            this.handleModifyStatus(row, status);
+          formatter: (row, column, cellValue) => {
+            console.log('【 row, column, cellValue 】-397', row, column, cellValue)
+            // return getProjectStatus(row);
           }
         }
       ], // 需要展示的列
@@ -299,8 +406,6 @@ export default {
             label: '编辑',
             type: 'text',
             show: true,
-            // icon: 'el-icon-edit',
-            // plain: true,
             disabled: false,
             method: (index, row) => {
               this.handleUpdate(row);
@@ -310,28 +415,12 @@ export default {
             id: '2',
             label: '删除',
             type: 'text',
-            // icon: 'el-icon-delete',
-            // show: (index, row) => {
-            //   return row.status !== 'draft'
-            // },
             show: true,
             plain: false,
             method: (index, row) => {
-              this.handleDelete(row, 'draft');
+              this.handleDelete(row);
             }
           }
-          //   {
-          //     id: '3',
-          //     label: '删除',
-          //     type: 'danger',
-          //     icon: 'el-icon-delete',
-          //     show: true,
-          //     plain: false,
-          //     disabled: false,
-          //     method: (index, row) => {
-          //       this.handleDelete(row)
-          //     }
-          //   }
         ],
         fixed: false,
         width: 230
@@ -345,30 +434,25 @@ export default {
         currentPage: 1,
         pageSize: 20,
         totalRecord: 0,
-        technicalName: '',
-        postName: '',
-        status: ''
+        projectName: '',
+        dutyName: '',
+        status: '',
+        customer: ''
       },
-      statusTypeOptions,
-      postTypeOptions,
-      sortOptions: [
-        { label: 'ID Ascending', key: '+id' },
-        { label: 'ID Descending', key: '-id' }
-      ],
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
+      projectStatusOptions,
+      projectRolesColumns,
       temp: {
-        technicalTitleId: 0,
-        createBy: '',
-        createTime: 0,
-        postId: 0,
-        remark: '',
-        seniority: '',
-        status: '0',
-        technicalName: '',
-        updateBy: '',
-        updateTime: '',
-        postName: ''
+        projectName: '',
+        customer: '',
+        fcy: '',
+        status: '',
+        chiefName: '',
+        dutyName: '',
+        devDirectorName: '',
+        demandName: '',
+        genDevUsers: '',
+        genDemandUsers: '',
+        planStartEndDate: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -376,17 +460,30 @@ export default {
         update: '编辑职称',
         create: '新增职称'
       },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
-        technicalName: [
-          { required: true, message: '请输入职称名称', trigger: 'change' }
+        projectName: [
+          { required: true, message: '请输入项目名称', trigger: 'change' }
         ],
-        postName: [
-          { required: true, message: '请选择所属岗位', trigger: 'change' }
+        customer: [
+          { required: true, message: '请输入客户名称', trigger: 'change' }
         ],
-        seniority: [
-          { required: true, message: '请输入工作年限', trigger: 'change' }
+        fcy: [
+          { required: true, message: '请输入项目金额', trigger: 'change' }
+        ],
+        status: [
+          { required: true, message: '请选择项目状态', trigger: 'change' }
+        ],
+        dutyName: [
+          { required: true, message: '请选择项目经理', trigger: 'change' }
+        ],
+        genDevUsers: [
+          { required: true, message: '请选择开发人员', trigger: 'change' }
+        ],
+        genDemandUsers: [
+          { required: true, message: '请选择需求人员', trigger: 'change' }
+        ],
+        planStartEndDate: [
+          { required: true, message: '请选择计划起止日期', trigger: 'change' }
         ]
       },
       downloadLoading: false
@@ -394,24 +491,40 @@ export default {
   },
   created() {
     this.getList();
-    this.initPostSelect()
+    this.initPostSelect();
   },
   methods: {
+    getProjectStatus(row) {
+      if (row && row.status) {
+        const find = projectStatusOptions.find((item) => {
+          return item.status === row.status;
+        });
+        return find.display_name;
+      }
+    },
     initPostSelect() {
       const params = {
         pageSize: 1000,
         currentPage: 1,
         status: '0'
-      }
-      querySysPost(params).then((res) => {
-        res.data.records.filter((item) => {
-          return item.status === '0'
-        }).forEach((item) => {
-          this.postTypeOptions.push({ key: item.postName, display_name: item.postName })
+      };
+      querySysPost(params)
+        .then((res) => {
+          res.data.records
+            .filter((item) => {
+              return item.status === '0';
+            })
+            .forEach((item) => {
+              this.postTypeOptions.push({
+                key: item.postName,
+                display_name: item.postName
+              });
+            });
         })
-      }).catch((err) => {
-        this.$message.error('初始化岗位失败')
-      })
+        .catch((err) => {
+          console.log('【 err 】-525', err)
+          this.$message.error('初始化岗位失败');
+        });
     },
     handleIndexChange(currentPage) {
       this.listQuery.currentPage = currentPage;
@@ -427,8 +540,11 @@ export default {
       queryByTechnicalTitleName(this.listQuery).then((response) => {
         this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index + 1
-          item.status = item.status === '0'
+          item.count =
+            (this.listQuery.currentPage - 1) * this.listQuery.pageSize +
+            index +
+            1;
+          item.status = item.status === '0';
         });
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
@@ -459,8 +575,8 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
-      debugger
+      const params = Object.assign({}, row, { status: row.status ? '0' : '1' });
+      debugger;
       updateStatus(params)
         .then((res) => {
           this.$message({
@@ -469,6 +585,7 @@ export default {
           });
         })
         .catch((err) => {
+          console.log('【 err 】-588', err)
           this.$message({
             message: '操作失败',
             type: 'error'
@@ -487,7 +604,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
-      debugger
+      debugger;
       this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -510,9 +627,10 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.getList()
+              this.getList();
             })
             .catch((err) => {
+              console.log('【 err 】-633', err)
               this.$message({
                 title: '失败',
                 message: '创建失败',
@@ -524,11 +642,13 @@ export default {
       });
     },
     updateData() {
-      debugger
+      debugger;
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
-          debugger
+          const tempData = Object.assign({}, this.temp, {
+            status: this.temp.status ? '0' : '1'
+          });
+          debugger;
           updateSysTechnicalTitle(tempData)
             .then(() => {
               this.dialogFormVisible = false;
@@ -538,10 +658,11 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.getList()
+              this.getList();
             })
             .catch((err) => {
-              debugger
+              console.log('【 err 】-664', err)
+              // debugger;
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -552,8 +673,8 @@ export default {
         }
       });
     },
-    handleDelete(row, index) {
-      debugger
+    handleDelete(row) {
+      debugger;
       this.$confirm(
         '您确定要删除该职称信息吗?删除后该职称信息不可恢复',
         '提示',
@@ -564,16 +685,17 @@ export default {
         }
       )
         .then(() => {
-          const _this = this
+          const _this = this;
           deleteSysTechnicalTitle(row.technicalTitleId)
             .then((res) => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
-              _this.getList()
+              _this.getList();
             })
             .catch((err) => {
+              console.log('【 err 】-698', err)
               this.$message({
                 type: 'error',
                 message: '删除失败!'
@@ -589,22 +711,34 @@ export default {
     },
     handleResetForm() {
       this.temp = {
-        technicalTitleId: 0,
-        createBy: '',
-        createTime: 0,
-        postId: 0,
-        remark: '',
-        seniority: '',
-        status: '0',
-        technicalName: '',
-        updateBy: '',
-        updateTime: '',
-        postName: ''
+        projectName: '',
+        customer: '',
+        fcy: '',
+        status: '',
+        chiefName: '',
+        dutyName: '',
+        devDirectorName: '',
+        demandName: '',
+        genDevUsers: '',
+        genDemandUsers: '',
+        planStartEndDate: ''
       };
     },
     handleDialogClose() {
       // this.handleResetForm();
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
+    },
+    projectRolesQueryMethod({ keyword, pageSize, currentPage }) {
+      console.log('【 keyword, pageSize, currentPage 】-732', keyword, pageSize, currentPage)
+      // return request({
+      //   url: '/demo/users',
+      //   method: 'get',
+      //   params: {
+      //     keyword,
+      //     pageSize,
+      //     currentPage
+      //   }
+      // });
     }
   }
 };

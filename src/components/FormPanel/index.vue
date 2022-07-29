@@ -69,6 +69,20 @@
               :disabled="option.disabled"
             />
           </el-select>
+          <el-associate
+            v-if="item.type === 'associate'"
+            v-model="value[item.prop]"
+            class="el-associate"
+            :value-prop="item.valueProp"
+            :label-prop="item.labelProp"
+            :display-init="item.displayInit"
+            :columns="item.columns"
+            :clearable="item.clearable"
+            :multiple="item.multiple"
+            :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
+            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            @change="item.changeSelect?item.changeSelect(row,selectedRows):''"
+          />
           <!-- cascader -->
           <el-cascader
             v-if="item.type === 'cascader'"

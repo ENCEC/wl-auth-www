@@ -17,7 +17,7 @@
       />
       <div slot="footer" class="dialog-footer">
         <el-button
-        :loading="dialogButtonLoading"
+          :loading="dialogButtonLoading"
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
@@ -32,7 +32,7 @@
       :pagination="listQuery"
       :columns="columns"
       :operates="operates"
-      :listLoading="listLoading"
+      :list-loading="listLoading"
       @handleRowClick="handleRowClick"
       @handleSelectionChange="handleSelectionChange"
       @handleIndexChange="handleIndexChange"
@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       // 弹窗表格的加载状态
-      dialogButtonLoading:false,
+      dialogButtonLoading: false,
       formConfig: {
         inline: false,
         col: 12,
@@ -187,14 +187,14 @@ export default {
             prop: 'status',
             col: 8,
             width: '200px',
-            clearable:true,
-            placeholder:'请选择状态',
+            clearable: true,
+            placeholder: '请选择状态',
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
             options: statusTypeOptions,
             changeSelect: (optionVal, item, index) => {
-              this.listQuery.status=optionVal
+              this.listQuery.status = optionVal
             }
           }
         ],
@@ -347,10 +347,10 @@ export default {
         createTime: '',
         postCode: '',
         postId: '',
-        postName:null,
+        postName: null,
         postSort: 0,
         remark: '',
-        status: '0',
+        status: '0'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -407,8 +407,8 @@ export default {
       querySysPost(this.listQuery).then((response) => {
         this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index+1
-          item.status=item.status==='0'?true:false
+          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index + 1
+          item.status = item.status === '0'
         })
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
@@ -438,13 +438,14 @@ export default {
     //   });
     // },
     handleModifyStatus(row, status) {
-      const params=Object.assign({},row,{status:row.status?'0':'1'})
+      const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
       sysPostStartStop(params).then((res) => {
         this.$message({
           message: '操作成功',
           type: 'success'
         });
       }).catch((err) => {
+        console.log('【 err 】-448', err)
         this.$message({
           message: '操作失败',
           type: 'error'
@@ -473,7 +474,7 @@ export default {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
-          this.dialogButtonLoading=true
+          this.dialogButtonLoading = true
           saveSysPost(this.temp)
             .then((res) => {
               // this.list.unshift(this.temp);
@@ -485,11 +486,12 @@ export default {
                 type: 'success',
                 duration: 0
               });
-              this.dialogButtonLoading=false
+              this.dialogButtonLoading = false
 
               this.getList()
             })
             .catch((err) => {
+              console.log('【 err 】-494', err)
               this.$message({
                 title: '失败',
                 message: '创建失败',
@@ -503,7 +505,7 @@ export default {
     updateData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp,{status:this.temp.status?'0':'1'});
+          const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
           updateSysPost(tempData)
             .then(() => {
               this.$message({
@@ -517,6 +519,7 @@ export default {
               this.getList()
             })
             .catch((err) => {
+              console.log('【 err 】-522', err)
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -547,6 +550,7 @@ export default {
               this.getList()
             })
             .catch((err) => {
+              console.log('【 err 】-553', err)
               this.$message({
                 type: 'error',
                 message: '删除失败!'
@@ -569,13 +573,13 @@ export default {
         postName: '',
         postSort: 0,
         remark: '',
-        status: '',
+        status: ''
       };
     },
     handleDialogClose() {
       // this.handleResetForm();
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
-    },
+    }
   }
 };
 </script>
