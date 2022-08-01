@@ -399,13 +399,73 @@ $--color-white: #FFFFFF;
 
 // 弹窗
 .el-dialog {
-    .dialog-footer {
-        margin-top: 20px;
-        text-align: center;
+
+padding: 30px;
+    border: 1px solid #DDDDDD;
+    .el-dialog__header{
+        padding: 0px;
+        padding-bottom: 25px;
+        
+        .el-dialog__title{
+            font-size: 16px;
+            color: $--font-primary;
+            font-weight: bold;
+        }
     }
+    .el-dialog__body{
+        border-radius: 6px;
+    padding: 20px;
+    border: 1px solid #DDDDDD;
+    }
+    .el-dialog__footer{
+        position: relative !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        .dialog-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+    }
+   
 }
 
 // 分页
 .el-pagination {
     float: right;
+}
+
+// 表格
+.el-table {
+    // 修改表头样式
+    thead{
+        color: $--font-primary;
+        font-weight: bold;
+        tr{
+            background-color: #F5F9FF;
+        }
+    }
+    // 修改斑马线色值
+    .el-table__row--striped{
+        td{
+        background-color: #F8F8F8 !important;
+
+        }
+    }
+    &.el-table--border {
+        border: 1px solid #EEEEEE;
+    }
+
+    td {
+        border: 1px solid #E8EFFA;
+
+        .cell {
+            color: $--font-primary;
+            max-height: 48px;
+            overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+        }
+    }
 }

@@ -2,9 +2,9 @@
   <div class="table">
     <el-table
       id="iTable"
+      v-loading="listLoading"
       :height="options.height"
       :data="data"
-      v-loading="listLoading"
       :border="options.border"
       :cell-style="options.cellStyle"
       :stripe="options.stripe"
@@ -26,13 +26,13 @@
           <template slot-scope="scope">
             <template v-if="!column.render">
               <template v-if="column.formatter">
-                <span v-html="column.formatter(scope.row, column)" />
+                <span :title="column.formatter(scope.row, column)" v-html="column.formatter(scope.row, column)" />
               </template>
               <template v-if="column.component==='switch'">
                 <el-switch v-model="scope.row[column.prop]" @change="column.method(scope.row,scope.row[column.prop])" />
               </template>
               <template v-else>
-                <span>{{ scope.row[column.prop] }}</span>
+                <span :title="scope.row[column.prop]">{{ scope.row[column.prop] }}</span>
               </template>
             </template>
             <template v-else>
@@ -127,7 +127,10 @@ export default {
       default: () => []
     },
     // 操作按钮组 === label: 文本，type :类型（primary / success / warning / danger / info / text），show：是否显示，icon：按钮图标，plain：是否朴素按钮，disabled：是否禁用，method：回调方法
-    operates: {},
+    operates: {
+      type: Object,
+      default: () => {}
+    },
     options: {
       type: Object,
       default: () => {
@@ -139,7 +142,10 @@ export default {
       },
       pagination: true
     }, // table 表格的控制参数
-    pagination: Object // 分页
+    pagination: {
+      type: Object,
+      default: () => {}
+    }
   },
   // 数据
   data() {

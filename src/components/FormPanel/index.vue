@@ -7,7 +7,7 @@
         :key="item.prop"
         :span="item.col ? item.col : formConfig.col"
       >
-        <el-form-item :label="item.label" :prop="item.prop">
+        <el-form-item :label="item.label" :prop="item.prop" :label-width="item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')">
           <!-- input type: text | textarea | password-->
           <el-input
             v-if="item.type === 'input' || item.type === 'textarea' || item.type === 'password'"
@@ -22,7 +22,7 @@
             :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
             :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
             :clearable="item.clearable ? item.clearable : false"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
           />
           <!-- radio -->
           <el-radio-group
@@ -58,7 +58,7 @@
             :clearable="item.clearable"
             :multiple="item.multiple"
             :placeholder="item.placeholder"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
           >
             <el-option
@@ -80,7 +80,7 @@
             :clearable="item.clearable"
             :multiple="item.multiple"
             :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="item.changeSelect?item.changeSelect(row,selectedRows):''"
           />
           <!-- cascader -->
@@ -90,6 +90,7 @@
             :options="item.options"
             :props="item.props"
             :clearable="item.clearable ? true : false"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="value => {item.changeCascader? item.changeCascader(value, item, index): ''}"
           />
           <!-- number -->
@@ -99,6 +100,7 @@
             :min="item.min"
             :max="item.max"
             :size="item.size"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="(currentValue, oldValue) => {item.changeNumber? item.changeNumber(currentValue, oldValue, item, index): ''}"
           />
           <!-- timePicker -->
@@ -115,7 +117,7 @@
             :prefix-icon="item.prefixIcon ? item.prefixIcon : 'el-icon-time'"
             :clear-icon="item.clearIcon ? item.clearIcon : 'el-icon-circle-close'"
             :range-separator="item.rangeSeparator ? item.rangeSeparator : '至'"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="time => {item.changeTime ? item.changeTime(time, item, index) : ''}"
           />
           <!-- datePicker  --- subType:date daterange....-->
@@ -136,7 +138,7 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="date => {item.changeDate ? item.changeDate(date, item, index) : ''}"
           />
           <!-- dateTimePicker -->
@@ -157,26 +159,9 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
-            :style="{width:item.width?item.width:'calc(100% - 80px)'}"
+            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
             @change="dateTime => {item.changeDateTime? item.changeDateTime(dateTime, item, index): ''}"
           />
-        </el-form-item>
-      </el-col>
-      <el-col :span="formConfig.operateCol ? formConfig.operateCol : formConfig.col">
-        <el-form-item>
-          <!-- button -->
-          <el-button
-            v-for="(item,index) in formConfig.operates"
-            :key="index"
-            :type="item.type"
-            :size="item.size"
-            :disabled="item.disabled"
-            :plain="item.plain"
-            :icon="item.icon"
-            @click.native.prevent="item.method ? item.method(formItemList, item, index) : ''"
-          >{{ item.buttonLabel }}
-          </el-button>
-          <slot name="operate" />
         </el-form-item>
       </el-col>
     </el-row>

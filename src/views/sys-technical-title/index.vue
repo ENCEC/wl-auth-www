@@ -68,7 +68,7 @@ import {
   updateSysTechnicalTitle,
   deleteSysTechnicalTitle
 } from '@/api/sys-technical-title.js';
-import { parseTime } from '@/utils';
+
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
@@ -80,28 +80,9 @@ const statusTypeOptions = [
 const postTypeOptions = [
 ];
 
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = statusTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name;
-  return acc;
-}, {});
-
 export default {
   name: 'SysTechniclTitle',
   components: { tableComponent, filterPanel, formPanel },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      };
-      return statusMap[status];
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type];
-    }
-  },
   data() {
     return {
       formConfig: {
@@ -124,9 +105,8 @@ export default {
             class: 'filter-item',
             prop: 'postName',
             // width: "200px",
-
-            label: '所属职称',
-            placeholder: '请选择所属职称',
+            label: '所属岗位',
+            placeholder: '请选择所属岗位',
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
@@ -136,29 +116,9 @@ export default {
           {
             type: 'input',
             prop: 'seniority',
-            col: 12,
             label: '工作年限',
             placeholder: '请输入工作年限'
           }
-          // {
-          //   type: "dateTimePicker",
-          //   prop: "createTime",
-          //   label: "创建时间",
-          //   // width: "200px",
-          //   format:'yyyy-MM-dd HH:mm:ss',
-          //   valueFormat:'yyyy-MM-dd HH:mm:ss',
-          //   subType: "datetime",
-          //   placeholder: "请选择创建时间",
-          //   clearable: false,
-          // },
-          // {
-          //   type: "input",
-          //   prop: "createdPerson",
-          //   label: "创建人",
-          //   // width: "200px",
-          //   class: "filter-item",
-          //   placeholder: "请输入创建人",
-          // },
         ]
       },
 
@@ -190,7 +150,7 @@ export default {
             optionValue: 'key',
             optionKey: 'key',
             options: postTypeOptions,
-            changeSelect: (optionVal, item, index) => {
+            changeSelect: (optionVal) => {
               this.listQuery.postName = optionVal
             }
           },
@@ -204,7 +164,7 @@ export default {
             optionValue: 'key',
             optionKey: 'key',
             options: statusTypeOptions,
-            changeSelect: (optionVal, item, index) => {
+            changeSelect: (optionVal) => {
               this.listQuery.status = optionVal
             }
           }
@@ -215,7 +175,7 @@ export default {
             buttonLabel: '新增职称',
             btnType: 'primary',
             //   icon: 'el-icon-search',
-            method: (item, index) => {
+            method: () => {
               this.handleAdd();
             }
           },
@@ -224,7 +184,7 @@ export default {
             buttonLabel: '查询',
             btnType: 'primary',
             //   icon: 'el-icon-edit',
-            method: (item, index) => {
+            method: () => {
               this.getList();
             }
           },
@@ -234,7 +194,7 @@ export default {
             btnType: 'primary',
             plain: true,
             //   icon: 'el-icon-download',
-            method: (item, index) => {
+            method: () => {
               this.resetListQuery();
             }
           }
@@ -317,7 +277,7 @@ export default {
             show: true,
             plain: false,
             method: (index, row) => {
-              this.handleDelete(row, 'draft');
+              this.handleDelete(row);
             }
           }
           //   {
@@ -377,7 +337,6 @@ export default {
         create: '新增职称'
       },
       dialogPvVisible: false,
-      pvData: [],
       rules: {
         technicalName: [
           { required: true, message: '请输入职称名称', trigger: 'change' }
@@ -409,7 +368,7 @@ export default {
         }).forEach((item) => {
           this.postTypeOptions.push({ key: item.postName, display_name: item.postName })
         })
-      }).catch((err) => {
+      }).catch(() => {
         this.$message.error('初始化岗位失败')
       })
     },
@@ -458,17 +417,17 @@ export default {
     //     this.$refs['formPanel'].$refs['dataForm'].clearValidate()
     //   });
     // },
-    handleModifyStatus(row, status) {
+    handleModifyStatus(row) {
       const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
       debugger
       updateStatus(params)
-        .then((res) => {
+        .then(() => {
           this.$message({
             message: '操作成功',
             type: 'success'
           });
         })
-        .catch((err) => {
+        .catch(() => {
           this.$message({
             message: '操作失败',
             type: 'error'
@@ -500,7 +459,7 @@ export default {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
           saveSysTechnicalTitle(this.temp)
-            .then((res) => {
+            .then(() => {
               debugger;
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
@@ -512,7 +471,7 @@ export default {
               });
               this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               this.$message({
                 title: '失败',
                 message: '创建失败',
@@ -540,7 +499,7 @@ export default {
               });
               this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               debugger
               this.$message({
                 title: '失败',
@@ -552,7 +511,7 @@ export default {
         }
       });
     },
-    handleDelete(row, index) {
+    handleDelete(row) {
       debugger
       this.$confirm(
         '您确定要删除该职称信息吗?删除后该职称信息不可恢复',
@@ -566,14 +525,14 @@ export default {
         .then(() => {
           const _this = this
           deleteSysTechnicalTitle(row.technicalTitleId)
-            .then((res) => {
+            .then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
               _this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               this.$message({
                 type: 'error',
                 message: '删除失败!'

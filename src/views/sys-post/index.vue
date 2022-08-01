@@ -49,7 +49,6 @@ import {
   updateSysPost,
   deleteSysPost
 } from '@/api/sys-post.js';
-import { parseTime } from '@/utils';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
@@ -164,7 +163,7 @@ export default {
             prop: 'postName',
             width: '200px',
             clearable: false,
-            placeholder: '请输入岗位职责',
+            placeholder: '请输入岗位名称',
             col: 8
           },
           // {
@@ -185,6 +184,7 @@ export default {
             type: 'select',
             label: '状态',
             prop: 'status',
+            labelWidth: '40px',
             col: 8,
             width: '200px',
             clearable: true,
@@ -193,7 +193,7 @@ export default {
             optionValue: 'key',
             optionKey: 'key',
             options: statusTypeOptions,
-            changeSelect: (optionVal, item, index) => {
+            changeSelect: (optionVal) => {
               this.listQuery.status = optionVal
             }
           }
@@ -204,7 +204,7 @@ export default {
             buttonLabel: '新增岗位',
             btnType: 'primary',
             //   icon: 'el-icon-search',
-            method: (item, index) => {
+            method: () => {
               this.handleAdd();
             }
           },
@@ -213,7 +213,7 @@ export default {
             buttonLabel: '查询',
             btnType: 'primary',
             //   icon: 'el-icon-edit',
-            method: (item, index) => {
+            method: () => {
               this.getList();
             }
           },
@@ -223,7 +223,7 @@ export default {
             btnType: 'primary',
             plain: true,
             //   icon: 'el-icon-download',
-            method: (item, index) => {
+            method: () => {
               this.resetListQuery();
             }
           }
@@ -302,7 +302,7 @@ export default {
             show: true,
             plain: false,
             method: (index, row) => {
-              this.handleDelete(row, 'draft');
+              this.handleDelete(row);
             }
           }
           //   {
@@ -437,15 +437,14 @@ export default {
     //     this.$refs['formPanel'].$refs['dataForm'].clearValidate()
     //   });
     // },
-    handleModifyStatus(row, status) {
+    handleModifyStatus(row) {
       const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
-      sysPostStartStop(params).then((res) => {
+      sysPostStartStop(params).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'
         });
-      }).catch((err) => {
-        console.log('【 err 】-448', err)
+      }).catch(() => {
         this.$message({
           message: '操作失败',
           type: 'error'
@@ -476,7 +475,7 @@ export default {
           //   this.temp.author = 'vue-element-admin'
           this.dialogButtonLoading = true
           saveSysPost(this.temp)
-            .then((res) => {
+            .then(() => {
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
               this.handleResetForm()
@@ -490,8 +489,7 @@ export default {
 
               this.getList()
             })
-            .catch((err) => {
-              console.log('【 err 】-494', err)
+            .catch(() => {
               this.$message({
                 title: '失败',
                 message: '创建失败',
@@ -518,8 +516,7 @@ export default {
               this.dialogFormVisible = false;
               this.getList()
             })
-            .catch((err) => {
-              console.log('【 err 】-522', err)
+            .catch(() => {
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -530,7 +527,7 @@ export default {
         }
       });
     },
-    handleDelete(row, index) {
+    handleDelete(row) {
       this.$confirm(
         '您确定要删除该岗位信息吗?删除后该岗位信息不可恢复',
         '提示',
@@ -542,15 +539,14 @@ export default {
       )
         .then(() => {
           deleteSysPost(row.postId)
-            .then((res) => {
+            .then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
               this.getList()
             })
-            .catch((err) => {
-              console.log('【 err 】-553', err)
+            .catch(() => {
               this.$message({
                 type: 'error',
                 message: '删除失败!'
