@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 15:23:33
+ * @LastEditTime: 2022-08-01 12:32:45
  * @Description: 系统管理-用户管理
 -->
 
@@ -11,50 +11,23 @@
     <!-- 查询组件 -->
     <filter-panel :filter-config="filterConfig" :value="filterForm" />
     <!-- 表格 Start -->
-    <el-table
-      highlight-current-row
+    <table-component
       :data="records"
-      height="350px"
-      style="width: 100%"
-    >
-      <el-table-column type="index" label="序号" />
-      <el-table-column prop="account" label="用户名" />
-      <el-table-column prop="name" label="姓名" />
-      <el-table-column prop="mobile" label="联系电话" />
-      <el-table-column prop="email" label="电子邮箱" />
-      <el-table-column prop="isValid" label="是否启用">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isValid"
-            active-color="#0050AC"
-            @change="changeStatus(scope.row)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <div class="operate-wrap">
-            <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
-            <el-button type="text" @click="resetPassword(scope.row.uemUserId)">重置密码</el-button>
-            <el-button type="text" @click="handleDelete(scope.row.uemUserId)">删除</el-button>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 表格 End -->
-    <!-- 分页 -->
-    <el-pagination
-      class="pagination-wrap"
-      :current-page.sync="params.currentPage"
-      :page-sizes="[10, 20, 30, 40]"
-      :page-size="params.pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      :options="tableConfig"
+      :pagination="params"
+      :columns="columns"
+      :operates="operates"
+      :list-loading="listLoading"
+      @handleIndexChange="handleCurrentChange"
+      @handleSizeChange="handleSizeChange"
     />
+    <!-- 表格 End -->
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
+    <CreateDialog
+      :visible.sync="dialogVisible"
+      :edit-data="editData"
+      @getTableData="getTableData"
+    />
     <!-- 密码重置 Start -->
     <el-dialog center title="消息提示" :visible.sync="show" width="30%">
       <div class="password-dialog">
@@ -73,61 +46,63 @@
   </div>
 </template>
 <script>
-import filterPanel from '@/components/FilterPanel'
-import { filterConfig } from './config-data.js';
+import filterPanel from '@/components/FilterPanel';
+import tableComponent from '@/components/TableComponent';
+import { filterConfig, tableConfig, columns, operates } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
   queryUemUser,
   resetUemUserPassword,
   uemUserStartStop,
   deleteUemUser
-} from '@/api/user-manege';
+} from '@/api/user-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'UserManage',
   components: {
-    filterPanel, CreateDialog
+    filterPanel,
+    tableComponent,
+    CreateDialog
   },
   mixins: [tableMix],
   data() {
     return {
+      // 查询
       filterConfig: filterConfig(this),
       filterForm: {
-        // page: 1,
-        // size: 20,
-        // total: 0,
         account: undefined,
         name: undefined,
         isValid: undefined
       },
+      // 表格
+      records: [],
+      listLoading: false,
+      tableConfig,
+      columns: columns(this),
+      operates: operates(this),
+      // 弹框
       editData: {},
       show: false,
-      dialogVisible: false,
-      records: [],
-      total: 0,
-      VALID_STATUS: {
-        ON: true,
-        OFF: false
-      }
+      dialogVisible: false
     };
   },
   computed: {},
   created() {
     this.getTableData();
   },
-  mounted() {
-    // console.log('【 this.$dictionary 】-157', this.$dictionary);
-  },
+  mounted() {},
   methods: {
     // 获取表格数据
     getTableData() {
+      this.listLoading = true;
       queryUemUser({
-        currentPage: this.params.currentPage,
+        pageNo: this.params.currentPage,
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
         this.records = res.data.records;
-        this.total = res.data.totalRecord;
+        this.params.totalRecord = res.data.totalRecord;
+        this.listLoading = false;
       });
     },
     // 关闭弹框
@@ -137,19 +112,15 @@ export default {
     // 打开弹框
     handleOpen(item = {}) {
       this.dialogVisible = true;
-      this.editData = { uemUserId: item.uemUserId || '' }
+      this.editData = { uemUserId: item.uemUserId || '' };
     },
     // 重置密码
     resetPassword(uemUserId) {
-      this.$confirm(
-        '您确定要重置密码吗？',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
+      this.$confirm('您确定要重置密码吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
         resetUemUserPassword({ uemUserId }).then(res => {
           this.show = true;
         });
@@ -157,8 +128,8 @@ export default {
     },
     // 启用/禁用用户
     changeStatus(item) {
-      const uemUserId = item.uemUserId
-      const isValid = item.isValid
+      const uemUserId = item.uemUserId;
+      const isValid = item.isValid;
       uemUserStartStop({ uemUserId, isValid }).then(res => {
         this.$message.success('操作成功');
       });
@@ -176,7 +147,7 @@ export default {
       ).then(() => {
         deleteUemUser({ uemUserId }).then(res => {
           this.$message.success('操作成功');
-          this.getTableData()
+          this.getTableData();
         });
       });
     }

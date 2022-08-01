@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-29 19:19:13
+ * @LastEditTime: 2022-08-01 12:45:36
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -11,7 +11,7 @@
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
-      width="800px"
+      width="820px"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
@@ -29,17 +29,17 @@
         <div class="form-wrap">
           <!-- 左侧 -->
           <div class="left-part">
-            <el-form-item label="角色名称:" prop="account">
+            <el-form-item label="角色名称:" prop="roleName">
               <el-input
-                v-model="formData.account"
+                v-model="formData.roleName"
                 placeholder="请输入角色名称"
                 clearable
                 class="input-width"
               />
             </el-form-item>
-            <el-form-item label="角色描述:" prop="name">
+            <el-form-item label="角色描述:" prop="remark">
               <el-input
-                v-model="formData.name"
+                v-model="formData.remark"
                 type="textarea"
                 placeholder="请输入角色描述"
                 :rows="3"
@@ -52,7 +52,7 @@
               label="创建时间:"
             >
               <el-input
-                v-model="formData.account"
+                v-model="formData.createTime"
                 placeholder="请输入创建时间"
                 clearable
                 class="input-width"
@@ -64,7 +64,7 @@
               label="创建人:"
             >
               <el-input
-                v-model="formData.account"
+                v-model="formData.creatorName"
                 placeholder="请输入创建人"
                 clearable
                 class="input-width"
@@ -74,16 +74,18 @@
           </div>
           <!-- 右侧 -->
           <div class="right-part">
-            <el-form-item label="角色权限:" prop="checkedIds">
+            <el-form-item label="角色权限:" prop="sysResourceIdList">
               <div class="tree-wrap">
+                <!-- :default-expanded-keys="[2, 3]" -->
                 <el-tree
                   ref="treeRef"
                   :data="treeData"
-                  show-checkbox
-                  node-key="id"
-                  :default-expanded-keys="[2, 3]"
-                  :default-checked-keys="[5]"
+                  :default-checked-keys="defaultCheckedKeys"
                   :props="defaultProps"
+                  :expand-on-click-node="false"
+                  show-checkbox
+                  node-key="sysResourceId"
+                  default-expand-all
                   @check-change="handleCheckChange"
                 />
               </div>
@@ -91,7 +93,7 @@
           </div>
         </div>
       </el-form>
-      <div class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button
           v-if="type !== 'detail'"
           type="primary"
@@ -109,8 +111,8 @@
   </div>
 </template>
 <script>
-import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manege';
-export default {
+import { queryRoleAndResource, saveSysRole, updateSysRole } from '@/api/role-manage';
+import { queryAllValidResource } from '@/api/right-manage'; export default {
   components: {},
   // inheritAttrs: false,
   props: {
@@ -128,88 +130,39 @@ export default {
   data() {
     return {
       formData: {
-        account: '',
-        name: '',
-        checkedIds: []
+        roleName: '',
+        remark: '',
+        sysResourceIdList: []
       },
       rules: {
-        account: [
+        roleName: [
           {
             required: true,
             message: '请输入角色名称',
             trigger: 'blur'
           }
         ],
-        checkedIds: [
+        sysResourceIdList: [
           {
             required: true,
             message: '请选择角色权限',
             trigger: 'blur'
           }
         ]
-      }, // 验证规则
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
+      },
+      treeData: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+        children: 'childrenResourceList',
+        label: 'resourceTitle'
+      },
+      defaultCheckedKeys: []
     };
   },
   computed: {
     // 弹框标题
     dialogTitle() {
-      console.log('【 type 】-118', this.type);
-      this.editData.uemUserId && this.getDetailInfo();
-      return this.editData.uemUserId
+      this.editData.sysRoleId && this.getDetailInfo();
+      return this.editData.sysRoleId
         ? this.type === 'detail'
           ? '角色详细信息'
           : '编辑角色信息'
@@ -217,19 +170,28 @@ export default {
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.getDetailInfo()
+    this.getAllResource();
+  },
   mounted() {},
   methods: {
+    // 权限-获取资源列表(所有)
+    getAllResource() {
+      queryAllValidResource().then(res => {
+        this.treeData = res.data;
+      });
+    },
     // 通过 node 获取
     getCheckedNodes() {
-      const CheckedIds = this.$refs.treeRef.getCheckedNodes();
-      console.log('【 CheckedIds 】-179', CheckedIds);
+      const sysResourceIdList = this.$refs.treeRef.getCheckedNodes();
+      console.log('【 sysResourceIdList 】-179', sysResourceIdList);
     },
     // 通过 key 获取
     getCheckedKeys() {
       const checkedKeys = this.$refs.treeRef.getCheckedKeys();
-      this.formData.checkedIds = checkedKeys;
-      console.log('【 CheckedIds 】-179', checkedKeys);
+      this.formData.sysResourceIdList = checkedKeys;
+      console.log('【 sysResourceIdList 】-179', checkedKeys);
     },
     handleNodeClick(data) {
       // console.log('【 data 】-173', data)
@@ -246,12 +208,12 @@ export default {
     },
     // 获取用户信息
     getDetailInfo() {
-      getUemUser({
-        uemUserId: this.editData.uemUserId
+      queryRoleAndResource({
+        sysRoleId: this.editData.sysRoleId
       }).then(res => {
         this.formData = {
           ...this.formData,
-          ...res.data
+          ...res.data[0]
         };
       });
     },
@@ -259,7 +221,7 @@ export default {
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
+          const funcName = this.editData.sysRoleId ? updateSysRole : saveSysRole;
           funcName(this.formData).then(res => {
             this.$message.success(res.data);
             this.$emit('getTableData', '');
@@ -274,12 +236,12 @@ export default {
 <style lang="scss">
 .role-dialog{
   .form-wrap {
-    $base-height: 350px;
+    $base-height: 320px;
     height: $base-height;
     display: flex;
     justify-content: space-between;
     .left-part {
-      width: 50%;
+      width: 49%;
       .input-width {
         width: 220px;
       }
@@ -289,7 +251,7 @@ export default {
       height: 100%;
       .tree-wrap {
         border: 1px solid #dddddd;
-        width: 250px;
+        width: 240px;
         height: 320px;
       }
     }
@@ -300,9 +262,9 @@ export default {
     // background: #bcf;
     display: flex;
     justify-content: center;
-    // .el-button--default.el-button--mini {
-    //   min-width: 92px;
-    // }
+    .el-button--default.el-button--mini {
+      min-width: 92px;
+    }
   }
 }
 </style>

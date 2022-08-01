@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 14:04:46
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 15:18:36
+ * @LastEditTime: 2022-08-01 12:23:30
  * @Description:
  */
 export const filterConfig = _this => {
@@ -33,8 +33,8 @@ export const filterConfig = _this => {
         placeholder: '请选择父级菜单',
         col: 8,
         optionLabel: 'resourceTitle',
-        optionValue: 'resourcePid',
-        optionKey: 'resourcePid',
+        optionValue: 'sysResourceId',
+        optionKey: 'sysResourceId',
         options: []
       },
       // 状态
