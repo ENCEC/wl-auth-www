@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:16:01
+ * @LastEditTime: 2022-08-01 12:45:36
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -11,7 +11,7 @@
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
-      width="800px"
+      width="820px"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
@@ -29,17 +29,17 @@
         <div class="form-wrap">
           <!-- 左侧 -->
           <div class="left-part">
-            <el-form-item label="角色名称:" prop="account">
+            <el-form-item label="角色名称:" prop="roleName">
               <el-input
-                v-model="formData.account"
+                v-model="formData.roleName"
                 placeholder="请输入角色名称"
                 clearable
                 class="input-width"
               />
             </el-form-item>
-            <el-form-item label="角色描述:" prop="name">
+            <el-form-item label="角色描述:" prop="remark">
               <el-input
-                v-model="formData.name"
+                v-model="formData.remark"
                 type="textarea"
                 placeholder="请输入角色描述"
                 :rows="3"
@@ -52,7 +52,7 @@
               label="创建时间:"
             >
               <el-input
-                v-model="formData.account"
+                v-model="formData.createTime"
                 placeholder="请输入创建时间"
                 clearable
                 class="input-width"
@@ -64,7 +64,7 @@
               label="创建人:"
             >
               <el-input
-                v-model="formData.account"
+                v-model="formData.creatorName"
                 placeholder="请输入创建人"
                 clearable
                 class="input-width"
@@ -74,7 +74,7 @@
           </div>
           <!-- 右侧 -->
           <div class="right-part">
-            <el-form-item label="角色权限:" prop="checkedIds">
+            <el-form-item label="角色权限:" prop="sysResourceIdList">
               <div class="tree-wrap">
                 <!-- :default-expanded-keys="[2, 3]" -->
                 <el-tree
@@ -93,7 +93,7 @@
           </div>
         </div>
       </el-form>
-      <div class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button
           v-if="type !== 'detail'"
           type="primary"
@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { queryRoleAndResource, saveUemUser, editUemUser } from '@/api/role-manage';
+import { queryRoleAndResource, saveSysRole, updateSysRole } from '@/api/role-manage';
 import { queryAllValidResource } from '@/api/right-manage'; export default {
   components: {},
   // inheritAttrs: false,
@@ -130,19 +130,19 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
   data() {
     return {
       formData: {
-        account: '',
-        name: '',
-        checkedIds: []
+        roleName: '',
+        remark: '',
+        sysResourceIdList: []
       },
       rules: {
-        account: [
+        roleName: [
           {
             required: true,
             message: '请输入角色名称',
             trigger: 'blur'
           }
         ],
-        checkedIds: [
+        sysResourceIdList: [
           {
             required: true,
             message: '请选择角色权限',
@@ -161,7 +161,6 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
   computed: {
     // 弹框标题
     dialogTitle() {
-      console.log('【 type 】-118', this.type);
       this.editData.sysRoleId && this.getDetailInfo();
       return this.editData.sysRoleId
         ? this.type === 'detail'
@@ -185,14 +184,14 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     },
     // 通过 node 获取
     getCheckedNodes() {
-      const CheckedIds = this.$refs.treeRef.getCheckedNodes();
-      console.log('【 CheckedIds 】-179', CheckedIds);
+      const sysResourceIdList = this.$refs.treeRef.getCheckedNodes();
+      console.log('【 sysResourceIdList 】-179', sysResourceIdList);
     },
     // 通过 key 获取
     getCheckedKeys() {
       const checkedKeys = this.$refs.treeRef.getCheckedKeys();
-      this.formData.checkedIds = checkedKeys;
-      console.log('【 CheckedIds 】-179', checkedKeys);
+      this.formData.sysResourceIdList = checkedKeys;
+      console.log('【 sysResourceIdList 】-179', checkedKeys);
     },
     handleNodeClick(data) {
       // console.log('【 data 】-173', data)
@@ -222,7 +221,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          const funcName = this.editData.sysRoleId ? editUemUser : saveUemUser;
+          const funcName = this.editData.sysRoleId ? updateSysRole : saveSysRole;
           funcName(this.formData).then(res => {
             this.$message.success(res.data);
             this.$emit('getTableData', '');
@@ -237,12 +236,12 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
 <style lang="scss">
 .role-dialog{
   .form-wrap {
-    $base-height: 350px;
+    $base-height: 320px;
     height: $base-height;
     display: flex;
     justify-content: space-between;
     .left-part {
-      width: 50%;
+      width: 49%;
       .input-width {
         width: 220px;
       }
@@ -252,7 +251,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       height: 100%;
       .tree-wrap {
         border: 1px solid #dddddd;
-        width: 250px;
+        width: 240px;
         height: 320px;
       }
     }

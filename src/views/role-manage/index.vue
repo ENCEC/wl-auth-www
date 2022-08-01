@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 10:24:54
+ * @LastEditTime: 2022-08-01 13:28:31
  * @Description:系统管理-角色管理
 -->
 
@@ -14,10 +14,11 @@
     <el-table
       highlight-current-row
       :data="records"
-      height="350px"
+      height="360px"
       style="width: 100%"
+      border
     >
-      <el-table-column type="index" label="序号" />
+      <el-table-column type="index" label="序号" width="80px" />
       <el-table-column prop="roleName" label="角色名称" />
       <el-table-column prop="remark" label="角色描述" />
       <el-table-column prop="creatorName" label="创建人" />
@@ -31,7 +32,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200px">
         <template slot-scope="scope">
           <div class="operate-wrap">
             <el-button
@@ -77,7 +78,7 @@ import { filterConfig } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
   queryRoleByPage,
-  updateSysRole,
+  updateRoleStatus,
   deleteRole
 } from '@/api/role-manage';
 import tableMix from '@/mixins/table-mixin';
@@ -134,7 +135,7 @@ export default {
     changeStatus(item) {
       const sysRoleId = item.sysRoleId;
       const isValid = item.isValid;
-      updateSysRole({ sysRoleId, isValid }).then(res => {
+      updateRoleStatus({ sysRoleId, isValid }).then(res => {
         this.$message.success('操作成功');
       });
     },

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-28 10:47:20
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-29 17:51:21
+ * @LastEditTime: 2022-08-01 13:27:52
  * @Description: 系统管理-权限管理
 -->
 
@@ -27,6 +27,7 @@
             height="420px"
             style="width: 100%"
             size="small"
+            border
           >
             <el-table-column prop="uemUserId" label=" " width="30px">
               <template slot-scope="scope">

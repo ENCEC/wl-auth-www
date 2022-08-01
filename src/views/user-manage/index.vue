@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 11:49:44
+ * @LastEditTime: 2022-08-01 12:32:45
  * @Description: 系统管理-用户管理
 -->
 
@@ -55,7 +55,7 @@ import {
   resetUemUserPassword,
   uemUserStartStop,
   deleteUemUser
-} from '@/api/user-manege';
+} from '@/api/user-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'UserManage',

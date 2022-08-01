@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 13:53:17
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 10:24:36
+ * @LastEditTime: 2022-08-01 13:40:06
  * @Description: 系统管理-角色管理
  */
 import request from '@/utils/request';
@@ -14,14 +14,7 @@ export function queryRoleByPage(data) {
     data
   });
 }
-// 权限-获取所有权限
-export function queryAllResource(data) {
-  return request({
-    url: '/sysRole/queryAllResource',
-    method: 'post',
-    data
-  });
-}
+
 // 根据id查询角色以及绑定的权限信息
 export function queryRoleAndResource(query) {
   return request({
@@ -30,24 +23,15 @@ export function queryRoleAndResource(query) {
     params: query
   });
 }
-// 管理员新增用户
-export function saveUemUser(data) {
+// 新增
+export function saveSysRole(data) {
   return request({
-    url: '/uemUserManage/saveUemUser',
+    url: '/sysRole/saveSysRole',
     method: 'post',
     data
   });
 }
-// 修改用户信息
-export function editUemUser(data) {
-  return request({
-    url: '/uemUserManage/editUemUser',
-    method: 'post',
-    data
-  });
-}
-
-// 启用/禁用用户
+// 修改
 export function updateSysRole(data) {
   return request({
     url: '/sysRole/updateSysRole',
@@ -55,11 +39,20 @@ export function updateSysRole(data) {
     data
   });
 }
-// 删除角色
-export function deleteRole(data) {
+
+// 启用/禁用
+export function updateRoleStatus(data) {
   return request({
-    url: '/sysRole/deleteRole',
+    url: '/sysRole/updateRoleStatus',
     method: 'post',
     data
+  });
+}
+// 删除角色
+export function deleteRole(query) {
+  return request({
+    url: '/sysRole/deleteRole',
+    method: 'get',
+    params: query
   });
 }

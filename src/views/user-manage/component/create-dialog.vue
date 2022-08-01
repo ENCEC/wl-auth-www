@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:21:54
+ * @LastEditTime: 2022-08-01 12:32:50
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -167,7 +167,7 @@
   </div>
 </template>
 <script>
-import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manege';
+import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manage';
 import { formRules } from './rules';
 
 export default {
