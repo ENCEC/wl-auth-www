@@ -441,7 +441,9 @@ padding: 30px;
         color: $--font-primary;
         font-weight: bold;
         tr{
+           th{
             background-color: #F5F9FF;
+           }
         }
     }
     // 修改斑马线色值
