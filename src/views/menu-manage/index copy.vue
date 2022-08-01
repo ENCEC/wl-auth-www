@@ -114,7 +114,7 @@
 </template>
 <script>
 import CreateDialog from './component/create-dialog';
-import { queryResourceByPage, deleteResourceById, updateResourceStatus } from '@/api/menu-manege';
+import { queryResourceByPage, deleteResourceById, updateResourceStatus } from '@/api/menu-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'MenuManage',

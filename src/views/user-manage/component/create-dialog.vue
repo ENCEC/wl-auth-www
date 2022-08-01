@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-29 19:14:08
+ * @LastEditTime: 2022-08-01 12:21:54
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -10,7 +10,7 @@
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
-      width="700px"
+      width="720px"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
@@ -150,7 +150,7 @@
           </el-row>
         </div>
       </el-form>
-      <div class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
           size="medium"
@@ -250,8 +250,11 @@ export default {
     }
   },
   watch: {},
-  created() {},
-  mounted() {},
+  created() {
+  },
+  mounted() {
+    this.$refs['elForm'].clearValidate();
+  },
   methods: {
     // 关闭弹框
     close() {
@@ -289,7 +292,7 @@ export default {
 <style lang="scss">
 .user-dialog {
   .form-wrap {
-    height: 240px;
+    height: 280px;
     .input-width {
       width: 180px;
     }

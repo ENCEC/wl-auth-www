@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 14:04:46
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:16:31
+ * @LastEditTime: 2022-08-01 11:08:54
  * @Description:
  */
 export const filterConfig = _this => {
@@ -107,66 +107,73 @@ export const filterConfig = _this => {
   };
 };
 
-// table 的配置参数
-export const tableConfig = {
+export const options = {
   border: true,
   stripe: true, // 是否为斑马纹 table
   loading: false, // 是否添加表格loading加载动画
   highlightCurrentRow: true, // 是否支持当前行高亮显示
   mutiSelect: false, // 是否支持列表项选中功能
-  indexShow: true,
   pagination: true
-};
+}; // table 的参数
 
-// 表格列
 export const columns = _this => {
   return [
     {
+      prop: 'count',
+      label: '序号',
+      align: 'center',
+      width: '80'
+    },
+    {
       prop: 'account',
-      label: '用户名'
+      label: '用户名',
+      align: 'center',
+      width: '150'
     },
     {
-      prop: 'name',
-      label: '姓名'
-
+      prop: 'remark',
+      label: '岗位职责'
     },
     {
-      prop: 'mobile',
-      label: '联系电话'
+      prop: 'createBy',
+      label: '创建人',
+      width: '110'
     },
     {
-      prop: 'email',
-      label: '电子邮箱'
+      prop: 'createTime',
+      label: '创建时间',
+      width: '110'
     },
     {
-      prop: 'isValid',
-      label: '是否启用',
+      prop: 'status',
+      label: '状态',
+      align: 'center',
       width: '100',
       component: 'switch',
       method: (row, status) => {
-        _this.changeStatus(row);
+        _this.handleModifyStatus(row, status);
       }
     }
-  ];
+  ]; // 需要展示的列
 };
-
 export const operates = _this => {
   return {
     list: [
       {
-        id: 'edit',
+        id: '1',
         label: '编辑',
         type: 'text',
         show: true,
+        // icon: 'el-icon-edit',
+        // plain: true,
         disabled: false,
         method: (index, row) => {
-          console.log('【 index 】-163', index)
-          _this.handleOpen(row);
+          _this.handleUpdate(row);
         }
       },
       {
-        id: 'resetPassword',
-        label: '重置密码',
+        id: '2',
+        label: '删除',
         type: 'text',
         // icon: 'el-icon-delete',
         // show: (index, row) => {
@@ -175,21 +182,21 @@ export const operates = _this => {
         show: true,
         plain: false,
         method: (index, row) => {
-          _this.resetPassword(row.uemUserId);
-        }
-      },
-      {
-        id: 'delete',
-        label: '删除',
-        // icon: 'el-icon-delete',
-        type: 'text',
-        show: true,
-        plain: false,
-        // disabled: false,
-        method: (index, row) => {
-          _this.handleDelete(row.uemUserId)
+          _this.handleDelete(row);
         }
       }
+      //   {
+      //     id: '3',
+      //     label: '删除',
+      //     type: 'danger',
+      //     icon: 'el-icon-delete',
+      //     show: true,
+      //     plain: false,
+      //     disabled: false,
+      //     method: (index, row) => {
+      //       _this.handleDelete(row)
+      //     }
+      //   }
     ],
     fixed: false,
     width: 230

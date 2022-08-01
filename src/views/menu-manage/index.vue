@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 15:24:03
+ * @LastEditTime: 2022-08-01 12:28:22
  * @Description:
 -->
 <template>
@@ -14,11 +14,11 @@
       :data="records"
       height="350px"
       style="width: 100%"
+      border
     >
-      <el-table-column type="index" label="序号" />
+      <el-table-column type="index" label="序号" width="80px" />
       <el-table-column prop="resourceTitle" label="菜单标题" />
-      <!-- TODO -->
-      <el-table-column prop="parentName" label="父级菜单" />
+      <el-table-column prop="parentResourceTitle" label="父级菜单" />
       <el-table-column prop="resourceUrl" label="资源地址" />
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
@@ -32,7 +32,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200px">
         <template slot-scope="scope">
           <div class="operate-wrap">
             <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
@@ -61,7 +61,7 @@
 import filterPanel from '@/components/FilterPanel'
 import { filterConfig } from './config-data.js';
 import CreateDialog from './component/create-dialog';
-import { queryResourceByPage, queryParentResource, deleteResourceById, updateResourceStatus } from '@/api/menu-manege';
+import { queryResourceByPage, queryParentResource, deleteResourceById, updateResourceStatus } from '@/api/menu-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'MenuManage',

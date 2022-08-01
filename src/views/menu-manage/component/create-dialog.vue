@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-29 19:16:18
+ * @LastEditTime: 2022-08-01 12:29:13
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -46,9 +46,9 @@
                 >
                   <el-option
                     v-for="item in parentResourceList"
-                    :key="item.resourcePid"
+                    :key="item.sysResourceId"
                     :label="item.resourceTitle"
-                    :value="item.resourcePid"
+                    :value="item.sysResourceId"
                   />
                 </el-select>
               </el-form-item>
@@ -84,14 +84,14 @@
                   placeholder="请输入菜单说明"
                   :rows="3"
                   clearable
-                  style="width:505px"
+                  style="width:475px"
                 />
               </el-form-item>
             </el-col>
           </el-row>
         </div>
       </el-form>
-      <div class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
           size="medium"
@@ -113,7 +113,7 @@ import {
   updateResource,
   queryResourceById,
   queryParentResource
-} from '@/api/menu-manege';
+} from '@/api/menu-manage';
 export default {
   components: {},
   // inheritAttrs: false,
@@ -215,14 +215,12 @@ export default {
 };
 </script>
 <style lang="scss">
-.menu-dialog{
-  .form-wrap {
-    height: 180px;
-  }
-  .dialog-footer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
+.form-wrap {
+  height: 190px;
+}
+.dialog-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 </style>

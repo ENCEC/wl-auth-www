@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 10:11:56
+ * @LastEditTime: 2022-08-01 12:16:01
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -111,8 +111,8 @@
   </div>
 </template>
 <script>
-import { queryRoleAndResource, queryAllResource, saveUemUser, editUemUser } from '@/api/role-manage';
-export default {
+import { queryRoleAndResource, saveUemUser, editUemUser } from '@/api/role-manage';
+import { queryAllValidResource } from '@/api/right-manage'; export default {
   components: {},
   // inheritAttrs: false,
   props: {
@@ -179,7 +179,7 @@ export default {
   methods: {
     // 权限-获取资源列表(所有)
     getAllResource() {
-      queryAllResource().then(res => {
+      queryAllValidResource().then(res => {
         this.treeData = res.data;
       });
     },
