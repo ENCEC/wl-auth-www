@@ -11,6 +11,8 @@
       @row-click="handleRowClick"
       @selection-change="handleSelectionChange"
     >
+      <!--region 序号-->
+      <el-table-column v-if="options.indexShow" type="index" label="序号" width="80px" align="center" />
       <!--region 选择框-->
       <el-table-column v-if="options.mutiSelect" type="selection" style="width: 55px;" />
       <!--endregion-->
@@ -20,7 +22,8 @@
           :key="column.label"
           :prop="column.prop"
           :label="column.label"
-          :align="column.align"
+          :align="column.align||'center'"
+          :min-width="column.minWidth"
           :width="column.width"
         >
           <template slot-scope="scope">

@@ -2,14 +2,14 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 11:00:24
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 14:28:17
+ * @LastEditTime: 2022-08-01 11:46:01
  * @Description: 表格公用方法
  */
 const mixin = {
   data() {
     return {
       params: {
-        total: 0, // 总条数
+        totalRecord: 0, // 总条数
         pageSize: 10, // 每页条数
         currentPage: 1 // 当前页数
       }
