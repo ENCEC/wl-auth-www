@@ -194,7 +194,7 @@ export default {
             optionKey: 'key',
             options: statusTypeOptions,
             changeSelect: (optionVal) => {
-              this.listQuery.status = optionVal
+              this.listQuery.status = optionVal;
             }
           }
         ],
@@ -407,9 +407,12 @@ export default {
       querySysPost(this.listQuery).then((response) => {
         this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index + 1
-          item.status = item.status === '0'
-        })
+          item.count =
+            (this.listQuery.currentPage - 1) * this.listQuery.pageSize +
+            index +
+            1;
+          item.status = item.status === '0';
+        });
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
         // Just to simulate the time of the request
@@ -427,7 +430,7 @@ export default {
         postName: '',
         status: ''
       };
-      this.getList()
+      this.getList();
     },
     // getList() {
     //   this.resetTemp()
@@ -438,18 +441,20 @@ export default {
     //   });
     // },
     handleModifyStatus(row) {
-      const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
-      sysPostStartStop(params).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success'
+      const params = Object.assign({}, row, { status: row.status ? '0' : '1' });
+      sysPostStartStop(params)
+        .then(() => {
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          });
+        })
+        .catch(() => {
+          this.$message({
+            message: '操作失败',
+            type: 'error'
+          });
         });
-      }).catch(() => {
-        this.$message({
-          message: '操作失败',
-          type: 'error'
-        });
-      })
     },
     handleAdd() {
       // this.temp = Object.assign({}, row); // copy obj
@@ -473,21 +478,21 @@ export default {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
-          this.dialogButtonLoading = true
+          this.dialogButtonLoading = true;
           saveSysPost(this.temp)
             .then(() => {
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
-              this.handleResetForm()
+              this.handleResetForm();
               this.$message({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
                 duration: 0
               });
-              this.dialogButtonLoading = false
+              this.dialogButtonLoading = false;
 
-              this.getList()
+              this.getList();
             })
             .catch(() => {
               this.$message({
@@ -496,6 +501,7 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });
@@ -503,7 +509,10 @@ export default {
     updateData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
+          this.dialogButtonLoading = true;
+          const tempData = Object.assign({}, this.temp, {
+            status: this.temp.status ? '0' : '1'
+          });
           updateSysPost(tempData)
             .then(() => {
               this.$message({
@@ -512,9 +521,11 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.handleResetForm()
+              this.handleResetForm();
               this.dialogFormVisible = false;
-              this.getList()
+              this.dialogButtonLoading = false;
+
+              this.getList();
             })
             .catch(() => {
               this.$message({
@@ -523,6 +534,7 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });
@@ -544,7 +556,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               });
-              this.getList()
+              this.getList();
             })
             .catch(() => {
               this.$message({

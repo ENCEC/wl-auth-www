@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function queryByTechnicalTitleName(params) {
+export function queryByTechnicalTitleName(data) {
   return request({
     url: '/sysTechnicalTitle/queryByTechnicalTitleName',
-    method: 'get',
-    params
+    method: 'post',
+    data
   })
 }
 

@@ -9,12 +9,22 @@ export function queryUemProject(data) {
   })
 }
 
-// 查看项目详情
-export function ViewDetailUemProject(data) {
+// 人员联想控件
+export function queryUemUserName(data) {
   return request({
-    url: '/uemProject/ViewDetailUemProject',
+    url: '/uemProject/queryUemUserName',
     method: 'post',
     data
+  })
+}
+
+export function queryViewDetailById(ViewDetailID) {
+  return request({
+    url: '/uemProject/queryViewDetailById',
+    method: 'get',
+    params: {
+      ViewDetailID
+    }
   })
 }
 

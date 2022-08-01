@@ -28,7 +28,7 @@
               <template v-if="column.formatter">
                 <span :title="column.formatter(scope.row, column)" v-html="column.formatter(scope.row, column)" />
               </template>
-              <template v-if="column.component==='switch'">
+              <template v-else-if="column.component==='switch'">
                 <el-switch v-model="scope.row[column.prop]" @change="column.method(scope.row,scope.row[column.prop])" />
               </template>
               <template v-else>
@@ -60,7 +60,7 @@
               size="mini"
               :disabled="(typeof btn.disabled == 'function')?btn.disabled(key,scope.row):btn.disabled"
               :plain="btn.plain"
-              @click.native.prevent="btn.method(key,scope.row)"
+              @click.native.prevent="btn.method(scope.row)"
             >{{ btn.label }}
             </el-button>
           </span>

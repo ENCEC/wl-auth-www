@@ -1,9 +1,10 @@
 <template>
-  <el-form :ref="formConfig.ref" :inline="formConfig.inline" :label-position="formConfig.labelPosition" :class="formConfig.class" :label-width="formConfig.labelWidth?formConfig.labelWidth:'80px'" :model="value" :rules="rules" :style="formConfig.style">
+  <el-form :ref="formConfig.ref" :inline="formConfig.inline" :label-position="formConfig.labelPosition" :class="formConfig.class" :label-width="formConfig.labelWidth?formConfig.labelWidth:'80px'" :model="value" :rules="rules" :style="formConfig.style" :disabled="dialogStatus==='examine'">
     <el-row :gutter="formConfig.gutter">
       <slot name="formItem" />
       <el-col
         v-for="(item, index) in formConfig.formItemList"
+        v-show="dialogStatus==='examine'?item.examine:true"
         :key="item.prop"
         :span="item.col ? item.col : formConfig.col"
       >
@@ -22,7 +23,7 @@
             :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
             :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
             :clearable="item.clearable ? item.clearable : false"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
           />
           <!-- radio -->
           <el-radio-group
@@ -58,7 +59,7 @@
             :clearable="item.clearable"
             :multiple="item.multiple"
             :placeholder="item.placeholder"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
           >
             <el-option
@@ -80,7 +81,7 @@
             :clearable="item.clearable"
             :multiple="item.multiple"
             :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="item.changeSelect?item.changeSelect(row,selectedRows):''"
           />
           <!-- cascader -->
@@ -90,19 +91,21 @@
             :options="item.options"
             :props="item.props"
             :clearable="item.clearable ? true : false"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="value => {item.changeCascader? item.changeCascader(value, item, index): ''}"
           />
           <!-- number -->
+          {{ item.prependText }}
           <el-input-number
             v-if="item.type === 'number'"
             v-model="value[item.prop]"
             :min="item.min"
             :max="item.max"
             :size="item.size"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="(currentValue, oldValue) => {item.changeNumber? item.changeNumber(currentValue, oldValue, item, index): ''}"
           />
+          {{ item.suffixText }}
           <!-- timePicker -->
           <el-time-select
             v-if="item.type === 'timePicker'"
@@ -117,7 +120,7 @@
             :prefix-icon="item.prefixIcon ? item.prefixIcon : 'el-icon-time'"
             :clear-icon="item.clearIcon ? item.clearIcon : 'el-icon-circle-close'"
             :range-separator="item.rangeSeparator ? item.rangeSeparator : '至'"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="time => {item.changeTime ? item.changeTime(time, item, index) : ''}"
           />
           <!-- datePicker  --- subType:date daterange....-->
@@ -138,7 +141,7 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="date => {item.changeDate ? item.changeDate(date, item, index) : ''}"
           />
           <!-- dateTimePicker -->
@@ -159,7 +162,7 @@
             :editable="item.editable"
             :clearable="item.clearable"
             :value-format="item.valueFormat"
-            :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(formConfig.labelWidth?formConfig.labelWidth:'80px')})`}"
+            :style="{width:item.width?item.width:'100%'}"
             @change="dateTime => {item.changeDateTime? item.changeDateTime(dateTime, item, index): ''}"
           />
         </el-form-item>
@@ -181,6 +184,10 @@ export default {
     rules: {
       type: Object,
       default: () => ({})
+    },
+    dialogStatus: {
+      type: String,
+      default: ''
     }
   },
   computed: {},

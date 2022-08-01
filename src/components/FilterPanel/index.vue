@@ -25,17 +25,17 @@
               :prefix-icon="item.type === 'text' ? item.prefix - icon : ''"
               :suffix-icon="item.type === 'text' ? item.suffix - icon : ''"
               :clearable="item.clearable ? item.clearable : false"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
             />
             <!-- radio -->
-            <el-radio-group v-if="item.type === 'radio'" v-model="value[item.prop]" :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}" @change="radioVal => {item.changeRadio? item.changeRadio(radioVal, item, index): ''}">
+            <el-radio-group v-if="item.type === 'radio'" v-model="value[item.prop]" :style="{width:item.width?item.width:'100%'}" @change="radioVal => {item.changeRadio? item.changeRadio(radioVal, item, index): ''}">
               <el-radio v-for="(radio, radioIndex) in item.radioArr" :key="radioIndex" :label="radio[item.radioLabel?item.radioLabel:'label']" :disabled="radio.disabled">{{ radio[item.radioLabel?item.radioLabel:'label'] }}</el-radio>
             </el-radio-group>
             <!-- checkbox -->
             <el-checkbox-group
               v-if="item.type === 'checkbox'"
               v-model="value[item.prop]"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="checkVal => { item.changeCheck? item.changeCheck(checkVal, item, index): ''}"
             >
               <el-checkbox v-for="(checkbox,index) in item.checkboxArr" :key="index" :label="checkbox[item.checkLabel?item.checkLabel:'label']" :disabled="checkbox.disabled">{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
@@ -48,7 +48,7 @@
               :clearable="item.clearable"
               :multiple="item.multiple"
               :placeholder="item.placeholder"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="optionVal => {item.changeSelect? item.changeSelect(optionVal, item, index): ''}"
             >
               <el-option
@@ -70,7 +70,7 @@
               :clearable="item.clearable"
               :multiple="item.multiple"
               :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="optionVal => {item.changeSelect? item.changeSelect(value, selectedRows): ''}"
             />
             <!-- cascader -->
@@ -80,7 +80,7 @@
               :options="item.options"
               :props="item.props"
               :clearable="item.clearable ? true : false"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="value => {item.changeCascader? item.changeCascader(value, item, index): ''}"
             />
             <!-- number -->
@@ -90,7 +90,7 @@
               :min="item.min"
               :max="item.max"
               :size="item.size"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="(currentValue, oldValue) => {item.changeNumber? item.changeNumber(currentValue, oldValue, item, index): ''}"
             />
             <!-- timePicker -->
@@ -107,7 +107,7 @@
               :prefix-icon="item.prefixIcon ? item.prefixIcon : 'el-icon-time'"
               :clear-icon="item.clearIcon ? item.clearIcon : 'el-icon-circle-close'"
               :range-separator="item.rangeSeparator ? item.rangeSeparator : '至'"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="time => {item.changeTime ? item.changeTime(time, item, index) : ''}"
             />
             <!-- datePicker  --- subType:date daterange....-->
@@ -128,7 +128,7 @@
               :editable="item.editable"
               :clearable="item.clearable"
               :value-format="item.valueFormat"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="date => {item.changeDate ? item.changeDate(date, item, index) : ''}"
             />
             <!-- dateTimePicker -->
@@ -149,7 +149,7 @@
               :editable="item.editable"
               :clearable="item.clearable"
               :value-format="item.valueFormat"
-              :style="{width:item.width?item.width:`calc(100% - ${item.labelWidth?item.labelWidth:(filterConfig.labelWidth?filterConfig.labelWidth:'80px')})`}"
+              :style="{width:item.width?item.width:'100%'}"
               @change="dateTime => {item.changeDateTime? item.changeDateTime(dateTime, item, index): ''}"
             />
           </el-form-item>
