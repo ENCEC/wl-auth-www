@@ -17,7 +17,7 @@
       />
       <div slot="footer" class="dialog-footer">
         <el-button
-        :loading="dialogButtonLoading"
+          :loading="dialogButtonLoading"
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
@@ -32,7 +32,7 @@
       :pagination="listQuery"
       :columns="columns"
       :operates="operates"
-      :listLoading="listLoading"
+      :list-loading="listLoading"
       @handleRowClick="handleRowClick"
       @handleSelectionChange="handleSelectionChange"
       @handleIndexChange="handleIndexChange"
@@ -49,7 +49,6 @@ import {
   updateSysPost,
   deleteSysPost
 } from '@/api/sys-post.js';
-import { parseTime } from '@/utils';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
@@ -90,7 +89,7 @@ export default {
   data() {
     return {
       // 弹窗表格的加载状态
-      dialogButtonLoading:false,
+      dialogButtonLoading: false,
       formConfig: {
         inline: false,
         col: 12,
@@ -164,7 +163,7 @@ export default {
             prop: 'postName',
             width: '200px',
             clearable: false,
-            placeholder: '请输入岗位职责',
+            placeholder: '请输入岗位名称',
             col: 8
           },
           // {
@@ -185,16 +184,17 @@ export default {
             type: 'select',
             label: '状态',
             prop: 'status',
+            labelWidth: '40px',
             col: 8,
             width: '200px',
-            clearable:true,
-            placeholder:'请选择状态',
+            clearable: true,
+            placeholder: '请选择状态',
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
             options: statusTypeOptions,
-            changeSelect: (optionVal, item, index) => {
-              this.listQuery.status=optionVal
+            changeSelect: (optionVal) => {
+              this.listQuery.status = optionVal
             }
           }
         ],
@@ -204,7 +204,7 @@ export default {
             buttonLabel: '新增岗位',
             btnType: 'primary',
             //   icon: 'el-icon-search',
-            method: (item, index) => {
+            method: () => {
               this.handleAdd();
             }
           },
@@ -213,7 +213,7 @@ export default {
             buttonLabel: '查询',
             btnType: 'primary',
             //   icon: 'el-icon-edit',
-            method: (item, index) => {
+            method: () => {
               this.getList();
             }
           },
@@ -223,7 +223,7 @@ export default {
             btnType: 'primary',
             plain: true,
             //   icon: 'el-icon-download',
-            method: (item, index) => {
+            method: () => {
               this.resetListQuery();
             }
           }
@@ -302,7 +302,7 @@ export default {
             show: true,
             plain: false,
             method: (index, row) => {
-              this.handleDelete(row, 'draft');
+              this.handleDelete(row);
             }
           }
           //   {
@@ -347,10 +347,10 @@ export default {
         createTime: '',
         postCode: '',
         postId: '',
-        postName:null,
+        postName: null,
         postSort: 0,
         remark: '',
-        status: '0',
+        status: '0'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -407,8 +407,8 @@ export default {
       querySysPost(this.listQuery).then((response) => {
         this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index+1
-          item.status=item.status==='0'?true:false
+          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index + 1
+          item.status = item.status === '0'
         })
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
@@ -437,14 +437,14 @@ export default {
     //     this.$refs['formPanel'].$refs['dataForm'].clearValidate()
     //   });
     // },
-    handleModifyStatus(row, status) {
-      const params=Object.assign({},row,{status:row.status?'0':'1'})
-      sysPostStartStop(params).then((res) => {
+    handleModifyStatus(row) {
+      const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
+      sysPostStartStop(params).then(() => {
         this.$message({
           message: '操作成功',
           type: 'success'
         });
-      }).catch((err) => {
+      }).catch(() => {
         this.$message({
           message: '操作失败',
           type: 'error'
@@ -473,9 +473,9 @@ export default {
         if (valid) {
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
-          this.dialogButtonLoading=true
+          this.dialogButtonLoading = true
           saveSysPost(this.temp)
-            .then((res) => {
+            .then(() => {
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
               this.handleResetForm()
@@ -485,11 +485,11 @@ export default {
                 type: 'success',
                 duration: 0
               });
-              this.dialogButtonLoading=false
+              this.dialogButtonLoading = false
 
               this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               this.$message({
                 title: '失败',
                 message: '创建失败',
@@ -503,7 +503,7 @@ export default {
     updateData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = Object.assign({}, this.temp,{status:this.temp.status?'0':'1'});
+          const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
           updateSysPost(tempData)
             .then(() => {
               this.$message({
@@ -516,7 +516,7 @@ export default {
               this.dialogFormVisible = false;
               this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -527,7 +527,7 @@ export default {
         }
       });
     },
-    handleDelete(row, index) {
+    handleDelete(row) {
       this.$confirm(
         '您确定要删除该岗位信息吗?删除后该岗位信息不可恢复',
         '提示',
@@ -539,14 +539,14 @@ export default {
       )
         .then(() => {
           deleteSysPost(row.postId)
-            .then((res) => {
+            .then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
               this.getList()
             })
-            .catch((err) => {
+            .catch(() => {
               this.$message({
                 type: 'error',
                 message: '删除失败!'
@@ -569,13 +569,13 @@ export default {
         postName: '',
         postSort: 0,
         remark: '',
-        status: '',
+        status: ''
       };
     },
     handleDialogClose() {
       // this.handleResetForm();
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
-    },
+    }
   }
 };
 </script>

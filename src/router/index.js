@@ -102,13 +102,13 @@ export const asyncRoutes = [
         name: 'SysPost',
         meta: { title: '岗位管理' }
       },
-            // 系统管理-岗位职称
-            {
-              path: 'sys-technical-title',
-              component: () => import('@/views/sys-technical-title/index'),
-              name: 'SysTechnicalTitle',
-              meta: { title: '岗位职称' }
-            },
+      // 系统管理-岗位职称
+      {
+        path: 'sys-technical-title',
+        component: () => import('@/views/sys-technical-title/index'),
+        name: 'SysTechnicalTitle',
+        meta: { title: '岗位职称' }
+      },
       // 系统管理-菜单管理
       {
         path: 'menu-manage',
@@ -116,7 +116,7 @@ export const asyncRoutes = [
         name: 'MenuManage',
         meta: { title: '菜单管理' }
       },
-      
+
       // 系统管理-角色管理
       {
         path: 'role-manage',
@@ -137,7 +137,7 @@ export const asyncRoutes = [
         component: () => import('@/views/right-manage/index'),
         name: 'RightManage',
         meta: { title: '权限管理' }
-      },
+      }
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
