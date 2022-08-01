@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-29 19:19:13
+ * @LastEditTime: 2022-08-01 10:11:56
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -76,14 +76,16 @@
           <div class="right-part">
             <el-form-item label="角色权限:" prop="checkedIds">
               <div class="tree-wrap">
+                <!-- :default-expanded-keys="[2, 3]" -->
                 <el-tree
                   ref="treeRef"
                   :data="treeData"
-                  show-checkbox
-                  node-key="id"
-                  :default-expanded-keys="[2, 3]"
-                  :default-checked-keys="[5]"
+                  :default-checked-keys="defaultCheckedKeys"
                   :props="defaultProps"
+                  :expand-on-click-node="false"
+                  show-checkbox
+                  node-key="sysResourceId"
+                  default-expand-all
                   @check-change="handleCheckChange"
                 />
               </div>
@@ -109,7 +111,7 @@
   </div>
 </template>
 <script>
-import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manege';
+import { queryRoleAndResource, queryAllResource, saveUemUser, editUemUser } from '@/api/role-manage';
 export default {
   components: {},
   // inheritAttrs: false,
@@ -147,69 +149,21 @@ export default {
             trigger: 'blur'
           }
         ]
-      }, // 验证规则
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
+      },
+      treeData: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+        children: 'childrenResourceList',
+        label: 'resourceTitle'
+      },
+      defaultCheckedKeys: []
     };
   },
   computed: {
     // 弹框标题
     dialogTitle() {
       console.log('【 type 】-118', this.type);
-      this.editData.uemUserId && this.getDetailInfo();
-      return this.editData.uemUserId
+      this.editData.sysRoleId && this.getDetailInfo();
+      return this.editData.sysRoleId
         ? this.type === 'detail'
           ? '角色详细信息'
           : '编辑角色信息'
@@ -217,9 +171,18 @@ export default {
     }
   },
   watch: {},
-  created() {},
+  created() {
+    this.getDetailInfo()
+    this.getAllResource();
+  },
   mounted() {},
   methods: {
+    // 权限-获取资源列表(所有)
+    getAllResource() {
+      queryAllResource().then(res => {
+        this.treeData = res.data;
+      });
+    },
     // 通过 node 获取
     getCheckedNodes() {
       const CheckedIds = this.$refs.treeRef.getCheckedNodes();
@@ -246,12 +209,12 @@ export default {
     },
     // 获取用户信息
     getDetailInfo() {
-      getUemUser({
-        uemUserId: this.editData.uemUserId
+      queryRoleAndResource({
+        sysRoleId: this.editData.sysRoleId
       }).then(res => {
         this.formData = {
           ...this.formData,
-          ...res.data
+          ...res.data[0]
         };
       });
     },
@@ -259,7 +222,7 @@ export default {
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
+          const funcName = this.editData.sysRoleId ? editUemUser : saveUemUser;
           funcName(this.formData).then(res => {
             this.$message.success(res.data);
             this.$emit('getTableData', '');
@@ -300,9 +263,9 @@ export default {
     // background: #bcf;
     display: flex;
     justify-content: center;
-    // .el-button--default.el-button--mini {
-    //   min-width: 92px;
-    // }
+    .el-button--default.el-button--mini {
+      min-width: 92px;
+    }
   }
 }
 </style>
