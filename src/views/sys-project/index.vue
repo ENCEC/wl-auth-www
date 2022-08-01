@@ -69,6 +69,19 @@ const projectRolesColumns = [
 export default {
   name: 'SysProject',
   components: { tableComponent, filterPanel, formPanel },
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
+      };
+      return statusMap[status];
+    },
+    typeFilter(type) {
+      // return calendarTypeKeyValue[type];
+    }
+  },
   data() {
     return {
       formConfig: {
@@ -446,6 +459,7 @@ export default {
         planEndDate: '',
         actualStartTime: '',
         actualEndTime: ''
+
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -599,7 +613,6 @@ export default {
               this.getList();
             })
             .catch(() => {
-              debugger;
               this.$message({
                 title: '失败',
                 message: '修改失败',

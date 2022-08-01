@@ -2,11 +2,11 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 18:20:41
+ * @LastEditTime: 2022-07-29 19:16:18
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
-  <div>
+  <div class="menu-dialog">
     <el-dialog
       v-bind="$attrs"
       :title="dialogTitle"
@@ -19,7 +19,7 @@
         ref="elForm"
         :model="formData"
         :rules="rules"
-        size="mini"
+        size="medium"
         label-width="100px"
         :inline="true"
         destroy-on-close
@@ -94,13 +94,13 @@
       <div class="dialog-footer">
         <el-button
           type="primary"
-          size="mini"
+          size="medium"
           @click="handelConfirm"
         >提交</el-button>
         <el-button
           type="primary"
           :plain="true"
-          size="mini"
+          size="medium"
           @click="close"
         >取消</el-button>
       </div>
@@ -127,10 +127,10 @@ export default {
   data() {
     return {
       formData: {
-        resourceTitle: '一级菜单',
+        resourceTitle: '',
         resourcePid: '',
-        resourceUrl: 'baidu',
-        resourceSort: '1',
+        resourceUrl: '',
+        resourceSort: '',
         resourceRemark: ''
       },
       rules: {
@@ -215,11 +215,14 @@ export default {
 };
 </script>
 <style lang="scss">
-.form-wrap {
-  height: 180px;
-}
-.dialog-footer {
-  display: flex;
-  justify-content: center;
+.menu-dialog{
+  .form-wrap {
+    height: 180px;
+  }
+  .dialog-footer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

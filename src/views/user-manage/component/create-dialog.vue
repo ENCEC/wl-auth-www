@@ -2,11 +2,11 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-27 18:24:02
+ * @LastEditTime: 2022-07-29 19:14:08
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
-  <div>
+  <div class="user-dialog">
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
@@ -19,7 +19,7 @@
         ref="elForm"
         :model="formData"
         :rules="rules"
-        size="mini"
+        size="medium"
         label-width="100px"
         :inline="true"
         destroy-on-close
@@ -153,13 +153,13 @@
       <div class="dialog-footer">
         <el-button
           type="primary"
-          size="mini"
+          size="medium"
           @click="handleConfirm"
         >提交</el-button>
         <el-button
           type="primary"
           :plain="true"
-          size="mini"
+          size="medium"
           @click="close"
         >取消</el-button>
       </div>
@@ -184,16 +184,16 @@ export default {
     return {
       rules: formRules, // 验证规则
       formData: {
-        account: 'hzf',
-        name: 'hzf',
-        mobile: '13960081319',
+        account: '',
+        name: '',
+        mobile: '',
         sex: '',
-        email: '1628415507@qq.com',
+        email: '',
         jobStatus: '', // 在职状态（0：试用员工 1：正式员工 2：离职员工）
-        seniority: 1,
+        seniority: '', // 工作年限
         entryDate: '', // 入职时间
-        staffDutyCode: 'ssss',
-        projectId: 2
+        staffDutyCode: '',
+        projectId: ''
       },
       // TODO（0男，1女）
       sexOptions: [
@@ -263,7 +263,11 @@ export default {
       getUemUser({
         uemUserId: this.editData.uemUserId
       }).then(res => {
-        this.formData = { ...this.formData, ...res.data, sex: res.data.sex ? 0 : 1 };
+        this.formData = {
+          ...this.formData,
+          ...res.data,
+          sex: res.data.sex ? 0 : 1
+        };
       });
     },
     // 提交表单信息
@@ -283,20 +287,22 @@ export default {
 };
 </script>
 <style lang="scss">
-.form-wrap {
-  height: 240px;
-  .input-width {
-    width: 180px;
+.user-dialog {
+  .form-wrap {
+    height: 240px;
+    .input-width {
+      width: 180px;
+    }
   }
-}
-// 底部按钮
-.dialog-footer {
-  width: 100%;
-  // background: #bcf;
-  display: flex;
-  justify-content: center;
-  .el-button--default.el-button--mini {
-    min-width: 92px;
+  // 底部按钮
+  .dialog-footer {
+    width: 100%;
+    // background: #bcf;
+    display: flex;
+    justify-content: center;
+    .el-button--default.el-button--mini {
+      min-width: 92px;
+    }
   }
 }
 </style>

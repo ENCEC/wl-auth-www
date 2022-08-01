@@ -2,12 +2,12 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 11:24:05
+ * @LastEditTime: 2022-07-29 19:19:13
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
 <template>
-  <div>
+  <div class="role-dialog">
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
@@ -20,7 +20,7 @@
         ref="elForm"
         :model="formData"
         :rules="rules"
-        size="mini"
+        size="medium"
         label-width="100px"
         :inline="true"
         destroy-on-close
@@ -95,13 +95,13 @@
         <el-button
           v-if="type !== 'detail'"
           type="primary"
-          size="mini"
+          size="medium"
           @click="handleConfirm"
         >提交</el-button>
         <el-button
           type="primary"
           :plain="true"
-          size="mini"
+          size="medium"
           @click="close"
         >{{ type === 'detail'?'关闭':'取消' }}</el-button>
       </div>
@@ -272,35 +272,37 @@ export default {
 };
 </script>
 <style lang="scss">
-.form-wrap {
-  $base-height: 350px;
-  height: $base-height;
-  display: flex;
-  justify-content: space-between;
-  .left-part {
-    width: 50%;
-    .input-width {
-      width: 220px;
+.role-dialog{
+  .form-wrap {
+    $base-height: 350px;
+    height: $base-height;
+    display: flex;
+    justify-content: space-between;
+    .left-part {
+      width: 50%;
+      .input-width {
+        width: 220px;
+      }
+    }
+    .right-part {
+      width: 50%;
+      height: 100%;
+      .tree-wrap {
+        border: 1px solid #dddddd;
+        width: 250px;
+        height: 320px;
+      }
     }
   }
-  .right-part {
-    width: 50%;
-    height: 100%;
-    .tree-wrap {
-      border: 1px solid #dddddd;
-      width: 250px;
-      height: 320px;
-    }
-  }
-}
-// 底部按钮
-.dialog-footer {
-  width: 100%;
-  // background: #bcf;
-  display: flex;
-  justify-content: center;
-  .el-button--default.el-button--mini {
-    min-width: 92px;
+  // 底部按钮
+  .dialog-footer {
+    width: 100%;
+    // background: #bcf;
+    display: flex;
+    justify-content: center;
+    // .el-button--default.el-button--mini {
+    //   min-width: 92px;
+    // }
   }
 }
 </style>

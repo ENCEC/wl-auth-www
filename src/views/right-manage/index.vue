@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-28 10:47:20
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-28 15:31:09
+ * @LastEditTime: 2022-07-29 17:51:21
  * @Description: 系统管理-权限管理
 -->
 
@@ -33,6 +33,7 @@
                 <el-radio
                   v-model="uemUserId"
                   :label="scope.row.uemUserId"
+                  @change="handleRadioChange"
                 >-
                 </el-radio></template>
             </el-table-column>
@@ -70,9 +71,15 @@
       <div class="middle-part">
         <div class="title-box">角色</div>
         <div class="content">
-          <el-checkbox-group v-model="roleIds" class="check-list">
-            <div v-for="(item, index) in 18" :key="index" class="item">
-              <el-checkbox :label="index">{{ "复选框" + index }}</el-checkbox>
+          <el-checkbox-group
+            v-model="checkedRoleIds"
+            class="check-list"
+            @change="handleCheckBoxChange"
+          >
+            <div v-for="item in roleList" :key="item.sysRoleId" class="item">
+              <el-checkbox :label="item.sysRoleId">{{
+                item.roleName
+              }}</el-checkbox>
             </div>
           </el-checkbox-group>
         </div>
@@ -81,7 +88,6 @@
         </div>
       </div>
       <!-- 角色 End -->
-
       <!-- 功能权限 Start -->
       <div class="right-part">
         <div class="title-box">
@@ -89,15 +95,16 @@
         </div>
         <div class="content">
           <div class="tree-wrap">
+            <!-- :default-expanded-keys="[2, 3]" -->
             <el-tree
               ref="treeRef"
               :data="treeData"
-              show-checkbox
-              node-key="id"
-              :default-expanded-keys="[2, 3]"
-              :default-checked-keys="[5]"
+              :default-checked-keys="defaultCheckedKeys"
               :props="defaultProps"
-              @check-change="handleCheckChange"
+              :expand-on-click-node="false"
+              node-key="sysResourceId"
+              default-expand-all
+              show-checkbox
             />
           </div>
         </div>
@@ -109,10 +116,18 @@
 <script>
 import filterPanel from '@/components/FilterPanel';
 import { filterConfig } from './config-data.js';
-import { queryUemUser, deleteUemUser } from '@/api/user-manege';
+import { queryUemUser } from '@/api/user-manage';
+import {
+  bindUserAndRole,
+  unbindAllRoleOfUser,
+  queryAllValidRole,
+  queryRoleListByUser,
+  queryAllValidResource,
+  queryResourceByRole
+} from '@/api/right-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
-  name: 'UserManage',
+  name: 'RightManage',
   components: {
     filterPanel
   },
@@ -121,109 +136,101 @@ export default {
     return {
       filterConfig: filterConfig(this),
       filterForm: {
-        account: undefined,
-        name: undefined
-      },
-      uemUserId: '',
-      roleIds: [],
-      treeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-1'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [
-            {
-              id: 5,
-              label: '二级 2-1'
-            },
-            {
-              id: 6,
-              label: '二级 2-2'
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [
-            {
-              id: 7,
-              label: '二级 3-1'
-            },
-            {
-              id: 8,
-              label: '二级 3-2'
-            }
-          ]
-        }
-      ],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
+        account: undefined
       },
       tableData: [],
+      uemUserId: '',
+      checkedRoleIds: [], // 选中的角色
+      roleList: [],
+      treeData: [],
+      defaultProps: {
+        children: 'childrenResourceList',
+        label: 'resourceTitle'
+      },
+      defaultCheckedKeys: [], // 树的勾选值
       total: 0
     };
   },
   computed: {},
   created() {
     this.getTableData();
+    this.getAllRoleList();
+    this.getAllResource();
   },
   mounted() {},
   methods: {
+    // 用户-选择用户ID
+    handleRadioChange() {
+      this.getRoleListByUser();
+    },
+    // 角色-获取角色列表（所有）
+    getAllRoleList() {
+      queryAllValidRole().then(res => {
+        this.roleList = res.data;
+      });
+    },
+    // 角色-获取角色列表（根据用户ID）
+    getRoleListByUser() {
+      const uemUserId = this.uemUserId;
+      queryRoleListByUser({ uemUserId }).then(res => {
+        this.checkedRoleIds = res.data.map(item => item.sysRoleId);
+        this.checkedRoleIds.length ? this.getResourceByRole() : this.$refs.treeRef.setCheckedKeys([]); // 清空勾选值
+      });
+    },
+    // 角色-选择角色ID
+    handleCheckBoxChange() {
+      this.checkedRoleIds.length ? this.getResourceByRole() : this.$refs.treeRef.setCheckedKeys([]); // 清空勾选值
+    },
+    // 设置树的禁用状态
+    loopModuleTreeDisabled(arr) {
+      arr.forEach(item => {
+        this.$set(item, 'disabled', false);
+        this.$refs.treeRef.setCheckedKeys(this.defaultCheckedKeys);
+        this.$set(item, 'disabled', true);
+        if (item.childrenResourceList && item.childrenResourceList.length > 0) {
+          this.loopModuleTreeDisabled(item.childrenResourceList);
+        }
+      });
+    },
+    // 权限-获取资源列表(所有)
+    getAllResource() {
+      queryAllValidResource().then(res => {
+        this.treeData = res.data;
+        this.loopModuleTreeDisabled(this.treeData);
+      });
+    },
+    // 权限-获取资源列表(根据角色ID)
+    getResourceByRole() {
+      const sysRoleId = this.checkedRoleIds;
+      queryResourceByRole(sysRoleId).then(res => {
+        this.defaultCheckedKeys = res.data.map(item => item.sysResourceId);
+        this.loopModuleTreeDisabled(this.treeData);
+      });
+    },
     // 提交表单信息
     handleSave() {
       if (!this.uemUserId) {
         this.$message.error('请选择用户');
         return false;
       }
-      if (!this.roleIds.length) {
+      if (!this.checkedRoleIds.length) {
         this.$message.error('请选择角色');
         return false;
       }
-    },
-    // 通过 node 获取
-    getCheckedNodes() {
-      const CheckedIds = this.$refs.treeRef.getCheckedNodes();
-      console.log('【 CheckedIds 】-179', CheckedIds);
-    },
-    // 通过 key 获取
-    getCheckedKeys() {
-      const checkedKeys = this.$refs.treeRef.getCheckedKeys();
-      this.checkedIds = checkedKeys;
-      console.log('【 CheckedIds 】-179', checkedKeys);
-    },
-    handleNodeClick(data) {
-      // console.log('【 data 】-173', data)
-    },
-    handleCheckChange(data, checked, indeterminate) {
-      // console.log('【 data, checked, indeterminate 】-176', data, checked, indeterminate)
-      this.getCheckedNodes();
-      this.getCheckedKeys();
+      const param = this.checkedRoleIds.map(item => {
+        return {
+          uemUserId: this.uemUserId,
+          sysRoleId: item
+        };
+      });
+      bindUserAndRole(param).then(res => {
+        this.$message.success(res.data);
+      });
     },
     // 获取表格数据
     getTableData() {
       queryUemUser({
-        currentPage: this.params.currentPage,
+        pageNo: this.params.currentPage,
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
@@ -238,9 +245,11 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteUemUser({ uemUserId }).then(res => {
+        unbindAllRoleOfUser({ uemUserId }).then(res => {
           this.$message.success('操作成功');
-          this.getTableData();
+          // 重置
+          this.checkedRoleIds = []
+          this.$refs.treeRef.setCheckedKeys([]); // 清空勾选值
         });
       });
     }

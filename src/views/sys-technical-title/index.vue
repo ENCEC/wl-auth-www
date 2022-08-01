@@ -68,6 +68,7 @@ import {
   updateSysTechnicalTitle,
   deleteSysTechnicalTitle
 } from '@/api/sys-technical-title.js';
+
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
@@ -104,7 +105,6 @@ export default {
             class: 'filter-item',
             prop: 'postName',
             // width: "200px",
-
             label: '所属岗位',
             placeholder: '请选择所属岗位',
             optionLabel: 'display_name',
