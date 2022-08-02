@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:45:36
+ * @LastEditTime: 2022-08-02 11:03:30
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { queryRoleAndResource, saveSysRole, updateSysRole } from '@/api/role-manage';
+import { queryRoleAndResourceById, saveSysRole, updateSysRole } from '@/api/role-manage';
 import { queryAllValidResource } from '@/api/right-manage'; export default {
   components: {},
   // inheritAttrs: false,
@@ -130,6 +130,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
   data() {
     return {
       formData: {
+        sysRoleId: '',
         roleName: '',
         remark: '',
         sysResourceIdList: []
@@ -171,7 +172,6 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
   },
   watch: {},
   created() {
-    this.getDetailInfo()
     this.getAllResource();
   },
   mounted() {},
@@ -182,23 +182,13 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
         this.treeData = res.data;
       });
     },
-    // 通过 node 获取
-    getCheckedNodes() {
-      const sysResourceIdList = this.$refs.treeRef.getCheckedNodes();
-      console.log('【 sysResourceIdList 】-179', sysResourceIdList);
-    },
     // 通过 key 获取
     getCheckedKeys() {
       const checkedKeys = this.$refs.treeRef.getCheckedKeys();
       this.formData.sysResourceIdList = checkedKeys;
       console.log('【 sysResourceIdList 】-179', checkedKeys);
     },
-    handleNodeClick(data) {
-      // console.log('【 data 】-173', data)
-    },
     handleCheckChange(data, checked, indeterminate) {
-      // console.log('【 data, checked, indeterminate 】-176', data, checked, indeterminate)
-      this.getCheckedNodes();
       this.getCheckedKeys();
     },
     // 关闭弹框
@@ -206,15 +196,23 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       this.$emit('update:visible', false);
       this.$refs['elForm'].resetFields();
     },
-    // 获取用户信息
+    // 根据id获取信息
     getDetailInfo() {
-      queryRoleAndResource({
+      queryRoleAndResourceById({
         sysRoleId: this.editData.sysRoleId
       }).then(res => {
+        const obj = res[0]
+        const sysResourceIdList = res.map(item => item.sysResourceId.toString())
+        const sysRoleResourceIdList = res.map(item => item.sysRoleResourceId.toString())
+        this.defaultCheckedKeys = sysResourceIdList
+        const { roleName, remark, creatorName, createTime } = obj
         this.formData = {
-          ...this.formData,
-          ...res.data[0]
+          ...this.formData, roleName, remark, creatorName, createTime,
+          // ...obj,creatorName
+          sysResourceIdList,
+          sysRoleResourceIdList
         };
+        console.log('【 this.formData 】-214', this.formData)
       });
     },
     // 提交表单信息
@@ -222,6 +220,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
           const funcName = this.editData.sysRoleId ? updateSysRole : saveSysRole;
+          this.formData.sysRoleId = this.editData.sysRoleId
           funcName(this.formData).then(res => {
             this.$message.success(res.data);
             this.$emit('getTableData', '');

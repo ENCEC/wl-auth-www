@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 13:28:31
+ * @LastEditTime: 2022-08-02 10:05:36
  * @Description:系统管理-角色管理
 -->
 
@@ -63,8 +63,9 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <!-- 新增/修改用户 -->
+    <!-- 新增/修改弹框 -->
     <CreateDialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       :edit-data="editData"
       :type="openType"

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:28:22
+ * @LastEditTime: 2022-08-02 10:11:48
  * @Description:
 -->
 <template>
@@ -54,7 +54,7 @@
       @current-change="handleCurrentChange"
     />
     <!-- 新增/修改用户 -->
-    <CreateDialog :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
+    <CreateDialog v-if="dialogVisible" :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
   </div>
 </template>
 <script>

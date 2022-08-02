@@ -16,9 +16,9 @@ export function queryRoleByPage(data) {
 }
 
 // 根据id查询角色以及绑定的权限信息
-export function queryRoleAndResource(query) {
+export function queryRoleAndResourceById(query) {
   return request({
-    url: '/sysRole/queryRoleAndResource',
+    url: '/sysRole/queryRoleAndResourceById',
     method: 'get',
     params: query
   });
