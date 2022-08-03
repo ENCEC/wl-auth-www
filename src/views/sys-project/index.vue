@@ -49,12 +49,13 @@ import {
   queryUemUserName,
   addUemProject,
   updateUemProject,
-  deleteSysPost
+  deleteUemProject
 } from '@/api/sys-project.js';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
 import examineDialog from './component/examine-dialog';
+const dutyNameOptions = []
 const projectStatusOptions = [
   { key: 0, display_name: '未开始' },
   { key: 1, display_name: '进行中' },
@@ -65,31 +66,29 @@ const projectStatusOptions = [
 ];
 const projectRolesColumns = [
   {
-    title: '姓名',
-    field: 'name'
+    field: 'account',
+    title: '用户名'
+  },
+  {
+    field: 'name',
+    title: '姓名'
+  },
+  {
+    field: 'mobile',
+    title: '联系电话'
+  },
+  {
+    field: 'email',
+    title: '电子邮箱'
   }
 ];
-// const projectRolesQueryMethod = function({ keyword, pageSize, currentPage }) {
-//   debugger
-//   return new Promise((resolve, reject) => {
-//     queryUemUserName({ name: keyword, pageSize, currentPage }).then((res) => {
-//       console.log(res);
-//       debugger;
-//       resolve({
-//         records: res.data.data,
-//         total: res.data.total,
-//         recordStart: res.data.recordStart,
-//         recordEnd: res.data.recordEnd
-//       });
-//     });
-//   });
-// };
 
 export default {
   name: 'SysProject',
   components: { tableComponent, filterPanel, formPanel, examineDialog },
   data() {
     return {
+      dutyNameOptions,
       dialogButtonLoading: false,
       formConfig: {
         inline: false,
@@ -114,7 +113,7 @@ export default {
             placeholder: '请输入客户名称'
           },
           {
-            type: 'input',
+            type: 'number',
             prop: 'fcy',
             // width: "200px",
             label: '项目金额',
@@ -135,109 +134,110 @@ export default {
             options: projectStatusOptions
           },
 
-          // {
-          //   type: "associate",
-          //   label: "项目总监",
-          //   prop: "chiefName",
-          //   examine: true,
-          //   // width: "200px",
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: false,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     debugger;
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
-          // {
-          //   type: "associate",
-          //   label: "项目经理",
-          //   prop: "dutyName",
-          //   // width: "200px",
-          //   examine: true,
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: false,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
-          // {
-          //   type: "associate",
-          //   label: "开发经理",
-          //   prop: "devDirectorName",
-          //   // width: "200px",
-          //   examine: true,
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: false,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
-          // {
-          //   type: "associate",
-          //   label: "需求组长",
-          //   prop: "demandName",
-          //   // width: "200px",
-          //   examine: true,
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: false,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
-          // {
-          //   type: "associate",
-          //   label: "开发成员",
-          //   prop: "genDevUsers",
-          //   // width: "200px",
-          //   examine: true,
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: true,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
-          // {
-          //   type: "associate",
-          //   label: "需求成员",
-          //   prop: "genDemandUsers",
-          //   // width: "200px",
-          //   examine: true,
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: true,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
+          {
+            type: 'associate',
+            label: '项目总监',
+            prop: 'chiefName',
+            examine: true,
+            // width: "200px",
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: false,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              debugger
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '项目经理',
+            prop: 'dutyName',
+            // width: "200px",
+            examine: true,
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: false,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '开发经理',
+            prop: 'devDirectorName',
+            // width: "200px",
+            examine: true,
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: false,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '需求组长',
+            prop: 'demandName',
+            // width: "200px",
+            examine: true,
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: false,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              debugger
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '开发成员',
+            prop: 'genDevUsers',
+            // width: "200px",
+            examine: true,
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              //   this.listQuery.status=optionVal
+            }
+          },
+          {
+            type: 'associate',
+            label: '需求成员',
+            prop: 'genDemandUsers',
+            // width: "200px",
+            examine: true,
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            // displayInit: "name",
+            columns: projectRolesColumns,
+            multiple: true,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              //   this.listQuery.status=optionVal
+            }
+          },
 
           {
             type: 'datePicker',
@@ -253,7 +253,6 @@ export default {
             endPlaceholder: '结束日期',
             clearable: false,
             changeDate: (date) => {
-              debugger;
               this.temp.planStartTime = date[0];
               this.temp.planEndTime = date[1];
             }
@@ -264,7 +263,7 @@ export default {
       filterConfig: {
         inline: false,
         gutter: 5, // 栅格的间隔
-        col: 6, // 栅格的格数
+        col: 8, // 栅格的格数
         operateCol: 24,
         labelWidth: '80px',
         labelPosition: 'left',
@@ -275,30 +274,28 @@ export default {
             prop: 'projectName',
             width: '200px',
             clearable: false,
-            placeholder: '请输入项目名称',
-            col: 8
+            placeholder: '请输入项目名称'
           },
-          // {
-          //   type: "associate",
-          //   label: "项目经理",
-          //   prop: "dutyName",
-          //   width: "200px",
-          //   valueProp: "name",
-          //   labelProp: "name",
-          //   displayInit: "name",
-          //   columns: projectRolesColumns,
-          //   mulitiple: true,
-          //   clearable: true,
-          //   queryMethod: projectRolesQueryMethod,
-          //   changeSelect: (value, selectedRows) => {
-          //     //   this.listQuery.status=optionVal
-          //   },
-          // },
+          {
+            type: 'associate',
+            label: '项目经理',
+            prop: 'dutyName',
+            width: '200px',
+            valueProp: 'uemUserId',
+            labelProp: 'name',
+            displayInit: 'name',
+            columns: projectRolesColumns,
+            multiple: false,
+            clearable: true,
+            queryMethod: this.projectRolesQueryMethod,
+            changeSelect: () => {
+              //   this.listQuery.status=optionVal
+            }
+          },
           {
             type: 'select',
             label: '项目状态',
             prop: 'status',
-            col: 8,
             width: '200px',
             optionLabel: 'display_name',
             optionValue: 'key',
@@ -312,7 +309,6 @@ export default {
             type: 'input',
             label: '项目客户',
             prop: 'customer',
-            col: 8,
             width: '200px',
             clearable: false,
             placeholder: '请输入客户名称'
@@ -381,8 +377,10 @@ export default {
         },
         {
           prop: 'dutyName',
-          label: '项目经理'
-          // width: "110",
+          label: '项目经理',
+          formatter: (row) => {
+            return this.getDutyName(row.dutyName);
+          }
         },
         {
           prop: 'planStartTime',
@@ -520,8 +518,36 @@ export default {
   created() {
     this.getList();
     // this.initPostSelect();
+    this.initDutyNameOptions();
   },
   methods: {
+    initDutyNameOptions() {
+      const params = {
+        pageSize: 1000,
+        currentPage: 1
+      };
+      queryUemUserName(params)
+        .then((res) => {
+          res.data.records.forEach((item) => {
+            this.dutyNameOptions.push({
+              key: item.uemUserId,
+              display_name: item.name
+            });
+          });
+        })
+        .catch(() => {
+          this.$message.error('初始化岗位失败');
+        });
+    },
+    getDutyName(dutyName) {
+      const find = this.dutyNameOptions.find(item => {
+        return item.key === dutyName
+      })
+      if (find) {
+        return find.display_name
+      }
+      return ''
+    },
     getProjectStatus(row) {
       if (row) {
         const find = projectStatusOptions.find((item) => {
@@ -551,6 +577,12 @@ export default {
               index +
               1;
             item.planStartEndDate = [item.planStartTime, item.planEndTime];
+            item.genDemandUsers = item.genDemandUsers
+              ? item.genDemandUsers.split(',')
+              : [];
+            item.genDevUsers = item.genDevUsers
+              ? item.genDevUsers.split(',')
+              : [];
           });
 
           this.totalRecord = response.data.totalRecord;
@@ -587,7 +619,6 @@ export default {
       });
     },
     handleUpdate(row) {
-      debugger
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = 'update';
       this.dialogFormVisible = true;
@@ -598,10 +629,13 @@ export default {
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
+          const tempData = Object.assign({}, this.temp, {
+            genDemandUsers: this.temp.genDemandUsers.join(','),
+            genDevUsers: this.temp.genDevUsers.join(',')
+          });
           this.dialogButtonLoading = true;
-          addUemProject(this.temp)
+          addUemProject(tempData)
             .then(() => {
-              debugger;
               this.$message({
                 title: '成功',
                 message: '创建成功',
@@ -609,7 +643,7 @@ export default {
                 duration: 2000
               });
               this.dialogButtonLoading = false;
-              this.handleResetForm();
+              // this.handleResetForm();
               this.dialogFormVisible = false;
               this.getList();
             })
@@ -626,12 +660,13 @@ export default {
       });
     },
     updateData() {
-      debugger;
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.dialogButtonLoading = true;
-          const tempData = Object.assign({}, this.temp);
-          debugger;
+          const tempData = Object.assign({}, this.temp, {
+            genDemandUsers: this.temp.genDemandUsers.join(','),
+            genDevUsers: this.temp.genDevUsers.join(',')
+          });
           updateUemProject(tempData)
             .then(() => {
               this.$message({
@@ -640,7 +675,7 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.handleResetForm();
+              // this.handleResetForm();
               this.dialogButtonLoading = false;
               this.dialogFormVisible = false;
               this.getList();
@@ -658,7 +693,6 @@ export default {
       });
     },
     handleDelete(row) {
-      debugger;
       this.$confirm(
         '您确定要删除该项目信息吗?删除后该项目信息不可恢复。',
         '提示',
@@ -670,7 +704,7 @@ export default {
       )
         .then(() => {
           const _this = this;
-          deleteSysPost(row.uemProjectById)
+          deleteUemProject(row.uemProjectId)
             .then(() => {
               this.$message({
                 type: 'success',
@@ -712,8 +746,22 @@ export default {
       };
     },
     handleDialogClose() {
-      // this.handleResetForm();
+      this.$nextTick(() => {
+        this.handleResetForm();
+      });
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
+    },
+    projectRolesQueryMethod({ keyword, pageSize, currentPage }) {
+      return new Promise((resolve) => {
+        queryUemUserName({ name: keyword, pageSize, currentPage }).then(
+          (res) => {
+            resolve({
+              records: res.data.records,
+              total: res.data.totalRecord
+            });
+          }
+        );
+      });
     }
   }
 };

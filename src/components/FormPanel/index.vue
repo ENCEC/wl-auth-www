@@ -4,7 +4,6 @@
       <slot name="formItem" />
       <el-col
         v-for="(item, index) in formConfig.formItemList"
-        v-show="dialogStatus==='examine'?item.examine:true"
         :key="item.prop"
         :span="item.col ? item.col : formConfig.col"
       >
@@ -32,8 +31,8 @@
             @change="radioVal => {item.changeRadio? item.changeRadio(radioVal, item, index): ''}"
           >
             <el-radio
-              v-for="(radio, index) in item.radioArr"
-              :key="index"
+              v-for="(radio, radioIndex) in item.radioArr"
+              :key="radioIndex"
               :label="radio[item.radioLabel?item.radioLabel:'label']"
               :disabled="radio.disabled"
             >{{ radio[item.radioLabel?item.radioLabel:'label'] }}</el-radio>
@@ -45,8 +44,8 @@
             @change="checkVal => { item.changeCheck? item.changeCheck(checkVal, item, index): ''}"
           >
             <el-checkbox
-              v-for="(checkbox, index) in item.checkboxArr"
-              :key="index"
+              v-for="(checkbox, checkboxIndex) in item.checkboxArr"
+              :key="checkboxIndex"
               :label="checkbox[item.checkLabel?item.checkLabel:'label']"
               :disabled="checkbox.disabled"
             >{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
@@ -77,12 +76,13 @@
             :value-prop="item.valueProp"
             :label-prop="item.labelProp"
             :display-init="item.displayInit"
+            :placeholder="item.placeholder"
             :columns="item.columns"
             :clearable="item.clearable"
             :multiple="item.multiple"
-            :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
+            :query-method="item.queryMethod"
             :style="{width:item.width?item.width:'100%'}"
-            @change="item.changeSelect?item.changeSelect(row,selectedRows):''"
+            @change="item.changeSelect?item.changeSelect:''"
           />
           <!-- cascader -->
           <el-cascader

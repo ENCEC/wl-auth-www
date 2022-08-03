@@ -44,7 +44,7 @@ export function updateUemProject(data) {
   })
 }
 
-export function deleteSysPost(uemProjectById) {
+export function deleteUemProject(uemProjectById) {
   return request({
     url: '/uemProject/deleteUemProject',
     method: 'get',

@@ -48,10 +48,10 @@ module.exports = {
       //   }
       // },
       '/': {
-        target: 'http://172.16.8.147:8082/', // 子睿
+        // target: 'http://172.16.8.147:8082/', // 子睿
         // target: 'http://172.16.7.146:8082/', // 梓桐
-        // target: 'http://172.16.18.90:8082/', // 魏琪
-        // target: 'http://172.16.19.84:8082/', // 谭锦鹏
+        // target: 'http://172.16.18.90:8080/', // 魏琪
+        target: 'http://172.16.19.84:8082/', // 谭锦鹏
         ws: true,
         changeOrigin: true,
         pathRewrite: {

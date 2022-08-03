@@ -38,7 +38,7 @@
               :style="{width:item.width?item.width:'100%'}"
               @change="checkVal => { item.changeCheck? item.changeCheck(checkVal, item, index): ''}"
             >
-              <el-checkbox v-for="(checkbox,index) in item.checkboxArr" :key="index" :label="checkbox[item.checkLabel?item.checkLabel:'label']" :disabled="checkbox.disabled">{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
+              <el-checkbox v-for="(checkbox,checkboxIndex) in item.checkboxArr" :key="checkboxIndex" :label="checkbox[item.checkLabel?item.checkLabel:'label']" :disabled="checkbox.disabled">{{ checkbox[item.checkLabel?item.checkLabel:'label'] }}</el-checkbox>
             </el-checkbox-group>
             <!-- select -->
             <el-select
@@ -69,9 +69,9 @@
               :columns="item.columns"
               :clearable="item.clearable"
               :multiple="item.multiple"
-              :query-method="({keyword,pageSize,currentPage})=>{item.changeSelect? item.queryMethod({keyword,pageSize,currentPage}): ''}"
+              :query-method="item.queryMethod"
               :style="{width:item.width?item.width:'100%'}"
-              @change="optionVal => {item.changeSelect? item.changeSelect(value, selectedRows): ''}"
+              @change="optionVal => {item.changeSelect? item.changeSelect(): ''}"
             />
             <!-- cascader -->
             <el-cascader
@@ -158,7 +158,7 @@
         <el-col :span="filterConfig.operateCol ? filterConfig.operateCol : filterConfig.col">
           <el-form-item>
             <div class="operate-area">
-              <el-button v-for="(item,index) in filterConfig.operates" :key="index" :type="item.type" :size="item.size" :disabled="item.disabled" :plain="item.plain" :icon="item.icon" @click.native.prevent="item.method ? item.method(item, index) : ''">{{ item.buttonLabel }}</el-button>
+              <el-button v-for="(item,operatesIndex) in filterConfig.operates" :key="operatesIndex" :type="item.type" :size="item.size" :disabled="item.disabled" :plain="item.plain" :icon="item.icon" @click.native.prevent="item.method ? item.method(item, operatesIndex) : ''">{{ item.buttonLabel }}</el-button>
 
             </div>
             <!-- <slot name="operate"></slot> -->

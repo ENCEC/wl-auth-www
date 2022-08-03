@@ -7,9 +7,11 @@
       width="800px"
       center
       destroy-on-close
+      @close="handleDialogClose"
     >
       <el-form
         ref="elForm"
+        v-loading="dialogLoading"
         :model="temp"
         size="medium"
         label-position="left"
@@ -26,7 +28,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="项目经理">
-              <el-input :value="demandName" />
+              <el-input :value="dutyName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -36,17 +38,25 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="需求组长">
-              <el-input :value="dutyName" />
+              <el-input :value="demandName" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="开发组员">
-              <el-input :value="genDevUsersName" />
+              <el-input
+                :auto-size="{ minRows: 2, maxRows: 4 }"
+                type="textarea"
+                :value="genDevUsers"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="需求组员">
-              <el-input :value="genDemandUsersName" />
+              <el-input
+                :auto-size="{ minRows: 2, maxRows: 4 }"
+                type="textarea"
+                :value="genDemandUsers"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -69,10 +79,11 @@ export default {
   props: {},
   data() {
     return {
+      successNum: 0,
+      dialogLoading: false,
       dialogVisible: false,
       dialogTitle: '查看项目组成员',
-      temp: {
-      },
+      temp: {},
       // 项目总监
       chiefName: '',
       // 需求组长
@@ -82,10 +93,10 @@ export default {
       // 项目经理
       dutyName: '',
       // 需求组员ID
-      genDemandUsersName: '',
+      genDemandUsers: '',
       // 开发组员ID
-      genDevUsersName: ''
-    };
+      genDevUsers: ''
+    }
   },
 
   watch: {},
@@ -95,69 +106,104 @@ export default {
     open(row) {
       this.dialogVisible = true;
       if (row) {
-        debugger;
-        this.temp = row;
+        this.examineRequest();
+        this.dialogLoading = true;
+        this.temp = Object.assign({}, row);
         this.getChiefName();
         this.getDemandName();
         this.getDevDirectortName();
         this.getDutyName();
-        this.getGenDevUsersName()
-        this.getGenDemandUsersName();
+        this.getGenDevUsers();
+        this.getGenDemandUsers();
       }
     },
-    getChiefName() {
-      const nameArr = [];
-      queryViewDetailById(this.temp.chiefId).then((res) => {
-        res.data.forEach((item) => {
-          nameArr.push(item.name);
-        });
-        this.chiefName = nameArr.join(',');
+    examineRequest() {
+      var timer = setInterval(() => {
+        if (this.successNum >= 6) {
+          this.dialogLoading = false;
+          clearInterval(timer);
+        }
       });
+    },
+    getChiefName() {
+      if (this.temp.chiefName) {
+        const nameArr = [];
+        queryViewDetailById(this.temp.chiefName).then((res) => {
+          res.data.forEach((item) => {
+            nameArr.push(item.name);
+          });
+          this.chiefName = nameArr.join(',');
+          this.successNum += 1;
+        });
+      } else {
+        this.successNum += 1;
+      }
     },
     getDemandName() {
-      const nameArr = [];
-      queryViewDetailById(this.temp.demandId).then((res) => {
-        res.data.forEach((item) => {
-          nameArr.push(item.name);
+      if (this.temp.demandName) {
+        const nameArr = [];
+        queryViewDetailById(this.temp.demandName).then((res) => {
+          res.data.forEach((item) => {
+            nameArr.push(item.name);
+          });
+          this.demandName = nameArr.join(',');
+          this.successNum += 1;
         });
-        this.demandName = nameArr.join(',');
-      });
+      } else {
+        this.successNum += 1;
+      }
     },
     getDevDirectortName() {
-      const nameArr = [];
-      queryViewDetailById(this.temp.devDirectorId).then((res) => {
-        res.data.forEach((item) => {
-          nameArr.push(item.name);
+      if (this.temp.devDirectorName) {
+        const nameArr = [];
+        queryViewDetailById(this.temp.devDirectorName).then((res) => {
+          res.data.forEach((item) => {
+            nameArr.push(item.name);
+          });
+          this.devDirectorName = nameArr.join(',');
+          this.successNum += 1;
         });
-        this.devDirectorName = nameArr.join(',');
-      });
+      } else {
+        this.successNum += 1;
+      }
     },
     getDutyName() {
       const nameArr = [];
-      queryViewDetailById(this.temp.dutyId).then((res) => {
+      queryViewDetailById(this.temp.dutyName).then((res) => {
         res.data.forEach((item) => {
           nameArr.push(item.name);
         });
         this.dutyName = nameArr.join(',');
+        this.successNum += 1;
       });
     },
-    getDenDemandUsersName() {
+    getGenDemandUsers() {
       const nameArr = [];
-      queryViewDetailById(this.temp.genDemandUsers).then((res) => {
+      queryViewDetailById(this.temp.genDemandUsers.join(',')).then((res) => {
         res.data.forEach((item) => {
           nameArr.push(item.name);
         });
-        this.genDemandUsersName = nameArr.join(',');
+        this.genDemandUsers = nameArr.join(',');
+        this.successNum += 1;
       });
     },
-    getDenDevUsersName() {
+    getGenDevUsers() {
       const nameArr = [];
-      queryViewDetailById(this.temp.genDevUsers).then((res) => {
+      queryViewDetailById(this.temp.genDevUsers.join(',')).then((res) => {
         res.data.forEach((item) => {
           nameArr.push(item.name);
         });
-        this.genDevUsersName = nameArr.join(',');
+        this.genDevUsers = nameArr.join(',');
+        this.successNum += 1;
       });
+    },
+    handleDialogClose() {
+      this.$nextTick(() => {
+        this.resetTemp();
+      });
+    },
+    resetTemp() {
+      (this.chiefName = '')(this.demandName = '')(this.devDirectorName = '')(this.dutyName = '')(this.genDemandUsers = '')(this.genDevUsers = '')(this.successNum = 0)
     }
   }
 };
