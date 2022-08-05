@@ -17,6 +17,7 @@
       />
       <div slot="footer" class="dialog-footer">
         <el-button
+          :loading="dialogButtonLoading"
           type="primary"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
@@ -85,6 +86,7 @@ export default {
   components: { tableComponent, filterPanel, formPanel },
   data() {
     return {
+      dialogButtonLoading: false,
       formConfig: {
         inline: false,
         col: 12,
@@ -369,7 +371,7 @@ export default {
           this.postTypeOptions.push({ key: item.postName, display_name: item.postName })
         })
       }).catch(() => {
-        // this.$message.error('初始化岗位失败')
+        this.$message.error('初始化岗位失败')
       })
     },
     handleIndexChange(currentPage) {
@@ -392,9 +394,7 @@ export default {
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
         // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
+        this.listLoading = false;
       });
     },
 
@@ -456,6 +456,7 @@ export default {
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.dialogButtonLoading = true;
           //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
           //   this.temp.author = 'vue-element-admin'
           saveSysTechnicalTitle(this.temp)
@@ -469,6 +470,7 @@ export default {
                 type: 'success',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
               this.getList()
             })
             .catch(() => {
@@ -478,6 +480,7 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });
@@ -486,6 +489,7 @@ export default {
       debugger
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.dialogButtonLoading = true;
           const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
           debugger
           updateSysTechnicalTitle(tempData)
@@ -497,6 +501,7 @@ export default {
                 type: 'success',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
               this.getList()
             })
             .catch(() => {
@@ -507,6 +512,7 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });

@@ -13,17 +13,21 @@
       <form-panel
         ref="formPanel"
         :form-config="formConfig"
+        :dialog-status="dialogStatus"
         :value="temp"
         :rules="rules"
       />
       <div slot="footer" class="dialog-footer">
         <el-button
           type="primary"
+          :loading="dialogButtonLoading"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
         <el-button @click="dialogFormVisible = false">取消</el-button>
       </div>
     </el-dialog>
+
+    <examine-dialog ref="examineDialog" />
 
     <!-- 表格组件 -->
     <table-component
@@ -40,17 +44,18 @@
 </template>
 
 <script>
-import request from '@/utils/request'
 import {
   queryUemProject,
-  ViewDetailUemProject,
+  queryUemUserName,
   addUemProject,
   updateUemProject,
-  deleteSysPost
-} from '@/api/sys-technical-title.js';
+  deleteUemProject
+} from '@/api/sys-project.js';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
+import examineDialog from './component/examine-dialog';
+const dutyNameOptions = []
 const projectStatusOptions = [
   { key: 0, display_name: '未开始' },
   { key: 1, display_name: '进行中' },
@@ -61,29 +66,30 @@ const projectStatusOptions = [
 ];
 const projectRolesColumns = [
   {
-    title: '姓名',
-    field: 'cname'
+    field: 'account',
+    title: '用户名'
+  },
+  {
+    field: 'name',
+    title: '姓名'
+  },
+  {
+    field: 'mobile',
+    title: '联系电话'
+  },
+  {
+    field: 'email',
+    title: '电子邮箱'
   }
 ];
 
 export default {
   name: 'SysProject',
-  components: { tableComponent, filterPanel, formPanel },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
-      };
-      return statusMap[status];
-    },
-    typeFilter(type) {
-      // return calendarTypeKeyValue[type];
-    }
-  },
+  components: { tableComponent, filterPanel, formPanel, examineDialog },
   data() {
     return {
+      dutyNameOptions,
+      dialogButtonLoading: false,
       formConfig: {
         inline: false,
         col: 12,
@@ -107,7 +113,7 @@ export default {
             placeholder: '请输入客户名称'
           },
           {
-            type: 'input',
+            type: 'number',
             prop: 'fcy',
             // width: "200px",
             label: '项目金额',
@@ -132,15 +138,17 @@ export default {
             type: 'associate',
             label: '项目总监',
             prop: 'chiefName',
+            examine: true,
             // width: "200px",
-            valueProp: 'name',
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
+              debugger
               //   this.listQuery.status=optionVal
             }
           },
@@ -149,14 +157,15 @@ export default {
             label: '项目经理',
             prop: 'dutyName',
             // width: "200px",
-            valueProp: 'name',
+            examine: true,
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
               //   this.listQuery.status=optionVal
             }
           },
@@ -165,14 +174,15 @@ export default {
             label: '开发经理',
             prop: 'devDirectorName',
             // width: "200px",
-            valueProp: 'name',
+            examine: true,
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
               //   this.listQuery.status=optionVal
             }
           },
@@ -181,14 +191,16 @@ export default {
             label: '需求组长',
             prop: 'demandName',
             // width: "200px",
-            valueProp: 'name',
+            examine: true,
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
+              debugger
               //   this.listQuery.status=optionVal
             }
           },
@@ -197,14 +209,15 @@ export default {
             label: '开发成员',
             prop: 'genDevUsers',
             // width: "200px",
-            valueProp: 'name',
+            examine: true,
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: true,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
               //   this.listQuery.status=optionVal
             }
           },
@@ -213,14 +226,15 @@ export default {
             label: '需求成员',
             prop: 'genDemandUsers',
             // width: "200px",
-            valueProp: 'name',
+            examine: true,
+            valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
+            // displayInit: "name",
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: true,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
               //   this.listQuery.status=optionVal
             }
           },
@@ -239,9 +253,8 @@ export default {
             endPlaceholder: '结束日期',
             clearable: false,
             changeDate: (date) => {
-              debugger
-              this.temp.planStartDate = date[0]
-              this.temp.planEndDate = date[1]
+              this.temp.planStartTime = date[0];
+              this.temp.planEndTime = date[1];
             }
           }
         ]
@@ -250,7 +263,7 @@ export default {
       filterConfig: {
         inline: false,
         gutter: 5, // 栅格的间隔
-        col: 6, // 栅格的格数
+        col: 8, // 栅格的格数
         operateCol: 24,
         labelWidth: '80px',
         labelPosition: 'left',
@@ -261,22 +274,21 @@ export default {
             prop: 'projectName',
             width: '200px',
             clearable: false,
-            placeholder: '请输入项目名称',
-            col: 8
+            placeholder: '请输入项目名称'
           },
           {
             type: 'associate',
             label: '项目经理',
             prop: 'dutyName',
             width: '200px',
-            valueProp: 'name',
+            valueProp: 'uemUserId',
             labelProp: 'name',
             displayInit: 'name',
             columns: projectRolesColumns,
-            mulitiple: true,
+            multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: (value, selectedRows) => {
+            changeSelect: () => {
               //   this.listQuery.status=optionVal
             }
           },
@@ -284,7 +296,6 @@ export default {
             type: 'select',
             label: '项目状态',
             prop: 'status',
-            col: 8,
             width: '200px',
             optionLabel: 'display_name',
             optionValue: 'key',
@@ -298,7 +309,6 @@ export default {
             type: 'input',
             label: '项目客户',
             prop: 'customer',
-            col: 8,
             width: '200px',
             clearable: false,
             placeholder: '请输入客户名称'
@@ -368,34 +378,36 @@ export default {
         {
           prop: 'dutyName',
           label: '项目经理',
-          width: '110'
+          formatter: (row) => {
+            return this.getDutyName(row.dutyName);
+          }
         },
         {
-          prop: 'planStartDate',
-          label: '计划开始时间',
-          width: '110'
+          prop: 'planStartTime',
+          label: '计划开始时间'
+          // width: "110",
         },
         {
-          prop: 'planEndDate',
-          label: '计划结束时间',
-          width: '110'
+          prop: 'planEndTime',
+          label: '计划结束时间'
+          // width: "110",
         },
         {
           prop: 'actualStartTime',
-          label: '实际开始时间',
-          width: '110'
+          label: '实际开始时间'
+          // width: "110",
         },
         {
           prop: 'actualEndTime',
-          label: '实际结束时间',
-          width: '110'
+          label: '实际结束时间'
+          // width: "110",
         },
 
         {
           prop: 'status',
           label: '状态',
           align: 'center',
-          width: '100',
+          // width: "100",
           formatter: (row) => {
             return this.getProjectStatus(row);
           }
@@ -405,27 +417,37 @@ export default {
         list: [
           {
             id: '1',
-            label: '编辑',
+            label: '查看项目成员',
             type: 'text',
             show: true,
             disabled: false,
-            method: (index, row) => {
-              this.handleUpdate(row);
+            method: (row) => {
+              this.handleExamine(row);
             }
           },
           {
             id: '2',
+            label: '编辑',
+            type: 'text',
+            show: true,
+            disabled: false,
+            method: (row) => {
+              this.handleUpdate(row);
+            }
+          },
+          {
+            id: '3',
             label: '删除',
             type: 'text',
             show: true,
             plain: false,
-            method: (index, row) => {
+            method: (row) => {
               this.handleDelete(row);
             }
           }
         ],
         fixed: false,
-        width: 230
+        width: 200
       }, // 列操作按钮
 
       tableKey: 0,
@@ -455,11 +477,10 @@ export default {
         genDevUsers: '',
         genDemandUsers: '',
         planStartEndDate: [],
-        planStartDate: '',
-        planEndDate: '',
+        planStartTime: '',
+        planEndTime: '',
         actualStartTime: '',
         actualEndTime: ''
-
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -474,9 +495,7 @@ export default {
         customer: [
           { required: true, message: '请输入客户名称', trigger: 'change' }
         ],
-        fcy: [
-          { required: true, message: '请输入项目金额', trigger: 'change' }
-        ],
+        fcy: [{ required: true, message: '请输入项目金额', trigger: 'change' }],
         status: [
           { required: true, message: '请选择项目状态', trigger: 'change' }
         ],
@@ -499,16 +518,44 @@ export default {
   created() {
     this.getList();
     // this.initPostSelect();
+    this.initDutyNameOptions();
   },
   methods: {
+    initDutyNameOptions() {
+      const params = {
+        pageSize: 1000,
+        currentPage: 1
+      };
+      queryUemUserName(params)
+        .then((res) => {
+          res.data.records.forEach((item) => {
+            this.dutyNameOptions.push({
+              key: item.uemUserId,
+              display_name: item.name
+            });
+          });
+        })
+        .catch(() => {
+          this.$message.error('初始化岗位失败');
+        });
+    },
+    getDutyName(dutyName) {
+      const find = this.dutyNameOptions.find(item => {
+        return item.key === dutyName
+      })
+      if (find) {
+        return find.display_name
+      }
+      return ''
+    },
     getProjectStatus(row) {
-      if (row && row.status) {
+      if (row) {
         const find = projectStatusOptions.find((item) => {
-          return item.status === row.status;
+          return item.key === row.status;
         });
         return find.display_name;
       }
-      return '未知'
+      return '未知';
     },
     handleIndexChange(currentPage) {
       this.listQuery.currentPage = currentPage;
@@ -521,23 +568,31 @@ export default {
     changePagination() {},
     getList() {
       this.listLoading = true;
-      queryUemProject(this.listQuery).then((response) => {
-        this.list = response.data.records;
-        this.list.forEach((item, index) => {
-          item.count =
-            (this.listQuery.currentPage - 1) * this.listQuery.pageSize +
-            index +
-            1;
-          item.planStartEndDate = [item.planStartTime, item.planEndTime]
-        });
+      queryUemProject(this.listQuery)
+        .then((response) => {
+          this.list = response.data.records;
+          this.list.forEach((item, index) => {
+            item.count =
+              (this.listQuery.currentPage - 1) * this.listQuery.pageSize +
+              index +
+              1;
+            item.planStartEndDate = [item.planStartTime, item.planEndTime];
+            item.genDemandUsers = item.genDemandUsers
+              ? item.genDemandUsers.split(',')
+              : [];
+            item.genDevUsers = item.genDevUsers
+              ? item.genDevUsers.split(',')
+              : [];
+          });
 
-        this.totalRecord = response.data.totalRecord;
-        this.listQuery.totalRecord = response.data.totalRecord;
-        // Just to simulate the time of the request
-        setTimeout(() => {
+          this.totalRecord = response.data.totalRecord;
+          this.listQuery.totalRecord = response.data.totalRecord;
+          // Just to simulate the time of the request
           this.listLoading = false;
-        }, 1.5 * 1000);
-      });
+        })
+        .catch(() => {
+          debugger;
+        });
     },
 
     resetListQuery() {
@@ -551,6 +606,10 @@ export default {
         customer: ''
       };
       this.getList();
+    },
+    handleExamine(row) {
+      this.dialogStatus = 'examine';
+      this.$refs['examineDialog'].open(row);
     },
     handleAdd() {
       this.dialogStatus = 'create';
@@ -570,16 +629,22 @@ export default {
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          addUemProject(this.temp)
+          const tempData = Object.assign({}, this.temp, {
+            genDemandUsers: this.temp.genDemandUsers.join(','),
+            genDevUsers: this.temp.genDevUsers.join(',')
+          });
+          this.dialogButtonLoading = true;
+          addUemProject(tempData)
             .then(() => {
-              debugger;
-              this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
+              // this.handleResetForm();
+              this.dialogFormVisible = false;
               this.getList();
             })
             .catch(() => {
@@ -589,27 +654,30 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });
     },
     updateData() {
-      debugger;
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.dialogButtonLoading = true;
           const tempData = Object.assign({}, this.temp, {
-            status: this.temp.status ? '0' : '1'
+            genDemandUsers: this.temp.genDemandUsers.join(','),
+            genDevUsers: this.temp.genDevUsers.join(',')
           });
-          debugger;
           updateUemProject(tempData)
             .then(() => {
-              this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
                 message: '修改成功',
                 type: 'success',
                 duration: 2000
               });
+              // this.handleResetForm();
+              this.dialogButtonLoading = false;
+              this.dialogFormVisible = false;
               this.getList();
             })
             .catch(() => {
@@ -619,12 +687,12 @@ export default {
                 type: 'error',
                 duration: 2000
               });
+              this.dialogButtonLoading = false;
             });
         }
       });
     },
     handleDelete(row) {
-      debugger;
       this.$confirm(
         '您确定要删除该项目信息吗?删除后该项目信息不可恢复。',
         '提示',
@@ -636,7 +704,7 @@ export default {
       )
         .then(() => {
           const _this = this;
-          deleteSysPost(row.uemProjectById)
+          deleteUemProject(row.uemProjectId)
             .then(() => {
               this.$message({
                 type: 'success',
@@ -671,25 +739,28 @@ export default {
         genDevUsers: '',
         genDemandUsers: '',
         planStartEndDate: [],
-        planStartDate: '',
-        planEndDate: '',
+        planStartTime: '',
+        planEndTime: '',
         actualStartTime: '',
         actualEndTime: ''
       };
     },
     handleDialogClose() {
-      this.handleResetForm();
+      this.$nextTick(() => {
+        this.handleResetForm();
+      });
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
     },
     projectRolesQueryMethod({ keyword, pageSize, currentPage }) {
-      return request({
-        url: '/demo/users',
-        method: 'get',
-        params: {
-          keyword,
-          pageSize,
-          currentPage
-        }
+      return new Promise((resolve) => {
+        queryUemUserName({ name: keyword, pageSize, currentPage }).then(
+          (res) => {
+            resolve({
+              records: res.data.records,
+              total: res.data.totalRecord
+            });
+          }
+        );
       });
     }
   }
