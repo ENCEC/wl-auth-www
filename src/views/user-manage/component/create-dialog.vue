@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:32:50
+ * @LastEditTime: 2022-08-02 15:27:04
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -121,10 +121,10 @@
                   class="input-width"
                 >
                   <el-option
-                    v-for="(item, index) in staffTypeOptions"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="(item) in staffDutyOptions"
+                    :key="item.postId"
+                    :label="item.postName"
+                    :value="item.postId"
                   />
                 </el-select>
               </el-form-item>
@@ -168,6 +168,7 @@
 </template>
 <script>
 import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manage';
+import { querySysPost } from '@/api/sys-post.js';
 import { formRules } from './rules';
 
 export default {
@@ -217,17 +218,7 @@ export default {
           value: '1'
         }
       ],
-      // TODO
-      staffTypeOptions: [
-        {
-          label: '选项一',
-          value: '1'
-        },
-        {
-          label: '选项二',
-          value: '2'
-        }
-      ],
+      staffDutyOptions: [],
       // TODO
       projectTypeOptions: [
         {
@@ -251,11 +242,30 @@ export default {
   },
   watch: {},
   created() {
+    this.initPostSelect()
   },
   mounted() {
     this.$refs['elForm'].clearValidate();
   },
   methods: {
+    initPostSelect() {
+      const params = {
+        pageSize: 1000,
+        currentPage: 1,
+        status: '0'
+      }
+      querySysPost(params).then((res) => {
+        this.staffDutyOptions = res.data.records
+          .filter((item) => {
+            return item.status === '0'
+          })
+      // .forEach((item) => {
+      //     this.staffDutyOptions.push({ key: item.postName, display_name: item.postName })
+      //   })
+      }).catch(() => {
+        this.$message.error('初始化岗位失败')
+      })
+    },
     // 关闭弹框
     close() {
       this.$emit('update:visible', false);

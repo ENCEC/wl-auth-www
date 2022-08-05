@@ -369,7 +369,7 @@ export default {
           this.postTypeOptions.push({ key: item.postName, display_name: item.postName })
         })
       }).catch(() => {
-        this.$message.error('初始化岗位失败')
+        // this.$message.error('初始化岗位失败')
       })
     },
     handleIndexChange(currentPage) {
