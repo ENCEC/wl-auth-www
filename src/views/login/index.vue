@@ -108,9 +108,9 @@ export default {
     }
     return {
       loginForm: {
-        username: 'test13',
-        password: '654321',
-        clientId: 'share-auth-xzt',
+        username: '',
+        password: '',
+        clientId: process.env.VUE_APP_CLIENT_ID,
         checkMoveId: ' ',
         xWidth: 0
       },
