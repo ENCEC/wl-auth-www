@@ -1,10 +1,11 @@
 /*
  * @Author: Hongzf
- * @Date: 2022-07-26 13:37:31
+ * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 16:04:12
+ * @LastEditTime: 2022-08-09 14:05:28
  * @Description:
  */
+
 export const formRules = {
   account: [
     {
@@ -53,7 +54,7 @@ export const formRules = {
       trigger: 'change'
     }
   ],
-  uemDeptId: [
+  deptName: [
     {
       required: true,
       message: '请选择所属部门',

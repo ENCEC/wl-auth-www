@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-29 13:25:17
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-05 17:46:02
+ * @LastEditTime: 2022-08-09 16:42:59
  * @Description:
  */
 import request from '@/utils/request'
@@ -18,8 +18,8 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    // url: '/share-auth/user/getLoginUserInfo',
-    url: '/vue-element-admin/user/info',
+    url: '/share-auth/user/getLoginUserInfo',
+    // url: '/vue-element-admin/user/info',
     method: 'get',
     params: { token }
   })

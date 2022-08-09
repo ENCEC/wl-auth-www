@@ -18,7 +18,7 @@
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
           <i class="el-icon-user-solid" />
-          <span>admin</span>
+          <span>{{ name || '' }}</span>
           <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <i class="el-icon-caret-bottom" />
         </div>
@@ -27,9 +27,11 @@
           <el-dropdown-item divided @click.native="handleProfileOpen">
             {{ $t('navbar.profile') }}
           </el-dropdown-item>
+          <!-- 修改密码 -->
           <el-dropdown-item divided @click.native="handlePasswordOpen">
             {{ $t('navbar.dashboard') }}
           </el-dropdown-item>
+          <!-- 退出登录 -->
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
@@ -86,26 +88,31 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name'
+      // 'userId',
+      // 'userInfo'
     ])
+  },
+  created() {
+    // console.log('【 userId 】-94', this.userId)
+    // console.log('【 userInfo 】-95', this.userInfo)
   },
   methods: {
     // 打开用户资料弹框
     handleProfileOpen() {
       this.profileDialogVisible = true;
-      // this.editData = { uemUserId: item.uemUserId || '' };
     },
     // 打开修改密码弹框
     handlePasswordOpen() {
       this.passwordDialogVisible = true;
-      // this.editData = { uemUserId: item.uemUserId || '' };
     },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
     // 退出系统
     logout() {
-      this.$confirm('您要退出员工管理系统吗？', '消息提示', {
+      this.$confirm('您要退出权限管理系统吗？', '消息提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
