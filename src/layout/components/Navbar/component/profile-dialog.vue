@@ -1,8 +1,8 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-08-01 15:41:40
+ * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-05 18:09:57
+ * @LastEditTime: 2022-08-09 16:16:00
  * @Description: 用户资料
 -->
 
@@ -74,7 +74,13 @@
             <!-- TODO -->
             <el-col :span="12">
               <el-form-item label="用户类型:" prop="userType">
-                <el-select
+                <el-input
+                  v-model="formData.userType"
+                  placeholder="请输入用户类型"
+                  clearable
+                  disabled
+                />
+                <!-- <el-select
                   v-model="formData.userType"
                   placeholder="请选择用户类型"
                   clearable
@@ -87,13 +93,19 @@
                     :label="item.label"
                     :value="item.value"
                   />
-                </el-select>
+                </el-select> -->
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <!-- 联想控件 -->
-              <el-form-item label="所属部门:" prop="uemDeptId">
-                <Department v-model="formData.uemDeptId" placeholder="请选择所属部门" class="input-width" disabled />
+              <el-form-item label="所属部门:" prop="deptName">
+                <el-input
+                  v-model="formData.deptName"
+                  placeholder="请输入入职部门"
+                  clearable
+                  disabled
+                />
+                <!-- <Department v-model="formData.uemDeptId" placeholder="请选择所属部门" class="input-width" disabled /> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -142,10 +154,10 @@
 <script>
 import { getLoginUserInfo, updateUemUserInfo } from '@/api/login';
 import { formRules } from './rules';
-import Department from '@/components/CurrentSystem/Department'
+// import Department from '@/components/CurrentSystem/Department.vue'
 
 export default {
-  components: { Department },
+  components: { },
   // inheritAttrs: false,
   props: {
     // 编辑信息
@@ -163,36 +175,29 @@ export default {
         mobile: '',
         email: '',
         userType: '',
-        uemDeptId: ''
-      },
-      // TODO
-      userTypeOptions: [
-        {
-          label: '选项一',
-          value: '1'
-        },
-        {
-          label: '选项二',
-          value: '2'
-        }
-      ]
+        deptName: '',
+        createTime: '',
+        creatorName: ''
+      }
+      // // TODO
+      // userTypeOptions: [
+      //   {
+      //     label: '选项一',
+      //     value: '1'
+      //   },
+      //   {
+      //     label: '选项二',
+      //     value: '2'
+      //   }
+      // ]
     };
   },
-  computed: {
-    // 弹框标题
-    dialogTitle() {
-      this.editData.uemUserId && this.getDetailInfo();
-      console.log('【 this.editData 】-246', this.editData);
-      return this.editData.uemUserId ? '编辑用户信息' : '新增用户';
-    }
-  },
+  computed: {},
   watch: {},
   created() {
     this.getDetailInfo();
   },
-  mounted() {
-    // this.$refs['elForm'].clearValidate();
-  },
+  mounted() {},
   methods: {
     // 关闭弹框
     close() {
@@ -201,13 +206,16 @@ export default {
     },
     // 获取用户信息
     getDetailInfo() {
-      getLoginUserInfo({
-        uemUserId: this.editData.uemUserId
-      }).then(res => {
-        this.formData = {
-          ...this.formData,
-          ...res.data
-        };
+      getLoginUserInfo().then(res => {
+        const _res = res.data
+        const roleList = _res.roleList.map(item => item.roleName)
+        for (const key in this.formData) {
+          if (key === 'userType') {
+            this.formData[key] = roleList.join('、') || ''
+          } else {
+            this.formData[key] = _res[key] || ''
+          }
+        }
       });
     },
     // 提交表单信息
@@ -227,7 +235,7 @@ export default {
 <style lang="scss">
 .user-profile-dialog {
   .form-wrap {
-    height: 280px;
+    height: 230px;
     .input-width {
       width: 180px;
     }
