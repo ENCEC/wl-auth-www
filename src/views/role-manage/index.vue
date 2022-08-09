@@ -118,7 +118,6 @@ export default {
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
-        debugger
         this.records = res.data.records;
         this.total = res.data.totalRecord;
       });

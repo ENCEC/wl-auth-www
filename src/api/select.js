@@ -7,10 +7,11 @@
  */
 
 import request from '@/utils/request';
+const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 // 部门-下拉
 export function queryDepartmentBySelect(data) {
   return request({
-    url: '/uemUserManage/queryDepartmentBySelect',
+    url: prefix + '/uemUserManage/queryDepartmentBySelect',
     method: 'post',
     data
   });
@@ -18,7 +19,7 @@ export function queryDepartmentBySelect(data) {
 // 项目-下拉
 export function queryProjectNameBySelect(data) {
   return request({
-    url: '/uemUserManage/queryProjectNameBySelect',
+    url: prefix + '/uemUserManage/queryProjectNameBySelect',
     method: 'post',
     data
   });
@@ -26,7 +27,7 @@ export function queryProjectNameBySelect(data) {
 // 岗位-下拉
 export function queryStaffDutyBySelect(data) {
   return request({
-    url: '/uemUserManage/queryStaffDutyBySelect',
+    url: prefix + '/uemUserManage/queryStaffDutyBySelect',
     method: 'post',
     data
   });
@@ -34,7 +35,7 @@ export function queryStaffDutyBySelect(data) {
 // 职称-下拉
 export function queryTechnicalNameBySelect(data) {
   return request({
-    url: '/uemUserManage/queryTechnicalNameBySelect',
+    url: prefix + '/uemUserManage/queryTechnicalNameBySelect',
     method: 'post',
     data
   });
@@ -43,7 +44,7 @@ export function queryTechnicalNameBySelect(data) {
 export function queryUser(data) {
   return request({
     // url: '/uemUserManage/queryUemUser',
-    url: '/uemUserManage/queryStaffByPage',
+    url: prefix + '/uemUserManage/queryStaffByPage',
     method: 'post',
     data
   });

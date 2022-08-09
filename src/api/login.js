@@ -6,6 +6,7 @@
  * @Description:
  */
 import request from '@/utils/request'
+const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 // 登录接口
 export function login(data) {
   return request({
@@ -17,7 +18,7 @@ export function login(data) {
 // 获取登录用户信息
 export function getLoginUserInfo(query) {
   return request({
-    url: '/share-auth/user/getLoginUserInfo',
+    url: prefix + '/user/getLoginUserInfo',
     method: 'get',
     params: query
   });
@@ -25,7 +26,7 @@ export function getLoginUserInfo(query) {
 // 修改用户信息
 export function updateUemUserInfo(data) {
   return request({
-    url: '/share-auth/user/updateUemUserInfo',
+    url: prefix + '/user/updateUemUserInfo',
     method: 'post',
     data
   })
@@ -34,7 +35,7 @@ export function updateUemUserInfo(data) {
 // 修改密码
 export function updatePassword(data) {
   return request({
-    url: '/share-auth/user/updatePassword',
+    url: prefix + '/user/updatePassword',
     method: 'post',
     data
   })
