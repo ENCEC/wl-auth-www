@@ -1,7 +1,6 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
       <div class="title-container">
         <h3 class="title">
           {{ $t('login.title') }}
@@ -230,6 +229,12 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  // src\assets
+  background-image:url('../../assets/images/login_bg.jpg');
+  width:100%;
+  height:100%;
+  position:fixed;
+  background-size:100% 100%;
   .el-input__inner {
       color: #fff !important;
   }
@@ -275,14 +280,19 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .login-form {
-    position: relative;
+    // background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+
+    // position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+    padding: 60px 35px 30px;
+    // margin: 0 auto;
+    // overflow: hidden;
   }
 
   .tips {
