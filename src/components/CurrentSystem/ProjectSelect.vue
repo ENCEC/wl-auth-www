@@ -1,9 +1,9 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-08-06 10:30:28
+ * @Date: 2022-08-11 09:56:10
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:31:08
- * @Description: 入职岗位-下拉
+ * @LastEditTime: 2022-08-11 10:14:15
+ * @Description: 归属项目-下拉
 -->
 
 <template>
@@ -12,29 +12,23 @@
     v-bind="$attrs"
     filterable
     clearable
-    :disabled="disabled"
     v-on="$listeners"
     @change="handleChange"
   >
     <el-option
       v-for="(item, index) in optionsList"
-      :key="'staffDutyCode' + index + item.staffDutyCode"
-      :label="item.staffDuty"
-      :value="item.staffDutyCode.toString()"
+      :key="'projectId' + index + item.projectId"
+      :label="item.projectName"
+      :value="item.projectId"
     />
   </el-select>
 </template>
 <script>
 import {
-  queryStaffDutyBySelect
+  queryProjectNameBySelect
 } from '@/api/select';
 export default {
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false
-    }
-  },
+  props: {},
   data() {
     return {
       selectVal: this.value || '', // 选择的值
@@ -53,7 +47,7 @@ export default {
   methods: {
     // 获取下拉信息
     async getSelectOptions() {
-      this.optionsList = await queryStaffDutyBySelect();
+      this.optionsList = await queryProjectNameBySelect();
     },
     handleChange(value) {
       this.$emit('input', this.selectVal);

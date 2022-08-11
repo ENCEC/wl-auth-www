@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-02 15:27:04
+ * @LastEditTime: 2022-08-11 10:34:41
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -58,11 +58,8 @@
             <el-col :span="12">
               <el-form-item label="性别:" prop="sex">
                 <el-radio-group v-model="formData.sex">
-                  <el-radio
-                    v-for="item in sexOptions"
-                    :key="'sex' + item.value"
-                    :label="item.value"
-                  >{{ item.label }}</el-radio>
+                  <el-radio :label="false">男</el-radio>
+                  <el-radio :label="true">女</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -113,38 +110,15 @@
           </el-row>
           <el-row>
             <el-col :span="12">
+              <!-- TODO:回显 -->
               <el-form-item label="入职岗位:" prop="staffDutyCode">
-                <el-select
-                  v-model="formData.staffDutyCode"
-                  placeholder="请选择入职岗位"
-                  clearable
-                  class="input-width"
-                >
-                  <el-option
-                    v-for="(item) in staffDutyOptions"
-                    :key="item.postId"
-                    :label="item.postName"
-                    :value="item.postId"
-                  />
-                </el-select>
+                <StaffDuty v-model="formData.staffDutyCode" placeholder="请选择入职岗位" class="input-width" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <!-- 联想控件 -->
+              <!-- TODO:回显 联想控件？ -->
               <el-form-item label="归属项目:" prop="projectId">
-                <el-select
-                  v-model="formData.projectId"
-                  placeholder="请选择归属项目"
-                  clearable
-                  class="input-width"
-                >
-                  <el-option
-                    v-for="(item, index) in projectTypeOptions"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
+                <ProjectSelect v-model="formData.projectId" placeholder="请选择归属项目" class="input-width" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -168,12 +142,12 @@
 </template>
 <script>
 import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manage';
-import { querySysPost } from '@/api/sys-post.js';
 import { formRules } from './rules';
+import StaffDuty from '@/components/CurrentSystem/StaffDuty'
+import ProjectSelect from '@/components/CurrentSystem/ProjectSelect'
 
 export default {
-  components: {},
-  // inheritAttrs: false,
+  components: { StaffDuty, ProjectSelect },
   props: {
     // 编辑信息
     editData: {
@@ -185,6 +159,7 @@ export default {
     return {
       rules: formRules, // 验证规则
       formData: {
+        uemUserId: '',
         account: '',
         name: '',
         mobile: '',
@@ -195,77 +170,24 @@ export default {
         entryDate: '', // 入职时间
         staffDutyCode: '',
         projectId: ''
-      },
-      // TODO（0男，1女）
-      sexOptions: [
-        {
-          label: '男',
-          value: 0
-        },
-        {
-          label: '女',
-          value: 1
-        }
-      ],
-      // 在职状态 //TODO
-      jobStatusOptions: [
-        {
-          label: '试用员工',
-          value: '0'
-        },
-        {
-          label: ' 正式员工',
-          value: '1'
-        }
-      ],
-      staffDutyOptions: [],
-      // TODO
-      projectTypeOptions: [
-        {
-          label: '选项一',
-          value: 1
-        },
-        {
-          label: '选项二',
-          value: 2
-        }
-      ]
+      }
     };
   },
   computed: {
     // 弹框标题
     dialogTitle() {
       this.editData.uemUserId && this.getDetailInfo();
-      console.log('【 this.editData 】-246', this.editData);
       return this.editData.uemUserId ? '编辑用户信息' : '新增用户';
+    },
+    // 在职状态 （0：试用员工 1：正式员工 2：离职员工）
+    jobStatusOptions() {
+      return this.$dict.getDictOptions('JOB_STATUS').filter(item => item.value.toString() === '0' || item.value.toString() === '1')
     }
   },
   watch: {},
-  created() {
-    this.initPostSelect()
-  },
-  mounted() {
-    this.$refs['elForm'].clearValidate();
-  },
+  created() {},
+  mounted() {},
   methods: {
-    initPostSelect() {
-      const params = {
-        pageSize: 1000,
-        currentPage: 1,
-        status: '0'
-      }
-      querySysPost(params).then((res) => {
-        this.staffDutyOptions = res.data.records
-          .filter((item) => {
-            return item.status === '0'
-          })
-      // .forEach((item) => {
-      //     this.staffDutyOptions.push({ key: item.postName, display_name: item.postName })
-      //   })
-      }).catch(() => {
-        this.$message.error('初始化岗位失败')
-      })
-    },
     // 关闭弹框
     close() {
       this.$emit('update:visible', false);
@@ -276,11 +198,14 @@ export default {
       getUemUser({
         uemUserId: this.editData.uemUserId
       }).then(res => {
-        this.formData = {
-          ...this.formData,
-          ...res.data,
-          sex: res.data.sex ? 0 : 1
-        };
+        const _res = res.data
+        for (const key in this.formData) {
+          if (key === 'sex') {
+            this.formData[key] = _res[key] || false
+          } else {
+            this.formData[key] = _res[key] || ''
+          }
+        }
       });
     },
     // 提交表单信息

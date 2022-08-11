@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-02 10:11:33
+ * @LastEditTime: 2022-08-11 10:45:36
  * @Description: 系统管理-用户管理
 -->
 
@@ -71,9 +71,9 @@ export default {
       // 查询
       filterConfig: filterConfig(this),
       filterForm: {
-        account: undefined,
-        name: undefined,
-        isValid: undefined
+        account: '',
+        name: '',
+        isValid: ''
       },
       // 表格
       records: [],

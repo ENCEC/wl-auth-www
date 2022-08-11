@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 13:37:31
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-07-26 18:26:07
+ * @LastEditTime: 2022-08-11 10:36:11
  * @Description:
  */
 export const formRules = {
@@ -83,12 +83,12 @@ export const formRules = {
       message: '请选择入职岗位',
       trigger: 'change'
     }
-  ],
-  projectId: [
-    {
-      required: true,
-      message: '请选择归属项目',
-      trigger: 'change'
-    }
   ]
+  // projectId: [
+  //   {
+  //     required: true,
+  //     message: '请选择归属项目',
+  //     trigger: 'change'
+  //   }
+  // ]
 };
