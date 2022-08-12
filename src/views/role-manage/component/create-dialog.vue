@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-02 11:03:30
+ * @LastEditTime: 2022-08-12 19:10:46
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -11,7 +11,7 @@
     <el-dialog
       :title="dialogTitle"
       v-bind="$attrs"
-      width="820px"
+      width="850px"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
@@ -186,7 +186,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     getCheckedKeys() {
       const checkedKeys = this.$refs.treeRef.getCheckedKeys();
       this.formData.sysResourceIdList = checkedKeys;
-      console.log('【 sysResourceIdList 】-179', checkedKeys);
+      // console.log('【 sysResourceIdList 】-179', checkedKeys);
     },
     handleCheckChange(data, checked, indeterminate) {
       this.getCheckedKeys();
@@ -212,7 +212,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
           sysResourceIdList,
           sysRoleResourceIdList
         };
-        console.log('【 this.formData 】-214', this.formData)
+        // console.log('【 this.formData 】-214', this.formData)
       });
     },
     // 提交表单信息
@@ -235,7 +235,8 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
 <style lang="scss">
 .role-dialog{
   .form-wrap {
-    $base-height: 320px;
+    $base-height: 340px;
+
     height: $base-height;
     display: flex;
     justify-content: space-between;
@@ -251,7 +252,8 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       .tree-wrap {
         border: 1px solid #dddddd;
         width: 240px;
-        height: 320px;
+        height: 340px;
+        overflow:auto;
       }
     }
   }
