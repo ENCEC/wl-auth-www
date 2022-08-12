@@ -70,9 +70,9 @@ export default {
     datasource: '数据源'
   },
   navbar: {
-    dashboard: '首页',
-    logOut: '退出登录',
-    profile: '个人中心',
+    dashboard: '修改密码',
+    logOut: '退出系统',
+    profile: '用户资料',
     theme: '换肤',
     size: '布局大小'
   },

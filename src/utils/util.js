@@ -1,3 +1,4 @@
+import CryptoJS from 'crypto-js'
 
 export function transformPaginationData(data) {
   return {
@@ -38,4 +39,16 @@ export function getInputCursorPosition(input) {
     cursurPosition = range.text.length;
   }
   return cursurPosition
+}
+// ase128加密
+export function aesEncrypt(content) {
+  const key = 'c1953a7wPB234x6l'// 秘钥
+  const keyHex = key ? CryptoJS.enc.Utf8.parse(key) : CryptoJS.enc.Utf8.parse('D034FAF5309799E5')
+  const message = typeof content === 'string' ? content : JSON.stringify(content)
+  const srcs = CryptoJS.enc.Utf8.parse(message);
+  const encrypted = CryptoJS.AES.encrypt(srcs, keyHex, {
+    mode: CryptoJS.mode.ECB,
+    padding: CryptoJS.pad.Pkcs7
+  });
+  return encrypted.toString();
 }

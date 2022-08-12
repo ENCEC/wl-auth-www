@@ -6,19 +6,20 @@
  * @Description: 系统管理-角色管理
  */
 import request from '@/utils/request';
+const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 // 带条件分页查询角色信息
 export function queryRoleByPage(data) {
   return request({
-    url: '/sysRole/queryRoleByPage',
+    url: prefix + '/sysRole/queryRoleByPage',
     method: 'post',
     data
   });
 }
 
 // 根据id查询角色以及绑定的权限信息
-export function queryRoleAndResource(query) {
+export function queryRoleAndResourceById(query) {
   return request({
-    url: '/sysRole/queryRoleAndResource',
+    url: prefix + '/sysRole/queryRoleAndResourceById',
     method: 'get',
     params: query
   });
@@ -26,7 +27,7 @@ export function queryRoleAndResource(query) {
 // 新增
 export function saveSysRole(data) {
   return request({
-    url: '/sysRole/saveSysRole',
+    url: prefix + '/sysRole/saveSysRole',
     method: 'post',
     data
   });
@@ -34,7 +35,7 @@ export function saveSysRole(data) {
 // 修改
 export function updateSysRole(data) {
   return request({
-    url: '/sysRole/updateSysRole',
+    url: prefix + '/sysRole/updateSysRole',
     method: 'post',
     data
   });
@@ -43,7 +44,7 @@ export function updateSysRole(data) {
 // 启用/禁用
 export function updateRoleStatus(data) {
   return request({
-    url: '/sysRole/updateRoleStatus',
+    url: prefix + '/sysRole/updateRoleStatus',
     method: 'post',
     data
   });
@@ -51,7 +52,7 @@ export function updateRoleStatus(data) {
 // 删除角色
 export function deleteRole(query) {
   return request({
-    url: '/sysRole/deleteRole',
+    url: prefix + '/sysRole/deleteRole',
     method: 'get',
     params: query
   });

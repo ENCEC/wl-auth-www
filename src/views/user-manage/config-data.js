@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 14:04:46
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:16:31
+ * @LastEditTime: 2022-08-11 10:45:13
  * @Description:
  */
 export const filterConfig = _this => {
@@ -44,36 +44,11 @@ export const filterConfig = _this => {
         optionLabel: 'label',
         optionValue: 'value',
         optionKey: 'value',
-        options: [
-          {
-            value: true,
-            label: '启用'
-          },
-          {
-            value: false,
-            label: '禁用'
-          }
-        ]
+        options: _this.$dict.getDictOptions('VALID_STATUS'),
+        changeSelect: optionVal => {
+          _this.filterForm.isValid = optionVal;
+        }
       }
-      // {
-      //   type: 'radio',
-      //   label: '状态',
-      //   prop: 'status',
-      //   col: 8,
-      //   radioArr: [
-      //     {
-      //       label: '启用',
-      //       disabled: false
-      //     },
-      //     {
-      //       label: '禁用',
-      //       disabled: false
-      //     }
-      //   ],
-      //   changeSelect: (optionVal, item, index) => {
-      //     console.log(optionVal, item, index)
-      //   }
-      // }
     ],
     operates: [
       {
@@ -159,7 +134,7 @@ export const operates = _this => {
         type: 'text',
         show: true,
         disabled: false,
-        method: (index, row) => {
+        method: (row, index) => {
           console.log('【 index 】-163', index)
           _this.handleOpen(row);
         }
@@ -174,19 +149,17 @@ export const operates = _this => {
         // },
         show: true,
         plain: false,
-        method: (index, row) => {
+        method: (row, index) => {
           _this.resetPassword(row.uemUserId);
         }
       },
       {
         id: 'delete',
         label: '删除',
-        // icon: 'el-icon-delete',
         type: 'text',
         show: true,
         plain: false,
-        // disabled: false,
-        method: (index, row) => {
+        method: (row, index) => {
           _this.handleDelete(row.uemUserId)
         }
       }

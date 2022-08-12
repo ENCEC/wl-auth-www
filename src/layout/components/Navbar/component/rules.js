@@ -1,10 +1,11 @@
 /*
  * @Author: Hongzf
- * @Date: 2022-07-26 13:37:31
+ * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:36:11
+ * @LastEditTime: 2022-08-09 14:05:28
  * @Description:
  */
+
 export const formRules = {
   account: [
     {
@@ -41,54 +42,23 @@ export const formRules = {
   ],
   email: [
     {
-      required: true,
-      message: '请输入电子邮箱',
-      trigger: 'blur'
-    },
-    {
       pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       message: '电子邮箱格式错误',
       trigger: 'blur'
     }
   ],
-  jobStatus: [
+  userType: [
     {
       required: true,
-      message: '在职状态不能为空',
+      message: '请选择用户类型',
       trigger: 'change'
     }
   ],
-  seniority: [
+  deptName: [
     {
       required: true,
-      message: '请输入工作年限',
-      trigger: 'blur'
-    },
-    {
-      pattern: /^[0-9]*$/,
-      message: '请输入数字',
-      trigger: 'blur'
-    }
-  ],
-  entryDate: [
-    {
-      required: true,
-      message: '请选择入职时间',
-      trigger: 'change'
-    }
-  ],
-  staffDutyCode: [
-    {
-      required: true,
-      message: '请选择入职岗位',
+      message: '请选择所属部门',
       trigger: 'change'
     }
   ]
-  // projectId: [
-  //   {
-  //     required: true,
-  //     message: '请选择归属项目',
-  //     trigger: 'change'
-  //   }
-  // ]
 };

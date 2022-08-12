@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 09:41:45
+ * @LastEditTime: 2022-08-02 11:43:59
  * @Description:
  */
 
@@ -18,7 +18,7 @@ export const filterConfig = _this => {
       {
         type: 'input',
         label: '角色名称',
-        prop: 'account',
+        prop: 'roleName',
         width: '200px',
         clearable: true,
         placeholder: '请输入角色名称',

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-editor-container ">
+    <!-- <div class="dashboard-editor-container ">
       <p>作业一：控件练习</p>
       <p>1、将联想控件改为复选方式</p>
       <p>2、联想控件查询支持根据姓名查询也支持性别查询</p>
@@ -21,7 +21,7 @@
         type="info"
         :description="info"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 

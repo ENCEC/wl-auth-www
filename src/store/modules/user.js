@@ -1,4 +1,6 @@
-import { login, logout, getInfo } from '@/api/user'
+import { logout, getInfo } from '@/api/user'
+import { login } from '@/api/login'
+
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import router, { resetRouter } from '@/router'
 
@@ -7,7 +9,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  userId: '', // 当前登录用户的id
+  userInfo: {} // 当前登录用户的信息
 }
 
 const mutations = {
@@ -25,19 +29,31 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  // 设置用户id
+  SET_USERID: (state, userId) => {
+    state.userId = userId
+  },
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo = userInfo
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    // const { username, password } = userInfo
+    // console.log('【 username, password  】-37', username, password)
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+      login({ ...userInfo }).then(response => {
+        // const { data } = response
+        const token = getToken()// data.token
+        if (token) {
+          // console.log('【 cookie 】-41', getToken())
+          commit('SET_TOKEN', token)
+          setToken(token)
+        }
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -47,14 +63,22 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
+      // getInfo(state.token)
+      getInfo().then(response => {
+        const res = response.data
+        const roleList = res.roleList.map(item => item.roleName)
+        const data = {
+          roles: roleList.length ? roleList : ['admin'],
+          introduction: '',
+          avatar: '',
+          name: res.name
+        }
+        console.log('【 data 】-71', data)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { roles, name } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
@@ -63,8 +87,11 @@ const actions = {
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_USERID', res.uemUserId)
+        commit('SET_USERINFO', res)
+
+        // commit('SET_AVATAR', avatar)
+        // commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
         reject(error)

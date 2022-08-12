@@ -7,10 +7,11 @@
  */
 
 import request from '@/utils/request';
+const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 // 用户-清除一个用户的所有角色
 export function unbindAllRoleOfUser(data) {
   return request({
-    url: '/uemUserManage/unbindAllRoleOfUser',
+    url: prefix + '/uemUserManage/unbindAllRoleOfUser',
     method: 'post',
     data
   });
@@ -18,7 +19,7 @@ export function unbindAllRoleOfUser(data) {
 // 角色-获取角色列表（所有）
 export function queryAllValidRole(data) {
   return request({
-    url: '/sysRole/queryAllValidRole',
+    url: prefix + '/sysRole/queryAllValidRole',
     method: 'get',
     data
   });
@@ -26,7 +27,7 @@ export function queryAllValidRole(data) {
 // 角色-获取角色列表（根据用户ID）
 export function queryRoleListByUser(data) {
   return request({
-    url: '/uemUserManage/queryRoleListByUser',
+    url: prefix + '/uemUserManage/queryRoleListByUser',
     method: 'post',
     data
   });
@@ -34,7 +35,7 @@ export function queryRoleListByUser(data) {
 // 权限-获取资源列表(所有)
 export function queryAllValidResource(data) {
   return request({
-    url: '/sysResource/queryAllValidResource',
+    url: prefix + '/sysResource/queryAllValidResource',
     method: 'get',
     data
   });
@@ -42,7 +43,7 @@ export function queryAllValidResource(data) {
 // 权限-获取资源列表(根据角色ID)
 export function queryResourceByRole(data) {
   return request({
-    url: '/sysResource/queryResourceByRole',
+    url: prefix + '/sysResource/queryResourceByRole',
     method: 'post',
     data
   });
@@ -51,7 +52,7 @@ export function queryResourceByRole(data) {
 // 赋予用户角色
 export function bindUserAndRole(data) {
   return request({
-    url: '/uemUserManage/bindUserAndRole',
+    url: prefix + '/uemUserManage/bindUserAndRole',
     method: 'post',
     data
   });
