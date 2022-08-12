@@ -18,9 +18,9 @@
   >
     <el-option
       v-for="(item, index) in optionsList"
-      :key="'staffDutyCode' + index + item.staffDutyCode"
-      :label="item.staffDuty"
-      :value="item.staffDutyCode.toString()"
+      :key="'postId' + index + item.postId"
+      :label="item.postName"
+      :value="item.postId"
     />
   </el-select>
 </template>

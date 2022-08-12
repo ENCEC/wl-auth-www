@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 14:04:46
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:45:13
+ * @LastEditTime: 2022-08-12 09:25:09
  * @Description:
  */
 export const filterConfig = _this => {
@@ -90,7 +90,8 @@ export const tableConfig = {
   highlightCurrentRow: true, // 是否支持当前行高亮显示
   mutiSelect: false, // 是否支持列表项选中功能
   indexShow: true,
-  pagination: true
+  pagination: true,
+  height: '400px'
 };
 
 // 表格列
@@ -127,6 +128,8 @@ export const columns = _this => {
 
 export const operates = _this => {
   return {
+    fixed: false,
+    width: 200,
     list: [
       {
         id: 'edit',
@@ -163,8 +166,6 @@ export const operates = _this => {
           _this.handleDelete(row.uemUserId)
         }
       }
-    ],
-    fixed: false,
-    width: 230
-  }; // 列操作按钮
+    ]
+  };
 };

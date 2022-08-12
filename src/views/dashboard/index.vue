@@ -1,27 +1,20 @@
 <template>
   <div class="dashboard-container">
-    <!-- <div class="dashboard-editor-container ">
-      <p>作业一：控件练习</p>
-      <p>1、将联想控件改为复选方式</p>
-      <p>2、联想控件查询支持根据姓名查询也支持性别查询</p>
-      <p>3、联想控件支持模糊查询</p>
-      <p>作业二：导入导出</p>
-      <p>1.分页查询导出</p>
-      <p>在新表格上增加一个【导出】按钮，点击【导出】按钮，则导出当前页数据。</p>
-      <p>2.导入</p>
-      <p>在新表格上增加一个【导入】按钮，将excel中的数据导入至数据库表中，需要增加过滤条件，只能导入age>18 的学生信息，导入后表格内需要能展示导入的数据。</p>
-      <p>作业二：图片上传回显</p>
-      <el-button v-per="'/test/permit'" size="mini">Test</el-button>
-      <el-button v-per="'/hello/world'" size="mini">Hello</el-button>
-      <el-button v-per.checkPermits="'/test/permit2'" size="mini">Test2</el-button>
-      <el-button v-per.checkPermits="'/hello/world2'" size="mini">Hello2</el-button>
-
-      <el-alert
-        :title="title"
-        type="info"
-        :description="info"
-      />
-    </div> -->
+    <div class="home-wrap">
+      <el-card v-for="(item,index) in 3 " :key="index" class="box-card">
+        <div slot="header" class="clearfix">
+          <i class="el-icon-monitor" />
+          <span>功能开发中</span>
+          <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+        </div>
+        <!-- <div v-for="o in 4" :key="o" class="text item">
+          {{ '敬请期待 ' + o }}
+        </div> -->
+        <div class="text item">
+          敬请期待...
+        </div>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -76,8 +69,20 @@ export default {
   }
 }
 </script>
-<style scoped>
-  .dashboard-editor-container {
-    padding: 20px;
+<style lang="scss" scoped>
+.home-wrap{
+  display: flex;
+  justify-content: space-between;
+  padding: 24px;
+  .box-card{
+    width: 32.5%;
+    .item{
+      height: 100px;
+      line-height: 100px;
+      text-align: center;
+      font-size:18px;
+      color: #ccc;
+    }
   }
+}
 </style>

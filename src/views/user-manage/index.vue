@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:45:36
+ * @LastEditTime: 2022-08-12 09:22:50
  * @Description: 系统管理-用户管理
 -->
 
@@ -157,18 +157,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-manage {
-  // 操作栏
-  .operate-wrap {
-    span {
-      display: inline-block;
-      cursor: pointer;
-    }
-  }
-  // 分页
-  .pagination-wrap {
-    margin: 10px;
-    float: right;
-  }
   // 重置密码
   .password-dialog {
     height: 55px;

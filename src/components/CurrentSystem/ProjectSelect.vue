@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-11 09:56:10
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:14:15
+ * @LastEditTime: 2022-08-12 09:37:46
  * @Description: 归属项目-下拉
 -->
 
@@ -37,7 +37,7 @@ export default {
   },
   watch: {
     value(newVal) {
-      this.selectVal = this.value;
+      this.selectVal = newVal
     }
   },
   created() {
@@ -50,8 +50,10 @@ export default {
       this.optionsList = await queryProjectNameBySelect();
     },
     handleChange(value) {
-      this.$emit('input', this.selectVal);
-      this.$emit('getSelectVal', this.selectVal);
+      this.$emit('input', value);
+      this.$emit('getSelectVal', value);
+      // this.$emit('input', this.selectVal);
+      // this.$emit('getSelectVal', this.selectVal);
     }
   }
 };

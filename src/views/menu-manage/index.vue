@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-02 10:11:48
+ * @LastEditTime: 2022-08-12 10:03:50
  * @Description:
 -->
 <template>
@@ -16,13 +16,13 @@
       style="width: 100%"
       border
     >
-      <el-table-column type="index" label="序号" width="80px" />
-      <el-table-column prop="resourceTitle" label="菜单标题" />
-      <el-table-column prop="parentResourceTitle" label="父级菜单" />
-      <el-table-column prop="resourceUrl" label="资源地址" />
+      <el-table-column type="index" label="序号" width="60px" />
+      <el-table-column prop="resourceTitle" label="菜单标题" width="150px" />
+      <el-table-column prop="parentResourceTitle" label="父级菜单" width="150px" />
+      <el-table-column prop="resourceUrl" label="资源地址" min-width="150px" />
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
-      <el-table-column prop="createTime" label="创建时间" />
+      <el-table-column prop="createTime" label="创建时间" width="160px" />
       <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
@@ -32,7 +32,7 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200px">
+      <el-table-column label="操作" width="150px">
         <template slot-scope="scope">
           <div class="operate-wrap">
             <el-button type="text" @click="handleOpen(scope.row)">编辑</el-button>
@@ -46,14 +46,17 @@
     <el-pagination
       class="pagination-wrap"
       :current-page.sync="params.currentPage"
-      :page-sizes="[10, 20, 30, 40]"
       :page-size="params.pageSize"
+      :page-sizes="[10, 20, 50]"
+      prev-text="上一页"
+      next-text="下一页"
+      style="margin-top: 15px;text-align: center"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <!-- 新增/修改用户 -->
+    <!-- 新增/修改 -->
     <CreateDialog v-if="dialogVisible" :visible.sync="dialogVisible" :edit-data="editData" @getTableData="getTableData" />
   </div>
 </template>
@@ -74,16 +77,6 @@ export default {
       filterConfig: filterConfig(this), // 查询条件配置
       editData: {},
       dialogVisible: false,
-      options: [
-        {
-          value: true,
-          label: '启用'
-        },
-        {
-          value: false,
-          label: '禁用'
-        }
-      ],
       filterForm: {
         resourceTitle: '',
         resourcePid: '',
@@ -114,6 +107,7 @@ export default {
       }).then(res => {
         this.records = res.data.records;
         this.total = res.data.totalRecord;
+        this.getParentResource()
       });
     },
     handleClose() {

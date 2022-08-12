@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:34:41
+ * @LastEditTime: 2022-08-12 09:26:12
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -201,7 +201,7 @@ export default {
         const _res = res.data
         for (const key in this.formData) {
           if (key === 'sex') {
-            this.formData[key] = _res[key] || false
+            this.formData[key] = _res[key] || '' // || false
           } else {
             this.formData[key] = _res[key] || ''
           }

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-02 11:43:59
+ * @LastEditTime: 2022-08-11 18:33:38
  * @Description:
  */
 
@@ -36,16 +36,10 @@ export const filterConfig = _this => {
         optionLabel: 'label',
         optionValue: 'value',
         optionKey: 'value',
-        options: [
-          {
-            value: true,
-            label: '启用'
-          },
-          {
-            value: false,
-            label: '禁用'
-          }
-        ]
+        options: _this.$dict.getDictOptions('VALID_STATUS'),
+        changeSelect: optionVal => {
+          _this.filterForm.isValid = optionVal;
+        }
       }
     ],
     operates: [
