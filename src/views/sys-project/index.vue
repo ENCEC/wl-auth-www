@@ -7,6 +7,7 @@
       top="10vh"
       width="800px"
       :title="textMap[dialogStatus]"
+      :close-on-click-modal="false"
       :visible.sync="dialogFormVisible"
       @close="handleDialogClose"
     >

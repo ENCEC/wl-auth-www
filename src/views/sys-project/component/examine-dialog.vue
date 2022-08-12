@@ -4,6 +4,7 @@
       top="10vh"
       :title="dialogTitle"
       :visible="dialogVisible"
+      :close-on-click-modal="false"
       width="800px"
       center
       destroy-on-close
