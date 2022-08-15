@@ -119,7 +119,7 @@ export const columns = _this => {
       label: '是否启用',
       width: '100',
       component: 'switch',
-      method: (row, status) => {
+      method: (row) => {
         _this.changeStatus(row);
       }
     }
@@ -152,7 +152,7 @@ export const operates = _this => {
         // },
         show: true,
         plain: false,
-        method: (row, index) => {
+        method: (row) => {
           _this.resetPassword(row.uemUserId);
         }
       },
@@ -162,7 +162,7 @@ export const operates = _this => {
         type: 'text',
         show: true,
         plain: false,
-        method: (row, index) => {
+        method: (row) => {
           _this.handleDelete(row.uemUserId)
         }
       }

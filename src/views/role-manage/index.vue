@@ -143,7 +143,7 @@ export default {
     changeStatus(item) {
       const sysRoleId = item.sysRoleId;
       const isValid = item.isValid;
-      updateRoleStatus({ sysRoleId, isValid }).then(res => {
+      updateRoleStatus({ sysRoleId, isValid }).then(() => {
         this.$message.success('操作成功');
       });
     },
@@ -158,7 +158,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteRole({ sysRoleId }).then(res => {
+        deleteRole({ sysRoleId }).then(() => {
           this.$message.success('操作成功');
           this.getTableData();
         });

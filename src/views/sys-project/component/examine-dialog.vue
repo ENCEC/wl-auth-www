@@ -6,8 +6,6 @@
       :visible="dialogVisible"
       :close-on-click-modal="false"
       width="800px"
-      center
-      destroy-on-close
       @close="handleDialogClose"
     >
       <el-form
@@ -200,11 +198,18 @@ export default {
     },
     handleDialogClose() {
       this.$nextTick(() => {
+        this.dialogVisible = false
         this.resetTemp();
       });
     },
     resetTemp() {
-      (this.chiefName = '')(this.demandName = '')(this.devDirectorName = '')(this.dutyName = '')(this.genDemandUsers = '')(this.genDevUsers = '')(this.successNum = 0)
+      this.chiefName = ''
+      this.demandName = ''
+      this.devDirectorName = ''
+      this.dutyName = ''
+      this.genDemandUsers = ''
+      this.genDevUsers = ''
+      this.successNum = 0
     }
   }
 };

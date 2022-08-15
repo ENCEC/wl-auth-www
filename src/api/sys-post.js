@@ -1,8 +1,9 @@
 import request from '@/utils/request'
-const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
+
+const shareAuthPrefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 export function querySysPost(data) {
   return request({
-    url: prefix + '/sysPost/querySysPost',
+    url: shareAuthPrefix + '/sysPost/querySysPost',
     method: 'post',
     data
 
@@ -11,7 +12,7 @@ export function querySysPost(data) {
 
 export function sysPostStartStop(data) {
   return request({
-    url: prefix + '/sysPost/sysPostStartStop',
+    url: shareAuthPrefix + '/sysPost/sysPostStartStop',
     method: 'post',
     data
   })
@@ -19,7 +20,7 @@ export function sysPostStartStop(data) {
 
 export function saveSysPost(data) {
   return request({
-    url: prefix + '/sysPost/saveSysPost',
+    url: shareAuthPrefix + '/sysPost/saveSysPost',
     method: 'post',
     data
   })
@@ -27,7 +28,7 @@ export function saveSysPost(data) {
 
 export function updateSysPost(data) {
   return request({
-    url: prefix + '/sysPost/updateSysPost',
+    url: shareAuthPrefix + '/sysPost/updateSysPost',
     method: 'post',
     data
   })
@@ -35,7 +36,7 @@ export function updateSysPost(data) {
 
 export function deleteSysPost(sysPostId) {
   return request({
-    url: prefix + '/sysPost/deleteSysPost',
+    url: shareAuthPrefix + '/sysPost/deleteSysPost',
     method: 'get',
     params: {
       sysPostId

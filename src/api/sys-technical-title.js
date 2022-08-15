@@ -1,8 +1,10 @@
 import request from '@/utils/request'
-const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
+
+const shareAuthPrefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
+
 export function queryByTechnicalTitleName(data) {
   return request({
-    url: prefix + '/sysTechnicalTitle/queryByTechnicalTitleName',
+    url: shareAuthPrefix + '/sysTechnicalTitle/queryByTechnicalTitleName',
     method: 'post',
     data
   })
@@ -11,7 +13,7 @@ export function queryByTechnicalTitleName(data) {
 // 修改职称状态
 export function updateStatus(params) {
   return request({
-    url: prefix + '/sysTechnicalTitle/updateStatus',
+    url: shareAuthPrefix + '/sysTechnicalTitle/updateStatus',
     method: 'get',
     params
   })
@@ -19,7 +21,7 @@ export function updateStatus(params) {
 
 export function saveSysTechnicalTitle(data) {
   return request({
-    url: prefix + '/sysTechnicalTitle/saveSysTechnicalTitle',
+    url: shareAuthPrefix + '/sysTechnicalTitle/saveSysTechnicalTitle',
     method: 'post',
     data
   })
@@ -27,7 +29,7 @@ export function saveSysTechnicalTitle(data) {
 
 export function updateSysTechnicalTitle({ technicalTitleId, technicalName, seniority, postName }) {
   return request({
-    url: prefix + '/sysTechnicalTitle/updateSysTechnicalTitle',
+    url: shareAuthPrefix + '/sysTechnicalTitle/updateSysTechnicalTitle',
     method: 'post',
     data: {
       technicalTitleId, technicalName, seniority, postName
@@ -37,7 +39,7 @@ export function updateSysTechnicalTitle({ technicalTitleId, technicalName, senio
 
 export function deleteSysTechnicalTitle(technicalTitleId) {
   return request({
-    url: prefix + '/sysTechnicalTitle/deleteSysTechnicalTitle',
+    url: shareAuthPrefix + '/sysTechnicalTitle/deleteSysTechnicalTitle',
     method: 'delete',
     params: {
       technicalTitleId

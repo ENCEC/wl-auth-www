@@ -122,7 +122,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        resetUemUserPassword({ uemUserId }).then(res => {
+        resetUemUserPassword({ uemUserId }).then(() => {
           this.show = true;
         });
       });
@@ -131,7 +131,7 @@ export default {
     changeStatus(item) {
       const uemUserId = item.uemUserId;
       const isValid = item.isValid;
-      uemUserStartStop({ uemUserId, isValid }).then(res => {
+      uemUserStartStop({ uemUserId, isValid }).then(() => {
         this.$message.success('操作成功');
       });
     },
@@ -146,7 +146,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteUemUser({ uemUserId }).then(res => {
+        deleteUemUser({ uemUserId }).then(() => {
           this.$message.success('操作成功');
           this.getTableData();
         });

@@ -20,9 +20,10 @@
         <el-button
           :loading="dialogButtonLoading"
           type="primary"
+          size="medium"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button size="medium" @click="dialogFormVisible = false">取消</el-button>
       </div>
     </el-dialog>
 
@@ -154,9 +155,9 @@ export default {
         inline: false,
         gutter: 5, // 栅格的间隔
         col: 6, // 栅格的格数
-        operateCol: 24,
-        labelWidth: '80px',
-        labelPosition: 'left',
+        operateCol: 8,
+        labelWidth: '100px',
+        labelPosition: 'right',
         filterList: [
           {
             type: 'input',
@@ -250,8 +251,7 @@ export default {
         {
           prop: 'postName',
           label: '岗位名称',
-          align: 'center',
-          width: '150'
+          align: 'center'
         },
         {
           prop: 'remark',
@@ -259,19 +259,19 @@ export default {
         },
         {
           prop: 'createBy',
-          label: '创建人',
-          width: '110'
+          label: '创建人'
         },
         {
           prop: 'createTime',
           label: '创建时间',
-          width: '110'
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
         },
         {
           prop: 'status',
           label: '状态',
           align: 'center',
-          width: '100',
           component: 'switch',
           method: (row, status) => {
             this.handleModifyStatus(row, status);
@@ -288,7 +288,7 @@ export default {
             // icon: 'el-icon-edit',
             // plain: true,
             disabled: false,
-            method: (index, row) => {
+            method: (row) => {
               this.handleUpdate(row);
             }
           },
@@ -296,31 +296,15 @@ export default {
             id: '2',
             label: '删除',
             type: 'text',
-            // icon: 'el-icon-delete',
-            // show: (index, row) => {
-            //   return row.status !== 'draft'
-            // },
             show: true,
             plain: false,
-            method: (index, row) => {
+            method: (row) => {
               this.handleDelete(row);
             }
           }
-          //   {
-          //     id: '3',
-          //     label: '删除',
-          //     type: 'danger',
-          //     icon: 'el-icon-delete',
-          //     show: true,
-          //     plain: false,
-          //     disabled: false,
-          //     method: (index, row) => {
-          //       this.handleDelete(row)
-          //     }
-          //   }
         ],
         fixed: false,
-        width: 230
+        width: 200
       }, // 列操作按钮
 
       tableKey: 0,
@@ -378,16 +362,6 @@ export default {
     },
     // 编辑
     handleEdit(index, row) {
-      console.log(' index:', index);
-      console.log(' row:', row);
-    },
-    // 发布
-    handlePush(index, row) {
-      console.log(' index:', index);
-      console.log(' row:', row);
-    },
-    // 删除
-    handleDel(index, row) {
       console.log(' index:', index);
       console.log(' row:', row);
     },
@@ -484,12 +458,11 @@ export default {
             .then(() => {
               // this.list.unshift(this.temp);
               this.dialogFormVisible = false;
-              this.handleResetForm();
               this.$message({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
-                duration: 0
+                duration: 2000
               });
               this.dialogButtonLoading = false;
 
@@ -522,10 +495,8 @@ export default {
                 type: 'success',
                 duration: 2000
               });
-              this.handleResetForm();
               this.dialogFormVisible = false;
               this.dialogButtonLoading = false;
-
               this.getList();
             })
             .catch(() => {
@@ -586,7 +557,9 @@ export default {
       };
     },
     handleDialogClose() {
-      // this.handleResetForm();
+      this.$nextTick(() => {
+        this.handleResetForm()
+      })
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
     }
   }

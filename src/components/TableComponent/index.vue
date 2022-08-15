@@ -58,7 +58,7 @@
           <span v-for="(btn, key) in operates.list" :key="key">
             <el-button
               v-if="(typeof btn.show == 'function')?btn.show(key,scope.row):btn.show"
-              style="margin: 0 4px;"
+              style="margin: 0 4px;font-size:14px"
               :type="btn.type"
               size="mini"
               :disabled="(typeof btn.disabled == 'function')?btn.disabled(key,scope.row):btn.disabled"

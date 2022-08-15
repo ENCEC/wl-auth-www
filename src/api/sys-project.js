@@ -1,8 +1,10 @@
 import request from '@/utils/request'
-const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
+
+const shareAuthPrefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
+
 export function queryUemProject(data) {
   return request({
-    url: prefix + '/uemProject/queryUemProject',
+    url: shareAuthPrefix + '/uemProject/queryUemProject',
     method: 'post',
     data
 
@@ -12,7 +14,7 @@ export function queryUemProject(data) {
 // 人员联想控件
 export function queryUemUserName(data) {
   return request({
-    url: prefix + '/uemProject/queryUemUserName',
+    url: shareAuthPrefix + '/uemProject/queryUemUserName',
     method: 'post',
     data
   })
@@ -20,7 +22,7 @@ export function queryUemUserName(data) {
 
 export function queryViewDetailById(ViewDetailID) {
   return request({
-    url: prefix + '/uemProject/queryViewDetailById',
+    url: shareAuthPrefix + '/uemProject/queryViewDetailById',
     method: 'get',
     params: {
       ViewDetailID
@@ -30,7 +32,7 @@ export function queryViewDetailById(ViewDetailID) {
 
 export function addUemProject(data) {
   return request({
-    url: prefix + '/uemProject/addUemProject',
+    url: shareAuthPrefix + '/uemProject/addUemProject',
     method: 'post',
     data
   })
@@ -38,7 +40,7 @@ export function addUemProject(data) {
 
 export function updateUemProject(data) {
   return request({
-    url: prefix + '/uemProject/updateUemProject',
+    url: shareAuthPrefix + '/uemProject/updateUemProject',
     method: 'post',
     data
   })
@@ -46,7 +48,7 @@ export function updateUemProject(data) {
 
 export function deleteUemProject(uemProjectById) {
   return request({
-    url: prefix + '/uemProject/deleteUemProject',
+    url: shareAuthPrefix + '/uemProject/deleteUemProject',
     method: 'get',
     params: {
       uemProjectById
