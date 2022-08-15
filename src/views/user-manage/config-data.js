@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 14:04:46
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:16:31
+ * @LastEditTime: 2022-08-12 09:25:09
  * @Description:
  */
 export const filterConfig = _this => {
@@ -44,36 +44,11 @@ export const filterConfig = _this => {
         optionLabel: 'label',
         optionValue: 'value',
         optionKey: 'value',
-        options: [
-          {
-            value: true,
-            label: '启用'
-          },
-          {
-            value: false,
-            label: '禁用'
-          }
-        ]
+        options: _this.$dict.getDictOptions('VALID_STATUS'),
+        changeSelect: optionVal => {
+          _this.filterForm.isValid = optionVal;
+        }
       }
-      // {
-      //   type: 'radio',
-      //   label: '状态',
-      //   prop: 'status',
-      //   col: 8,
-      //   radioArr: [
-      //     {
-      //       label: '启用',
-      //       disabled: false
-      //     },
-      //     {
-      //       label: '禁用',
-      //       disabled: false
-      //     }
-      //   ],
-      //   changeSelect: (optionVal, item, index) => {
-      //     console.log(optionVal, item, index)
-      //   }
-      // }
     ],
     operates: [
       {
@@ -115,7 +90,8 @@ export const tableConfig = {
   highlightCurrentRow: true, // 是否支持当前行高亮显示
   mutiSelect: false, // 是否支持列表项选中功能
   indexShow: true,
-  pagination: true
+  pagination: true,
+  height: '400px'
 };
 
 // 表格列
@@ -143,7 +119,7 @@ export const columns = _this => {
       label: '是否启用',
       width: '100',
       component: 'switch',
-      method: (row, status) => {
+      method: (row) => {
         _this.changeStatus(row);
       }
     }
@@ -152,6 +128,8 @@ export const columns = _this => {
 
 export const operates = _this => {
   return {
+    fixed: false,
+    width: 200,
     list: [
       {
         id: 'edit',
@@ -159,7 +137,7 @@ export const operates = _this => {
         type: 'text',
         show: true,
         disabled: false,
-        method: (index, row) => {
+        method: (row, index) => {
           console.log('【 index 】-163', index)
           _this.handleOpen(row);
         }
@@ -174,24 +152,20 @@ export const operates = _this => {
         // },
         show: true,
         plain: false,
-        method: (index, row) => {
+        method: (row) => {
           _this.resetPassword(row.uemUserId);
         }
       },
       {
         id: 'delete',
         label: '删除',
-        // icon: 'el-icon-delete',
         type: 'text',
         show: true,
         plain: false,
-        // disabled: false,
-        method: (index, row) => {
+        method: (row) => {
           _this.handleDelete(row.uemUserId)
         }
       }
-    ],
-    fixed: false,
-    width: 230
-  }; // 列操作按钮
+    ]
+  };
 };

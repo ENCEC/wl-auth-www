@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 13:28:31
+ * @LastEditTime: 2022-08-12 09:43:19
  * @Description:系统管理-角色管理
 -->
 
@@ -14,7 +14,7 @@
     <el-table
       highlight-current-row
       :data="records"
-      height="360px"
+      height="380px"
       style="width: 100%"
       border
     >
@@ -56,15 +56,19 @@
     <el-pagination
       class="pagination-wrap"
       :current-page.sync="params.currentPage"
-      :page-sizes="[10, 20, 30, 40]"
       :page-size="params.pageSize"
+      :page-sizes="[10, 20, 50]"
+      prev-text="上一页"
+      next-text="下一页"
+      style="margin-top: 15px;text-align: center"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <!-- 新增/修改用户 -->
+    <!-- 新增/修改弹框 -->
     <CreateDialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       :edit-data="editData"
       :type="openType"
@@ -93,8 +97,8 @@ export default {
     return {
       filterConfig: filterConfig(this),
       filterForm: {
-        roleName: undefined,
-        isValid: undefined
+        roleName: '',
+        isValid: ''
       },
       editData: {},
       show: false,
@@ -117,7 +121,6 @@ export default {
         pageSize: this.params.pageSize,
         ...this.filterForm
       }).then(res => {
-        debugger
         this.records = res.data.records;
         this.total = res.data.totalRecord;
       });
@@ -136,7 +139,7 @@ export default {
     changeStatus(item) {
       const sysRoleId = item.sysRoleId;
       const isValid = item.isValid;
-      updateRoleStatus({ sysRoleId, isValid }).then(res => {
+      updateRoleStatus({ sysRoleId, isValid }).then(() => {
         this.$message.success('操作成功');
       });
     },
@@ -151,7 +154,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteRole({ sysRoleId }).then(res => {
+        deleteRole({ sysRoleId }).then(() => {
           this.$message.success('操作成功');
           this.getTableData();
         });

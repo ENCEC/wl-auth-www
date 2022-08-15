@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:32:45
+ * @LastEditTime: 2022-08-12 09:22:50
  * @Description: 系统管理-用户管理
 -->
 
@@ -24,6 +24,7 @@
     <!-- 表格 End -->
     <!-- 新增/修改用户 -->
     <CreateDialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       :edit-data="editData"
       @getTableData="getTableData"
@@ -70,9 +71,9 @@ export default {
       // 查询
       filterConfig: filterConfig(this),
       filterForm: {
-        account: undefined,
-        name: undefined,
-        isValid: undefined
+        account: '',
+        name: '',
+        isValid: ''
       },
       // 表格
       records: [],
@@ -121,7 +122,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        resetUemUserPassword({ uemUserId }).then(res => {
+        resetUemUserPassword({ uemUserId }).then(() => {
           this.show = true;
         });
       });
@@ -130,7 +131,7 @@ export default {
     changeStatus(item) {
       const uemUserId = item.uemUserId;
       const isValid = item.isValid;
-      uemUserStartStop({ uemUserId, isValid }).then(res => {
+      uemUserStartStop({ uemUserId, isValid }).then(() => {
         this.$message.success('操作成功');
       });
     },
@@ -145,7 +146,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteUemUser({ uemUserId }).then(res => {
+        deleteUemUser({ uemUserId }).then(() => {
           this.$message.success('操作成功');
           this.getTableData();
         });
@@ -156,18 +157,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-manage {
-  // 操作栏
-  .operate-wrap {
-    span {
-      display: inline-block;
-      cursor: pointer;
-    }
-  }
-  // 分页
-  .pagination-wrap {
-    margin: 10px;
-    float: right;
-  }
   // 重置密码
   .password-dialog {
     height: 55px;

@@ -23,6 +23,8 @@ import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
 import { getDict } from '@/api/demo'
+import dictionary from './utils/dictionary'
+Vue.prototype.$dict = dictionary;
 
 /**
  * If you don't want to use mock-server

@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
 const shareAuthPrefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
-
 export function querySysPost(data) {
   return request({
     url: shareAuthPrefix + '/sysPost/querySysPost',

@@ -48,15 +48,18 @@ module.exports = {
       //   }
       // },
       '/': {
-        target: 'http://172.16.8.147:80/', // 子睿
+        // target: 'http://172.16.8.147:80/', // 子睿
         // target: 'http://172.16.7.146:8082/', // 梓桐
-        // target: 'http://172.16.18.90:8080/', // 魏琪
-        // target: 'http://172.16.17.5:80', // 魏琪
+        // target: 'http://172.16.7.146:8080/', // 梓桐2
+        target: 'http://172.16.7.146:80/', // 梓桐2
+        // target: 'http://172.16.18.90:8082/', // 魏琪
         // target: 'http://172.16.19.84:8082/', // 谭锦鹏
-        ws: true,
+        // target: 'http://172.16.7.254:80/', // ec
+        ws: false,
         changeOrigin: true,
         pathRewrite: {
-          '^/': '/'
+          // '^/wl-erm': '/wl-erm'
+          // '^/': '/'
         }
       }
     }

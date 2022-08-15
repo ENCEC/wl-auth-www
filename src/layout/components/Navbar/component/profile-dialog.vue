@@ -1,18 +1,22 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-07-25 11:44:07
+ * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 09:26:12
- * @Description: 系统管理-用户管理-添加/编辑
+ * @LastEditTime: 2022-08-09 16:16:00
+ * @Description: 用户资料
 -->
+
 <template>
-  <div class="user-dialog">
+  <div class="user-profile-dialog">
     <el-dialog
-      :title="dialogTitle"
+      title="用户资料"
       v-bind="$attrs"
       width="720px"
       center
+      :modal="true"
+      :modal-append-to-body="false"
       :close-on-click-modal="false"
+      z-index="10000"
       v-on="$listeners"
     >
       <el-form
@@ -41,6 +45,7 @@
                   v-model="formData.name"
                   placeholder="请输入姓名"
                   clearable
+                  disabled
                 />
               </el-form-item>
             </el-col>
@@ -56,16 +61,6 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="性别:" prop="sex">
-                <el-radio-group v-model="formData.sex">
-                  <el-radio :label="false">男</el-radio>
-                  <el-radio :label="true">女</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="12">
               <el-form-item label="电子邮箱:" prop="email">
                 <el-input
                   v-model="formData.email"
@@ -74,51 +69,67 @@
                 />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
+            <!-- TODO -->
             <el-col :span="12">
-              <el-form-item label="在职状态:" prop="jobStatus">
-                <el-radio-group v-model="formData.jobStatus">
-                  <el-radio
-                    v-for="item in jobStatusOptions"
-                    :key="'jobStatus' + item.value"
-                    :label="item.value"
-                  >{{ item.label }}</el-radio>
-                </el-radio-group>
+              <el-form-item label="用户类型:" prop="userType">
+                <el-input
+                  v-model="formData.userType"
+                  placeholder="请输入用户类型"
+                  clearable
+                  disabled
+                />
+                <!-- <el-select
+                  v-model="formData.userType"
+                  placeholder="请选择用户类型"
+                  clearable
+                  disabled
+                  class="input-width"
+                >
+                  <el-option
+                    v-for="(item, index) in userTypeOptions"
+                    :key="index"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select> -->
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <!-- 联想控件 -->
+              <el-form-item label="所属部门:" prop="deptName">
+                <el-input
+                  v-model="formData.deptName"
+                  placeholder="请输入入职部门"
+                  clearable
+                  disabled
+                />
+                <!-- <Department v-model="formData.uemDeptId" placeholder="请选择所属部门" class="input-width" disabled /> -->
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="工作年限:" prop="seniority">
-                <el-input
-                  v-model="formData.seniority"
-                  placeholder="请输入工作年限"
-                  clearable
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="入职时间:" prop="entryDate">
+              <el-form-item label="创建时间:">
                 <el-date-picker
-                  v-model="formData.entryDate"
+                  v-model="formData.createTime"
                   format="yyyy-MM-dd"
                   class="input-width"
-                  placeholder="请选择入职时间"
+                  placeholder="请选择创建时间"
                   clearable
+                  disabled
                 />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="12">
-              <!-- TODO:回显 -->
-              <el-form-item label="入职岗位:" prop="staffDutyCode">
-                <StaffDuty v-model="formData.staffDutyCode" placeholder="请选择入职岗位" class="input-width" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <!-- TODO:回显 联想控件？ -->
-              <el-form-item label="归属项目:" prop="projectId">
-                <ProjectSelect v-model="formData.projectId" placeholder="请选择归属项目" class="input-width" />
+              <el-form-item label="创建人:">
+                <el-input
+                  v-model="formData.creatorName"
+                  placeholder="请输入创建人"
+                  clearable
+                  disabled
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -129,7 +140,7 @@
           type="primary"
           size="medium"
           @click="handleConfirm"
-        >提交</el-button>
+        >确定</el-button>
         <el-button
           type="primary"
           :plain="true"
@@ -141,13 +152,13 @@
   </div>
 </template>
 <script>
-import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manage';
+import { getLoginUserInfo, updateUemUserInfo } from '@/api/login';
 import { formRules } from './rules';
-import StaffDuty from '@/components/CurrentSystem/StaffDuty'
-import ProjectSelect from '@/components/CurrentSystem/ProjectSelect'
+// import Department from '@/components/CurrentSystem/Department.vue'
 
 export default {
-  components: { StaffDuty, ProjectSelect },
+  components: { },
+  // inheritAttrs: false,
   props: {
     // 编辑信息
     editData: {
@@ -159,33 +170,33 @@ export default {
     return {
       rules: formRules, // 验证规则
       formData: {
-        uemUserId: '',
         account: '',
         name: '',
         mobile: '',
-        sex: '',
         email: '',
-        jobStatus: '', // 在职状态（0：试用员工 1：正式员工 2：离职员工）
-        seniority: '', // 工作年限
-        entryDate: '', // 入职时间
-        staffDutyCode: '',
-        projectId: ''
+        userType: '',
+        deptName: '',
+        createTime: '',
+        creatorName: ''
       }
+      // // TODO
+      // userTypeOptions: [
+      //   {
+      //     label: '选项一',
+      //     value: '1'
+      //   },
+      //   {
+      //     label: '选项二',
+      //     value: '2'
+      //   }
+      // ]
     };
   },
-  computed: {
-    // 弹框标题
-    dialogTitle() {
-      this.editData.uemUserId && this.getDetailInfo();
-      return this.editData.uemUserId ? '编辑用户信息' : '新增用户';
-    },
-    // 在职状态 （0：试用员工 1：正式员工 2：离职员工）
-    jobStatusOptions() {
-      return this.$dict.getDictOptions('JOB_STATUS').filter(item => item.value.toString() === '0' || item.value.toString() === '1')
-    }
-  },
+  computed: {},
   watch: {},
-  created() {},
+  created() {
+    this.getDetailInfo();
+  },
   mounted() {},
   methods: {
     // 关闭弹框
@@ -195,13 +206,12 @@ export default {
     },
     // 获取用户信息
     getDetailInfo() {
-      getUemUser({
-        uemUserId: this.editData.uemUserId
-      }).then(res => {
+      getLoginUserInfo().then(res => {
         const _res = res.data
+        const roleList = _res.roleList.map(item => item.roleName)
         for (const key in this.formData) {
-          if (key === 'sex') {
-            this.formData[key] = _res[key] || '' // || false
+          if (key === 'userType') {
+            this.formData[key] = roleList.join('、') || ''
           } else {
             this.formData[key] = _res[key] || ''
           }
@@ -212,10 +222,8 @@ export default {
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
-          funcName(this.formData).then(res => {
+          updateUemUserInfo(this.formData).then(res => {
             this.$message.success(res.data);
-            this.$emit('getTableData', '');
             this.close();
           });
         }
@@ -225,9 +233,9 @@ export default {
 };
 </script>
 <style lang="scss">
-.user-dialog {
+.user-profile-dialog {
   .form-wrap {
-    height: 280px;
+    height: 230px;
     .input-width {
       width: 180px;
     }

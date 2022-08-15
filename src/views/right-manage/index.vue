@@ -2,13 +2,14 @@
  * @Author: Hongzf
  * @Date: 2022-07-28 10:47:20
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 13:27:52
+ * @LastEditTime: 2022-08-12 10:25:18
  * @Description: 系统管理-权限管理
 -->
 
 <template>
   <div class="app-container ">
     <div class="right-manage">
+      <!-- 用户 Start -->
       <div class="left-part">
         <div class="title-box">
           用户
@@ -61,13 +62,14 @@
             :current-page.sync="params.currentPage"
             :page-sizes="[10, 20, 30, 40]"
             :page-size="params.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
+            layout="total, prev, pager, next"
             :total="total"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
         </div>
       </div>
+      <!-- 用户 Start -->
       <!-- 角色 Start -->
       <div class="middle-part">
         <div class="title-box">角色</div>

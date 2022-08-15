@@ -1,12 +1,11 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
       <div class="title-container">
         <h3 class="title">
           {{ $t('login.title') }}
         </h3>
-        <lang-select class="set-language" />
+        <!-- <lang-select class="set-language" /> -->
       </div>
 
       <el-form-item prop="username">
@@ -47,13 +46,13 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
+      <!-- 登录按钮 -->
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">
         {{ $t('login.logIn') }}
       </el-button>
 
       <div style="position:relative">
-        <div class="tips">
+        <!-- <div class="tips">
           <span>{{ $t('login.username') }} : admin</span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
         </div>
@@ -62,11 +61,11 @@
             {{ $t('login.username') }} : editor
           </span>
           <span>{{ $t('login.password') }} : {{ $t('login.any') }}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
+        </div> -->
+        <!-- 第三方登录 -->
+        <!-- <el-button class="thirdparty-button" type="primary" @click="showDialog=true">
           {{ $t('login.thirdparty') }}
-        </el-button>
+        </el-button> -->
       </div>
     </el-form>
 
@@ -75,38 +74,44 @@
       <br>
       <br>
       <br>
-      <social-sign />
+      <!-- <social-sign /> -->
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import LangSelect from '@/components/LangSelect'
-import SocialSign from './components/SocialSignin'
+import { aesEncrypt } from '@/utils/util'
+// import { validUsername } from '@/utils/validate'
+// import LangSelect from '@/components/LangSelect'
+// import SocialSign from './components/SocialSignin'
+// import { login } from '@/api/login';
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign },
+  // components: { SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+      // if (!validUsername(value)) {
+      if (!(value)) {
+        callback(new Error('请输入账号'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (!value) {
+        callback(new Error('请输入密码'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: '',
+        clientId: process.env.VUE_APP_CLIENT_ID,
+        checkMoveId: ' ',
+        xWidth: 0
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -160,32 +165,44 @@ export default {
         this.$refs.password.focus()
       })
     },
+    // 登录
     handleLogin() {
-      // this.$refs.loginForm.validate(valid => {
-      //   if (valid) {
-      //     this.loading = true
-      //     this.$store.dispatch('user/login', this.loginForm)
-      //       .then(() => {
-      //         this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-      //         this.loading = false
-      //       })
-      //       .catch(() => {
-      //         this.loading = false
-      //       })
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          this.$store.dispatch('user/login',
+            {
+              ...this.loginForm,
+              account: this.loginForm.username,
+              password: aesEncrypt(this.loginForm.password)
+            }
+          )
+            .then((res) => {
+              if (res.success) {
+                console.log('【 登录成功 】-184', res)
+                this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              } else {
+                this.$message.error('登录失败')
+              }
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
 
-      this.$store.dispatch('user/login', this.loginForm)
-        .then(() => {
-          this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
-          this.loading = false
-        })
-        .catch(() => {
-          this.loading = false
-        })
+      // this.$store.dispatch('user/login', this.loginForm)
+      //   .then(() => {
+      //     this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+      //     this.loading = false
+      //   })
+      //   .catch(() => {
+      //     this.loading = false
+      //   })
     },
     getOtherQuery(query) {
       return Object.keys(query).reduce((acc, cur) => {
@@ -212,6 +229,15 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  // src\assets
+  background-image:url('../../assets/images/login_bg.jpg');
+  width:100%;
+  height:100%;
+  position:fixed;
+  background-size:100% 100%;
+  .el-input__inner {
+      color: #fff !important;
+  }
   .el-input {
     display: inline-block;
     height: 47px;
@@ -223,7 +249,8 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      // color: $light_gray;
+      color: #fff;
       height: 47px;
       caret-color: $cursor;
 
@@ -253,14 +280,19 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
   .login-form {
-    position: relative;
+    // background: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+
+    // position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
-    overflow: hidden;
+    padding: 60px 35px 30px;
+    // margin: 0 auto;
+    // overflow: hidden;
   }
 
   .tips {

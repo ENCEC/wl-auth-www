@@ -4,8 +4,8 @@
       top="10vh"
       :title="dialogTitle"
       :visible="dialogVisible"
-      width="800px"
       :close-on-click-modal="false"
+      width="800px"
       @close="handleDialogClose"
     >
       <el-form

@@ -7,10 +7,11 @@
  */
 
 import request from '@/utils/request';
+const prefix = process.env.VUE_APP_SHARE_AUTH_PREFIX
 // 带条件分页查询菜单信息
 export function queryResourceByPage(data) {
   return request({
-    url: '/queryResourceByPage',
+    url: prefix + '/queryResourceByPage',
     method: 'post',
     data
   });
@@ -18,7 +19,7 @@ export function queryResourceByPage(data) {
 // 查询父级菜单信息
 export function queryParentResource(data) {
   return request({
-    url: '/queryParentResource',
+    url: prefix + '/queryParentResource',
     method: 'post',
     data
   });
@@ -26,7 +27,7 @@ export function queryParentResource(data) {
 // 根据id查询菜单信息
 export function queryResourceById(query) {
   return request({
-    url: '/queryResourceById',
+    url: prefix + '/queryResourceById',
     method: 'get',
     params: query
   });
@@ -34,7 +35,7 @@ export function queryResourceById(query) {
 // 新增菜单
 export function saveResource(data) {
   return request({
-    url: '/saveResource',
+    url: prefix + '/saveResource',
     method: 'post',
     data
   });
@@ -42,7 +43,7 @@ export function saveResource(data) {
 // 编辑菜单信息
 export function updateResource(data) {
   return request({
-    url: '/updateResource',
+    url: prefix + '/updateResource',
     method: 'post',
     data
   });
@@ -50,7 +51,7 @@ export function updateResource(data) {
 // 逻辑删除菜单信息
 export function deleteResourceById(query) {
   return request({
-    url: '/deleteResourceById',
+    url: prefix + '/deleteResourceById',
     method: 'get',
     params: query
   });
@@ -58,7 +59,7 @@ export function deleteResourceById(query) {
 // 更改状态
 export function updateResourceStatus(data) {
   return request({
-    url: '/updateResourceStatus',
+    url: prefix + '/updateResourceStatus',
     method: 'post',
     data
   });
