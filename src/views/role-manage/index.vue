@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 09:43:19
+ * @LastEditTime: 2022-08-15 19:10:41
  * @Description:系统管理-角色管理
 -->
 
@@ -21,9 +21,13 @@
       <el-table-column type="index" label="序号" width="80px" />
       <el-table-column prop="roleName" label="角色名称" />
       <el-table-column prop="remark" label="角色描述" />
-      <el-table-column prop="creatorName" label="创建人" />
-      <el-table-column prop="createTime" label="创建时间" />
-      <el-table-column prop="isValid" label="是否启用">
+      <el-table-column prop="creatorName" label="创建人" width="120px" />
+      <el-table-column prop="createTime" label="创建时间" width="120px">
+        <template slot-scope="scope">
+          {{ scope.row.createTime ? $moment(scope.row.createTime).format('YYYY-MM-DD') : '' }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="isValid" label="是否启用" width="120px">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.isValid"
@@ -133,7 +137,7 @@ export default {
     handleOpen(item = {}, type = '') {
       this.dialogVisible = true;
       this.openType = type;
-      this.editData = { sysRoleId: item.sysRoleId || '' };
+      this.editData = item || {} // { sysRoleId: item.sysRoleId || '' };
     },
     // 启用/禁用用户
     changeStatus(item) {

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-28 10:47:20
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 10:25:18
+ * @LastEditTime: 2022-08-15 11:05:26
  * @Description: 系统管理-权限管理
 -->
 
@@ -312,6 +312,10 @@ export default {
     width: 29%;
     .content {
       height: 470px;
+      .tree-wrap{
+        max-height: 460px;
+        overflow-y: auto;
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 19:10:46
+ * @LastEditTime: 2022-08-15 19:12:30
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -201,13 +201,15 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       queryRoleAndResourceById({
         sysRoleId: this.editData.sysRoleId
       }).then(res => {
-        const obj = res[0]
+        console.log('【 res 】-204', res)
+        const obj = this.editData || {}
         const sysResourceIdList = res.map(item => item.sysResourceId.toString())
         const sysRoleResourceIdList = res.map(item => item.sysRoleResourceId.toString())
         this.defaultCheckedKeys = sysResourceIdList
         const { roleName, remark, creatorName, createTime } = obj
         this.formData = {
-          ...this.formData, roleName, remark, creatorName, createTime,
+          ...this.formData, roleName, remark, creatorName,
+          createTime: this.$moment(createTime).format('YYYY-MM-DD'),
           // ...obj,creatorName
           sysResourceIdList,
           sysRoleResourceIdList

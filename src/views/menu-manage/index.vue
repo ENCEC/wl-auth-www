@@ -22,7 +22,11 @@
       <el-table-column prop="resourceUrl" label="资源地址" min-width="150px" />
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
-      <el-table-column prop="createTime" label="创建时间" width="160px" />
+      <el-table-column prop="createTime" label="创建时间" width="110px">
+        <template slot-scope="scope">
+          {{ scope.row.createTime ? $moment(scope.row.createTime).format('YYYY-MM-DD') : '' }}
+        </template>
+      </el-table-column>
       <el-table-column prop="isValid" label="是否启用">
         <template slot-scope="scope">
           <el-switch
