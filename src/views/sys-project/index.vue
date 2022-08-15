@@ -6,6 +6,7 @@
     <el-dialog
       top="10vh"
       width="800px"
+      :close-on-click-modal="false"
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
       @close="handleDialogClose"
@@ -264,9 +265,9 @@ export default {
         inline: false,
         gutter: 5, // 栅格的间隔
         col: 8, // 栅格的格数
-        operateCol: 24,
-        labelWidth: '80px',
-        labelPosition: 'left',
+        operateCol: 16,
+        labelWidth: '100px',
+        labelPosition: 'right',
         filterList: [
           {
             type: 'input',
@@ -384,22 +385,37 @@ export default {
         },
         {
           prop: 'planStartTime',
-          label: '计划开始时间'
-          // width: "110",
+          label: '计划开始时间',
+          width: '120',
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
         },
         {
           prop: 'planEndTime',
-          label: '计划结束时间'
+          label: '计划结束时间',
+          width: '120',
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
           // width: "110",
         },
         {
           prop: 'actualStartTime',
-          label: '实际开始时间'
+          label: '实际开始时间',
+          width: '120',
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
           // width: "110",
         },
         {
           prop: 'actualEndTime',
-          label: '实际结束时间'
+          label: '实际结束时间',
+          width: '120',
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
           // width: "110",
         },
 

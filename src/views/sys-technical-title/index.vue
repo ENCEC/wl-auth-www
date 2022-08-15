@@ -7,6 +7,7 @@
       width="800px"
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
+      :close-on-click-modal="false"
       @close="handleDialogClose"
     >
       <form-panel
@@ -19,9 +20,13 @@
         <el-button
           :loading="dialogButtonLoading"
           type="primary"
+          size="medium"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
-        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button
+          size="medium"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
       </div>
     </el-dialog>
 
@@ -59,9 +64,7 @@
 </template>
 
 <script>
-import {
-  querySysPost
-} from '@/api/sys-post.js';
+import { querySysPost } from '@/api/sys-post.js';
 import {
   queryByTechnicalTitleName,
   updateStatus,
@@ -78,8 +81,7 @@ const statusTypeOptions = [
   { key: '1', display_name: '禁用' },
   { key: '', display_name: '所有' }
 ];
-const postTypeOptions = [
-];
+const postTypeOptions = [];
 
 export default {
   name: 'SysTechniclTitle',
@@ -129,8 +131,8 @@ export default {
         gutter: 5, // 栅格的间隔
         col: 6, // 栅格的格数
         operateCol: 24,
-        labelWidth: '80px',
-        labelPosition: 'left',
+        labelWidth: '100px',
+        labelPosition: 'right',
         filterList: [
           {
             type: 'input',
@@ -153,7 +155,7 @@ export default {
             optionKey: 'key',
             options: postTypeOptions,
             changeSelect: (optionVal) => {
-              this.listQuery.postName = optionVal
+              this.listQuery.postName = optionVal;
             }
           },
           {
@@ -167,7 +169,7 @@ export default {
             optionKey: 'key',
             options: statusTypeOptions,
             changeSelect: (optionVal) => {
-              this.listQuery.status = optionVal
+              this.listQuery.status = optionVal;
             }
           }
         ],
@@ -222,8 +224,7 @@ export default {
         {
           prop: 'technicalName',
           label: '职称名称',
-          align: 'center',
-          width: '150'
+          align: 'center'
         },
         {
           prop: 'postName',
@@ -235,19 +236,19 @@ export default {
         },
         {
           prop: 'createBy',
-          label: '创建人',
-          width: '110'
+          label: '创建人'
         },
         {
           prop: 'createTime',
           label: '创建时间',
-          width: '110'
+          formatter: (row) => {
+            return row.createTime.substring(0, 11);
+          }
         },
         {
           prop: 'status',
           label: '状态',
           align: 'center',
-          width: '100',
           component: 'switch',
           method: (row, status) => {
             this.handleModifyStatus(row, status);
@@ -264,7 +265,7 @@ export default {
             // icon: 'el-icon-edit',
             // plain: true,
             disabled: false,
-            method: (index, row) => {
+            method: (row) => {
               this.handleUpdate(row);
             }
           },
@@ -278,25 +279,13 @@ export default {
             // },
             show: true,
             plain: false,
-            method: (index, row) => {
+            method: (row) => {
               this.handleDelete(row);
             }
           }
-          //   {
-          //     id: '3',
-          //     label: '删除',
-          //     type: 'danger',
-          //     icon: 'el-icon-delete',
-          //     show: true,
-          //     plain: false,
-          //     disabled: false,
-          //     method: (index, row) => {
-          //       this.handleDelete(row)
-          //     }
-          //   }
         ],
         fixed: false,
-        width: 230
+        width: 200
       }, // 列操作按钮
 
       tableKey: 0,
@@ -355,7 +344,7 @@ export default {
   },
   created() {
     this.getList();
-    this.initPostSelect()
+    this.initPostSelect();
   },
   methods: {
     initPostSelect() {
@@ -363,16 +352,23 @@ export default {
         pageSize: 1000,
         currentPage: 1,
         status: '0'
-      }
-      querySysPost(params).then((res) => {
-        res.data.records.filter((item) => {
-          return item.status === '0'
-        }).forEach((item) => {
-          this.postTypeOptions.push({ key: item.postName, display_name: item.postName })
+      };
+      querySysPost(params)
+        .then((res) => {
+          res.data.records
+            .filter((item) => {
+              return item.status === '0';
+            })
+            .forEach((item) => {
+              this.postTypeOptions.push({
+                key: item.postName,
+                display_name: item.postName
+              });
+            });
         })
-      }).catch(() => {
-        this.$message.error('初始化岗位失败')
-      })
+        .catch(() => {
+          this.$message.error('初始化岗位失败');
+        });
     },
     handleIndexChange(currentPage) {
       this.listQuery.currentPage = currentPage;
@@ -388,8 +384,11 @@ export default {
       queryByTechnicalTitleName(this.listQuery).then((response) => {
         this.list = response.data.records;
         this.list.forEach((item, index) => {
-          item.count = (this.listQuery.currentPage - 1) * this.listQuery.pageSize + index + 1
-          item.status = item.status === '0'
+          item.count =
+            (this.listQuery.currentPage - 1) * this.listQuery.pageSize +
+            index +
+            1;
+          item.status = item.status === '0';
         });
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
@@ -418,8 +417,8 @@ export default {
     //   });
     // },
     handleModifyStatus(row) {
-      const params = Object.assign({}, row, { status: row.status ? '0' : '1' })
-      debugger
+      const params = Object.assign({}, row, { status: row.status ? '0' : '1' });
+      debugger;
       updateStatus(params)
         .then(() => {
           this.$message({
@@ -446,7 +445,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
-      debugger
+      debugger;
       this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -471,7 +470,7 @@ export default {
                 duration: 2000
               });
               this.dialogButtonLoading = false;
-              this.getList()
+              this.getList();
             })
             .catch(() => {
               this.$message({
@@ -486,12 +485,14 @@ export default {
       });
     },
     updateData() {
-      debugger
+      debugger;
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.dialogButtonLoading = true;
-          const tempData = Object.assign({}, this.temp, { status: this.temp.status ? '0' : '1' });
-          debugger
+          const tempData = Object.assign({}, this.temp, {
+            status: this.temp.status ? '0' : '1'
+          });
+          debugger;
           updateSysTechnicalTitle(tempData)
             .then(() => {
               this.dialogFormVisible = false;
@@ -502,10 +503,10 @@ export default {
                 duration: 2000
               });
               this.dialogButtonLoading = false;
-              this.getList()
+              this.getList();
             })
             .catch(() => {
-              debugger
+              debugger;
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -518,7 +519,7 @@ export default {
       });
     },
     handleDelete(row) {
-      debugger
+      debugger;
       this.$confirm(
         '您确定要删除该职称信息吗?删除后该职称信息不可恢复',
         '提示',
@@ -529,14 +530,14 @@ export default {
         }
       )
         .then(() => {
-          const _this = this
+          const _this = this;
           deleteSysTechnicalTitle(row.technicalTitleId)
             .then(() => {
               this.$message({
                 type: 'success',
                 message: '删除成功!'
               });
-              _this.getList()
+              _this.getList();
             })
             .catch(() => {
               this.$message({
@@ -568,7 +569,9 @@ export default {
       };
     },
     handleDialogClose() {
-      // this.handleResetForm();
+      this.$nextTick(() => {
+        this.handleResetForm();
+      });
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
     }
   }
