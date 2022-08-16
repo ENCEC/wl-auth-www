@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-15 19:12:30
+ * @LastEditTime: 2022-08-16 15:45:53
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -14,6 +14,8 @@
       width="850px"
       center
       :close-on-click-modal="false"
+      z-index="1000"
+      :append-to-body="true"
       v-on="$listeners"
     >
       <el-form
@@ -26,15 +28,16 @@
         destroy-on-close
         :disabled="type === 'detail'"
       >
-        <div class="form-wrap">
+        <div class="form-box-wrap" style="display:flex">
           <!-- 左侧 -->
-          <div class="left-part">
+          <div class="left-part" style="width:50%">
             <el-form-item label="角色名称:" prop="roleName">
               <el-input
                 v-model="formData.roleName"
                 placeholder="请输入角色名称"
                 clearable
                 class="input-width"
+                style="width: 220px;"
               />
             </el-form-item>
             <el-form-item label="角色描述:" prop="remark">
@@ -45,6 +48,7 @@
                 :rows="3"
                 clearable
                 class="input-width"
+                style="width: 220px;"
               />
             </el-form-item>
             <el-form-item
@@ -56,6 +60,7 @@
                 placeholder="请输入创建时间"
                 clearable
                 class="input-width"
+                style="width: 220px;"
                 disabled
               />
             </el-form-item>
@@ -69,13 +74,21 @@
                 clearable
                 class="input-width"
                 disabled
+                style="width: 220px;"
               />
             </el-form-item>
           </div>
           <!-- 右侧 -->
-          <div class="right-part">
+          <div class="right-part" style="width:50%">
             <el-form-item label="角色权限:" prop="sysResourceIdList">
-              <div class="tree-wrap">
+              <!-- TODO -->
+              <div
+                class="tree-wrap"
+                style=" border: 1px solid #dddddd;
+                  width: 240px;
+                  height: 340px;
+                  overflow:auto;"
+              >
                 <!-- :default-expanded-keys="[2, 3]" -->
                 <el-tree
                   ref="treeRef"
@@ -236,10 +249,10 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
 </script>
 <style lang="scss">
 .role-dialog{
-  .form-wrap {
-    $base-height: 340px;
-
-    height: $base-height;
+  width:850px !important;
+  .form-box-wrap {
+    // $base-height: 340px;
+    height: 340px;
     display: flex;
     justify-content: space-between;
     .left-part {

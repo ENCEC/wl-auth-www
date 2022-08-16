@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-09 16:16:00
+ * @LastEditTime: 2022-08-15 14:29:01
  * @Description: 用户资料
 -->
 
@@ -237,7 +237,7 @@ export default {
   .form-wrap {
     height: 230px;
     .input-width {
-      width: 180px;
+      width: 180px !important;
     }
   }
   // 底部按钮

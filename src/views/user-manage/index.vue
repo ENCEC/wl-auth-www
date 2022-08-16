@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 10:36:16
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 09:22:50
+ * @LastEditTime: 2022-08-16 15:41:16
  * @Description: 系统管理-用户管理
 -->
 
@@ -30,15 +30,23 @@
       @getTableData="getTableData"
     />
     <!-- 密码重置 Start -->
-    <el-dialog center title="消息提示" :visible.sync="show" width="30%">
+    <el-dialog
+      center
+      title="消息提示"
+      z-index="1000"
+      :append-to-body="true"
+      :visible.sync="show"
+      width="30%"
+    >
       <div class="password-dialog">
         密码重置成功！已发送至您的邮箱，请注意查收。
         <!-- 重置后的密码为<span class="password">123456</span> 。 -->
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button
-          size="mini"
+          size="medium"
           type="primary"
+          style="margin-top:15px"
           @click="show = false"
         >确 定</el-button>
       </span>
@@ -157,13 +165,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 .user-manage {
-  // 重置密码
+// 重置密码
   .password-dialog {
     height: 55px;
     text-align: center;
+    margin-bottom: 15px;
     .password {
       color: rgb(194, 22, 22);
     }
   }
 }
+
 </style>

@@ -485,3 +485,29 @@ $--color-white: #FFFFFF;
         }
     }
 }
+// 层级关系
+.app-wrapper{
+    // 顶部导航栏
+    .header-warp{
+        position: fixed;
+        z-index:10 !important;
+
+    }
+  // 主体
+    .main-container{
+        position: relative;
+        z-index:8 !important;
+        // 侧边菜单栏
+        .sidebar-container{
+        position: fixed;
+        }
+        .fixed-header{
+            position: fixed;
+            z-index: 2 !important;
+        }
+        .app-main{
+            position: relative;
+            z-index: 1 !important;
+        }
+    }
+}

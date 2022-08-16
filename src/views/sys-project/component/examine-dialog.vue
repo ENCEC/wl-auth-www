@@ -2,6 +2,8 @@
   <div class="project-examine-dialog">
     <el-dialog
       top="10vh"
+      z-index="1000"
+      :append-to-body="true"
       :title="dialogTitle"
       :visible="dialogVisible"
       :close-on-click-modal="false"

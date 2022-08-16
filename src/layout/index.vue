@@ -1,9 +1,13 @@
 <template>
   <div :class="classObj" class="app-wrapper">
+    <!-- 顶部栏 -->
+    <header-bar />
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
     <div :class="{hasTagsView:needTagsView}" class="main-container">
+      <!-- 右侧菜单栏 -->
+      <sidebar class="sidebar-container" />
       <div :class="{'fixed-header':fixedHeader}">
+        <!-- 顶部导航栏 -->
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -20,10 +24,12 @@ import RightPanel from '@/components/RightPanel'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
+import HeaderBar from './components/HeaderBar/index'
 
 export default {
   name: 'Layout',
   components: {
+    HeaderBar,
     AppMain,
     Navbar,
     RightPanel,
@@ -82,21 +88,19 @@ export default {
     position: absolute;
     z-index: 999;
   }
+    .fixed-header {
+      position: fixed;
+      top: $headerHeight;
+      right: 0;
+      // z-index: 9; //TODO
+      width: calc(100% - #{$sideBarWidth});
+      transition: width 0.28s;
+    }
+    .hideSidebar .fixed-header {
+      width: calc(100% - 54px)
+    }
 
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
-  }
-
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
-  }
-
-  .mobile .fixed-header {
-    width: 100%;
-  }
+    .mobile .fixed-header {
+      width: 100%;
+    }
 </style>

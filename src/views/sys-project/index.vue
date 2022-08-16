@@ -6,6 +6,8 @@
     <el-dialog
       top="10vh"
       width="800px"
+      z-index="1000"
+      :append-to-body="true"
       :close-on-click-modal="false"
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
