@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 09:26:12
+ * @LastEditTime: 2022-08-16 14:35:31
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -11,6 +11,8 @@
       :title="dialogTitle"
       v-bind="$attrs"
       width="720px"
+      z-index="1000"
+      :append-to-body="true"
       center
       :close-on-click-modal="false"
       v-on="$listeners"
@@ -102,6 +104,7 @@
                   v-model="formData.entryDate"
                   format="yyyy-MM-dd"
                   class="input-width"
+                  style="width:180px !important"
                   placeholder="请选择入职时间"
                   clearable
                 />
@@ -228,9 +231,9 @@ export default {
 .user-dialog {
   .form-wrap {
     height: 280px;
-    .input-width {
-      width: 180px;
-    }
+    // .input-width {
+    //   width: 180px !important;
+    // }
   }
   // 底部按钮
   .dialog-footer {

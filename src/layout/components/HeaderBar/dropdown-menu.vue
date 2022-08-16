@@ -1,65 +1,52 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    <!-- <div class="right-menu">
+    <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <i class="el-icon-user-solid" />
-          <span>{{ name || '' }}</span>
+          <i class="el-icon-user-solid" size="28px" />
+          <span class="name">{{ name || '' }}</span>
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
+          <!-- 用户资料 -->
           <el-dropdown-item divided @click.native="handleProfileOpen">
             {{ $t('navbar.profile') }}
           </el-dropdown-item>
+          <!-- 修改密码 -->
           <el-dropdown-item divided @click.native="handlePasswordOpen">
             {{ $t('navbar.dashboard') }}
           </el-dropdown-item>
+          <!-- 退出登录 -->
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">{{ $t('navbar.logOut') }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-    </div> -->
+    </div>
     <!-- 用户资料-->
-    <!-- <ProfileDialog
+    <ProfileDialog
       v-if="profileDialogVisible"
       :visible.sync="profileDialogVisible"
       :edit-data="editData"
-    /> -->
+    />
     <!-- 修改密码 -->
-    <!-- <PasswordDialog
+    <PasswordDialog
       v-if="passwordDialogVisible"
       :visible.sync="passwordDialogVisible"
       :edit-data="editData"
-    /> -->
+    />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-// import ErrorLog from '@/components/ErrorLog'
-// import ProfileDialog from './component/profile-dialog';
-// import PasswordDialog from './component/password-dialog';
-// import Screenfull from '@/components/Screenfull'
-// import SizeSelect from '@/components/SizeSelect'
-// import LangSelect from '@/components/LangSelect'
-// import Search from '@/components/HeaderSearch'
-
+import ProfileDialog from './profile-dialog';
+import PasswordDialog from './password-dialog';
 export default {
   components: {
-    Breadcrumb,
-    Hamburger
-    // ErrorLog,
-    // ProfileDialog,
-    // PasswordDialog
-    // Screenfull,
-    // SizeSelect,
-    // LangSelect,
-    // Search
+    ProfileDialog,
+    PasswordDialog
   },
   data() {
     return {
@@ -114,8 +101,8 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  // background: #fff;
+  // box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
     line-height: 46px;
@@ -126,7 +113,7 @@ export default {
     -webkit-tap-highlight-color:transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      // background: rgba(0, 0, 0, .025)
     }
   }
 
@@ -172,7 +159,22 @@ export default {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
-
+        display: flex;
+        align-items: center;
+        .el-icon-user-solid{
+          color:#000099;
+          font-size: 20px;
+        }
+        .name{
+          margin-left: 3px;
+          margin-right: 5px;
+          font-size: 14px;
+        }
+        .el-icon-caret-bottom {
+          cursor: pointer;
+          color:#000099;
+          font-size: 20px;
+        }
         .user-avatar {
           cursor: pointer;
           width: 40px;
@@ -180,13 +182,6 @@ export default {
           border-radius: 10px;
         }
 
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 25px;
-          font-size: 12px;
-        }
       }
     }
   }

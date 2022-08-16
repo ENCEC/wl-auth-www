@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-01 12:29:13
+ * @LastEditTime: 2022-08-16 14:27:13
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -13,6 +13,8 @@
       width="700px"
       center
       :close-on-click-modal="false"
+      z-index="1000"
+      :append-to-body="true"
       v-on="$listeners"
     >
       <el-form

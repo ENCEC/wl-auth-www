@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-01 15:55:04
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-04 18:02:41
+ * @LastEditTime: 2022-08-16 14:21:16
  * @Description: 修改密码
 -->
 
@@ -16,7 +16,8 @@
       :modal="true"
       :modal-append-to-body="false"
       :close-on-click-modal="false"
-      z-index="10000"
+      z-index="1000"
+      :append-to-body="true"
       v-on="$listeners"
     >
       <el-form
@@ -37,6 +38,7 @@
                   placeholder="只能输入数字或字母，且必须包含数字和字母"
                   type="password"
                   class="input-width"
+                  style="width:310px !important"
                   clearable
                 />
               </el-form-item>
@@ -48,6 +50,7 @@
                   placeholder="请输入确认密码"
                   type="password"
                   class="input-width"
+                  style="width:310px !important"
                   clearable
                 />
               </el-form-item>
@@ -159,7 +162,7 @@ export default {
   .form-wrap {
     height: 140px;
     .input-width {
-      width: 300px;
+      width: 310px !important;
     }
   }
   // 底部按钮

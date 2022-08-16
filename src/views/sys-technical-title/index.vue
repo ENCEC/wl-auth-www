@@ -5,6 +5,8 @@
 
     <el-dialog
       width="800px"
+      z-index="1000"
+      :append-to-body="true"
       :title="textMap[dialogStatus]"
       :close-on-click-modal="false"
       :visible.sync="dialogFormVisible"
@@ -43,7 +45,12 @@
       @handleIndexChange="handleIndexChange"
     />
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
+    <el-dialog
+      z-index="1000"
+      :append-to-body="true"
+      :visible.sync="dialogPvVisible"
+      title="Reading statistics"
+    >
       <el-table
         :data="pvData"
         border
