@@ -138,7 +138,7 @@ export default {
           {
             type: 'associate',
             label: '项目总监',
-            prop: 'chiefName',
+            prop: 'chiefId',
             examine: true,
             // width: "200px",
             valueProp: 'uemUserId',
@@ -149,14 +149,12 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              debugger
-              //   this.listQuery.status=optionVal
             }
           },
           {
             type: 'associate',
             label: '项目经理',
-            prop: 'dutyName',
+            prop: 'dutyId',
             // width: "200px",
             examine: true,
             valueProp: 'uemUserId',
@@ -167,13 +165,12 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              //   this.listQuery.status=optionVal
             }
           },
           {
             type: 'associate',
             label: '开发经理',
-            prop: 'devDirectorName',
+            prop: 'devDirectorId',
             // width: "200px",
             examine: true,
             valueProp: 'uemUserId',
@@ -184,13 +181,12 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              //   this.listQuery.status=optionVal
             }
           },
           {
             type: 'associate',
             label: '需求组长',
-            prop: 'demandName',
+            prop: 'demandId',
             // width: "200px",
             examine: true,
             valueProp: 'uemUserId',
@@ -201,8 +197,6 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              debugger
-              //   this.listQuery.status=optionVal
             }
           },
           {
@@ -219,7 +213,6 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              //   this.listQuery.status=optionVal
             }
           },
           {
@@ -236,7 +229,6 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              //   this.listQuery.status=optionVal
             }
           },
 
@@ -245,8 +237,6 @@ export default {
             prop: 'planStartEndDate',
             label: '计划起止日期',
             col: 16,
-            // labelWidth:'100px',
-            // width: "200px",
             format: 'yyyy-MM-dd',
             valueFormat: 'yyyy-MM-dd',
             subType: 'daterange',
@@ -280,7 +270,7 @@ export default {
           {
             type: 'associate',
             label: '项目经理',
-            prop: 'dutyName',
+            prop: 'dutyId',
             width: '200px',
             valueProp: 'uemUserId',
             labelProp: 'name',
@@ -290,7 +280,6 @@ export default {
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
-              //   this.listQuery.status=optionVal
             }
           },
           {
@@ -320,7 +309,6 @@ export default {
             type: 'primary',
             buttonLabel: '新增项目',
             btnType: 'primary',
-            //   icon: 'el-icon-search',
             method: () => {
               this.handleAdd();
             }
@@ -329,7 +317,6 @@ export default {
             type: 'primary',
             buttonLabel: '查询',
             btnType: 'primary',
-            //   icon: 'el-icon-edit',
             method: () => {
               this.getList();
             }
@@ -339,7 +326,6 @@ export default {
             buttonLabel: '重置',
             btnType: 'primary',
             plain: true,
-            //   icon: 'el-icon-download',
             method: () => {
               this.resetListQuery();
             }
@@ -377,10 +363,10 @@ export default {
           label: '项目金额'
         },
         {
-          prop: 'dutyName',
+          prop: 'dutyId',
           label: '项目经理',
           formatter: (row) => {
-            return this.getDutyName(row.dutyName);
+            return this.getDutyName(row.dutyId);
           }
         },
         {
@@ -388,7 +374,7 @@ export default {
           label: '计划开始时间',
           width: '120',
           formatter: (row) => {
-            return row.createTime.substring(0, 11);
+            return row.planStartTime ? row.planStartTime.substring(0, 11) : '';
           }
         },
         {
@@ -396,7 +382,7 @@ export default {
           label: '计划结束时间',
           width: '120',
           formatter: (row) => {
-            return row.createTime.substring(0, 11);
+            return row.planEndTime ? row.planEndTime.substring(0, 11) : '';
           }
           // width: "110",
         },
@@ -405,25 +391,22 @@ export default {
           label: '实际开始时间',
           width: '120',
           formatter: (row) => {
-            return row.createTime.substring(0, 11);
+            return row.actualStartTime ? row.actualStartTime.substring(0, 11) : '';
           }
-          // width: "110",
         },
         {
           prop: 'actualEndTime',
           label: '实际结束时间',
           width: '120',
           formatter: (row) => {
-            return row.createTime.substring(0, 11);
+            return row.actualEndTime ? row.actualEndTime.substring(0, 11) : '';
           }
-          // width: "110",
         },
 
         {
           prop: 'status',
           label: '状态',
           align: 'center',
-          // width: "100",
           formatter: (row) => {
             return this.getProjectStatus(row);
           }
@@ -475,7 +458,7 @@ export default {
         pageSize: 20,
         totalRecord: 0,
         projectName: '',
-        dutyName: '',
+        dutyId: '',
         status: '',
         customer: ''
       },
@@ -486,10 +469,10 @@ export default {
         customer: '',
         fcy: '',
         status: '',
-        chiefName: '',
-        dutyName: '',
-        devDirectorName: '',
-        demandName: '',
+        chiefId: '',
+        dutyId: '',
+        devDirectorId: '',
+        demandId: '',
         genDevUsers: '',
         genDemandUsers: '',
         planStartEndDate: [],
@@ -515,15 +498,15 @@ export default {
         status: [
           { required: true, message: '请选择项目状态', trigger: 'change' }
         ],
-        dutyName: [
+        dutyId: [
           { required: true, message: '请选择项目经理', trigger: 'change' }
         ],
-        genDevUsers: [
-          { required: true, message: '请选择开发人员', trigger: 'change' }
-        ],
-        genDemandUsers: [
-          { required: true, message: '请选择需求人员', trigger: 'change' }
-        ],
+        // genDevUsers: [
+        //   { required: true, message: '请选择开发人员', trigger: 'change' }
+        // ],
+        // genDemandUsers: [
+        //   { required: true, message: '请选择需求人员', trigger: 'change' }
+        // ],
         planStartEndDate: [
           { required: true, message: '请选择计划起止日期', trigger: 'change' }
         ]
@@ -533,7 +516,6 @@ export default {
   },
   created() {
     this.getList();
-    // this.initPostSelect();
     this.initDutyNameOptions();
   },
   methods: {
@@ -555,9 +537,9 @@ export default {
           this.$message.error('初始化岗位失败');
         });
     },
-    getDutyName(dutyName) {
+    getDutyName(dutyId) {
       const find = this.dutyNameOptions.find(item => {
-        return item.key === dutyName
+        return item.key === dutyId
       })
       if (find) {
         return find.display_name
@@ -607,7 +589,6 @@ export default {
           this.listLoading = false;
         })
         .catch(() => {
-          debugger;
         });
     },
 
@@ -617,7 +598,7 @@ export default {
         pageSize: 20,
         totalRecord: 0,
         projectName: '',
-        dutyName: '',
+        dutyId: '',
         status: '',
         customer: ''
       };
@@ -651,7 +632,12 @@ export default {
           });
           this.dialogButtonLoading = true;
           addUemProject(tempData)
-            .then(() => {
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(res.errorMessages ? res.errorMessages[0] : '创建失败')
+                this.dialogButtonLoading = false;
+                return
+              }
               this.$message({
                 title: '成功',
                 message: '创建成功',
@@ -684,14 +670,18 @@ export default {
             genDevUsers: this.temp.genDevUsers.join(',')
           });
           updateUemProject(tempData)
-            .then(() => {
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(res.errorMessages ? res.errorMessages[0] : '修改失败')
+                this.dialogButtonLoading = false;
+                return
+              }
               this.$message({
                 title: '成功',
                 message: '修改成功',
                 type: 'success',
                 duration: 2000
               });
-              // this.handleResetForm();
               this.dialogButtonLoading = false;
               this.dialogFormVisible = false;
               this.getList();
@@ -748,10 +738,10 @@ export default {
         customer: '',
         fcy: '',
         status: '',
-        chiefName: '',
-        dutyName: '',
-        devDirectorName: '',
-        demandName: '',
+        chiefId: '',
+        dutyId: '',
+        devDirectorId: '',
+        demandId: '',
         genDevUsers: '',
         genDemandUsers: '',
         planStartEndDate: [],

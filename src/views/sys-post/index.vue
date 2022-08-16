@@ -23,7 +23,10 @@
           size="medium"
           @click="dialogStatus === 'create' ? createData() : updateData()"
         >提交</el-button>
-        <el-button size="medium" @click="dialogFormVisible = false">取消</el-button>
+        <el-button
+          size="medium"
+          @click="dialogFormVisible = false"
+        >取消</el-button>
       </div>
     </el-dialog>
 
@@ -66,7 +69,6 @@ const departmentTypeOptions = [
   { key: '4', display_name: '代理事务部' }
 ];
 
-// arr to obj, such as { CN : "China", US : "USA" }
 const calendarTypeKeyValue = statusTypeOptions.reduce((acc, cur) => {
   acc[cur.key] = cur.display_name;
   return acc;
@@ -107,20 +109,6 @@ export default {
             label: '岗位名称',
             placeholder: '请输入岗位名称'
           },
-          // {
-          //   type: "select",
-          //   class: "filter-item",
-          //   prop: "type",
-          //   // width: "200px",
-
-          //   label: "所属部门",
-          //   placeholder: "请选择所属部门",
-          //   optionLabel: "display_name",
-          //   optionValue: "key",
-          //   optionKey: "key",
-          //   options: departmentTypeOptions,
-          // },
-
           {
             type: 'textarea',
             prop: 'remark',
@@ -129,25 +117,6 @@ export default {
             autopageSize: { minRows: 2, maxRows: 4 },
             placeholder: '请输入岗位职责'
           }
-          // {
-          //   type: "dateTimePicker",
-          //   prop: "createTime",
-          //   label: "创建时间",
-          //   // width: "200px",
-          //   format:'yyyy-MM-dd HH:mm:ss',
-          //   valueFormat:'yyyy-MM-dd HH:mm:ss',
-          //   subType: "datetime",
-          //   placeholder: "请选择创建时间",
-          //   clearable: false,
-          // },
-          // {
-          //   type: "input",
-          //   prop: "createdPerson",
-          //   label: "创建人",
-          //   // width: "200px",
-          //   class: "filter-item",
-          //   placeholder: "请输入创建人",
-          // },
         ]
       },
 
@@ -168,20 +137,6 @@ export default {
             placeholder: '请输入岗位名称',
             col: 8
           },
-          // {
-          //   type: "select",
-          //   label: "所属部门",
-          //   prop: "type",
-          //   width: "200px",
-          //   col: 8,
-          //   optionLabel: "display_name",
-          //   optionValue: "key",
-          //   optionKey: "key",
-          //   options: departmentTypeOptions,
-          //   changeSelect: (optionVal, item, index) => {
-          //     console.log(optionVal, item, index);
-          //   },
-          // },
           {
             type: 'select',
             label: '状态',
@@ -205,7 +160,6 @@ export default {
             type: 'primary',
             buttonLabel: '新增岗位',
             btnType: 'primary',
-            //   icon: 'el-icon-search',
             method: () => {
               this.handleAdd();
             }
@@ -214,7 +168,6 @@ export default {
             type: 'primary',
             buttonLabel: '查询',
             btnType: 'primary',
-            //   icon: 'el-icon-edit',
             method: () => {
               this.getList();
             }
@@ -224,7 +177,6 @@ export default {
             buttonLabel: '重置',
             btnType: 'primary',
             plain: true,
-            //   icon: 'el-icon-download',
             method: () => {
               this.resetListQuery();
             }
@@ -285,8 +237,6 @@ export default {
             label: '编辑',
             type: 'text',
             show: true,
-            // icon: 'el-icon-edit',
-            // plain: true,
             disabled: false,
             method: (row) => {
               this.handleUpdate(row);
@@ -390,10 +340,7 @@ export default {
         });
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false;
-        }, 1.5 * 1000);
+        this.listLoading = false;
       });
     },
 
@@ -407,14 +354,6 @@ export default {
       };
       this.getList();
     },
-    // getList() {
-    //   this.resetTemp()
-    //   this.dialogStatus = 'create'
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['formPanel'].$refs['dataForm'].clearValidate()
-    //   });
-    // },
     handleModifyStatus(row) {
       const params = Object.assign({}, row, { status: row.status ? '0' : '1' });
       sysPostStartStop(params)
@@ -432,8 +371,6 @@ export default {
         });
     },
     handleAdd() {
-      // this.temp = Object.assign({}, row); // copy obj
-      // this.temp.createTime = parseTime(new Date());
       this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -451,12 +388,16 @@ export default {
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
-          //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          //   this.temp.author = 'vue-element-admin'
           this.dialogButtonLoading = true;
           saveSysPost(this.temp)
-            .then(() => {
-              // this.list.unshift(this.temp);
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(
+                  res.errorMessages ? res.errorMessages[0] : '创建失败'
+                );
+                this.dialogButtonLoading = false;
+                return;
+              }
               this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
@@ -488,7 +429,14 @@ export default {
             status: this.temp.status ? '0' : '1'
           });
           updateSysPost(tempData)
-            .then(() => {
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(
+                  res.errorMessages ? res.errorMessages[0] : '修改失败'
+                );
+                this.dialogButtonLoading = false;
+                return;
+              }
               this.$message({
                 title: '成功',
                 message: '修改成功',
@@ -558,8 +506,8 @@ export default {
     },
     handleDialogClose() {
       this.$nextTick(() => {
-        this.handleResetForm()
-      })
+        this.handleResetForm();
+      });
       this.$refs['formPanel'].$refs['dataForm'].clearValidate();
     }
   }

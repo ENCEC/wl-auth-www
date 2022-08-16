@@ -178,7 +178,6 @@ export default {
             type: 'primary',
             buttonLabel: '新增职称',
             btnType: 'primary',
-            //   icon: 'el-icon-search',
             method: () => {
               this.handleAdd();
             }
@@ -187,7 +186,6 @@ export default {
             type: 'primary',
             buttonLabel: '查询',
             btnType: 'primary',
-            //   icon: 'el-icon-edit',
             method: () => {
               this.getList();
             }
@@ -197,7 +195,6 @@ export default {
             buttonLabel: '重置',
             btnType: 'primary',
             plain: true,
-            //   icon: 'el-icon-download',
             method: () => {
               this.resetListQuery();
             }
@@ -262,8 +259,6 @@ export default {
             label: '编辑',
             type: 'text',
             show: true,
-            // icon: 'el-icon-edit',
-            // plain: true,
             disabled: false,
             method: (row) => {
               this.handleUpdate(row);
@@ -273,10 +268,6 @@ export default {
             id: '2',
             label: '删除',
             type: 'text',
-            // icon: 'el-icon-delete',
-            // show: (index, row) => {
-            //   return row.status !== 'draft'
-            // },
             show: true,
             plain: false,
             method: (row) => {
@@ -350,15 +341,11 @@ export default {
     initPostSelect() {
       const params = {
         pageSize: 1000,
-        currentPage: 1,
-        status: '0'
+        currentPage: 1
       };
       querySysPost(params)
         .then((res) => {
           res.data.records
-            .filter((item) => {
-              return item.status === '0';
-            })
             .forEach((item) => {
               this.postTypeOptions.push({
                 key: item.postName,
@@ -392,7 +379,6 @@ export default {
         });
         this.totalRecord = response.data.totalRecord;
         this.listQuery.totalRecord = response.data.totalRecord;
-        // Just to simulate the time of the request
         this.listLoading = false;
       });
     },
@@ -408,17 +394,8 @@ export default {
       };
       this.getList();
     },
-    // getList() {
-    //   this.resetTemp()
-    //   this.dialogStatus = 'create'
-    //   this.dialogFormVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs['formPanel'].$refs['dataForm'].clearValidate()
-    //   });
-    // },
     handleModifyStatus(row) {
       const params = Object.assign({}, row, { status: row.status ? '0' : '1' });
-      debugger;
       updateStatus(params)
         .then(() => {
           this.$message({
@@ -434,8 +411,6 @@ export default {
         });
     },
     handleAdd() {
-      // this.temp = Object.assign({}, row); // copy obj
-      // this.temp.createTime = parseTime(new Date());
       console.log(this.temp.createTime);
       this.dialogStatus = 'create';
       this.dialogFormVisible = true;
@@ -445,7 +420,6 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
-      debugger;
       this.dialogStatus = 'update';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -456,12 +430,13 @@ export default {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.dialogButtonLoading = true;
-          //   this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          //   this.temp.author = 'vue-element-admin'
           saveSysTechnicalTitle(this.temp)
-            .then(() => {
-              debugger;
-              // this.list.unshift(this.temp);
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(res.errorMessages ? res.errorMessages[0] : '创建失败')
+                this.dialogButtonLoading = false;
+                return
+              }
               this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
@@ -485,16 +460,19 @@ export default {
       });
     },
     updateData() {
-      debugger;
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.dialogButtonLoading = true;
           const tempData = Object.assign({}, this.temp, {
             status: this.temp.status ? '0' : '1'
           });
-          debugger;
           updateSysTechnicalTitle(tempData)
-            .then(() => {
+            .then((res) => {
+              if (!res.success) {
+                this.$message.error(res.errorMessages ? res.errorMessages[0] : '修改失败')
+                this.dialogButtonLoading = false;
+                return
+              }
               this.dialogFormVisible = false;
               this.$message({
                 title: '成功',
@@ -506,7 +484,6 @@ export default {
               this.getList();
             })
             .catch(() => {
-              debugger;
               this.$message({
                 title: '失败',
                 message: '修改失败',
@@ -519,7 +496,6 @@ export default {
       });
     },
     handleDelete(row) {
-      debugger;
       this.$confirm(
         '您确定要删除该职称信息吗?删除后该职称信息不可恢复',
         '提示',
