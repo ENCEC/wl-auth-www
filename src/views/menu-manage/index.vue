@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 10:03:50
+ * @LastEditTime: 2022-08-17 16:02:32
  * @Description:
 -->
 <template>
@@ -17,9 +17,11 @@
       border
     >
       <el-table-column type="index" label="序号" width="60px" />
-      <el-table-column prop="resourceTitle" label="菜单标题" width="150px" />
-      <el-table-column prop="parentResourceTitle" label="父级菜单" width="150px" />
+      <el-table-column prop="resourceTitle" label="菜单标题" width="120px" />
+      <el-table-column prop="parentResourceTitle" label="父级菜单" width="120px" />
       <el-table-column prop="resourceUrl" label="资源地址" min-width="150px" />
+      <!-- <el-table-column prop="component" label="组件地址" min-width="150px" />
+      <el-table-column prop="resourceLogo" label="菜单Logo" /> -->
       <el-table-column prop="resourceSort" label="菜单序号" />
       <el-table-column prop="creatorName" label="创建人" />
       <el-table-column prop="createTime" label="创建时间" width="110px">

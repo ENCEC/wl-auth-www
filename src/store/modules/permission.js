@@ -1,4 +1,8 @@
 import { asyncRoutes, constantRoutes } from '@/router'
+import { queryResource } from '@/api/user'
+import store from '@/store'
+import Layout from '@/layout'
+const _import = require('@/router/_import') // 获取组件的方法
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -18,19 +22,33 @@ function hasPermission(roles, route) {
  * @param routes asyncRoutes
  * @param roles
  */
-export function filterAsyncRoutes(routes, roles) {
+// 遍历后台传来的路由字符串，转换为组件对象
+export function filterAsyncRoutes(routes, level = 1) {
   const res = []
-
-  routes.forEach(route => {
-    const tmp = { ...route }
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
+  // TODO:小图标
+  const icon = level === 1 ? 'icon_staff' : ''// 图标
+  routes.forEach(routeItem => {
+    const tmp = {
+      // ...routeItem,
+      path: routeItem.resourceUrl,
+      name: routeItem.resourceTitle,
+      meta: { title: routeItem.resourceTitle, icon },
+      children: routeItem.childrenResourceList
     }
+    // 加载路由页面
+    if (routeItem.component) {
+      if (routeItem.component === 'Layout') { // Layout组件特殊处理
+        tmp.component = Layout
+      } else {
+        tmp.component = _import(routeItem.component)
+      }
+    }
+    // 子菜单
+    if (tmp.children) {
+      tmp.children = filterAsyncRoutes(tmp.children, level + 1)
+    }
+    res.push(tmp)
   })
-
   return res
 }
 
@@ -42,21 +60,24 @@ const state = {
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
-    state.routes = constantRoutes.concat(routes)
+    // state.routes = constantRoutes.concat(routes)
+    state.routes = routes
   }
 }
 
 const actions = {
   generateRoutes({ commit }, roles) {
     return new Promise(resolve => {
-      let accessedRoutes
-      if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
-      } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-      }
-      commit('SET_ROUTES', accessedRoutes)
-      resolve(accessedRoutes)
+      queryResource({
+        clientId: process.env.VUE_APP_CLIENT_ID,
+        uemUserId: store.getters.userId
+      }).then(res => {
+        const routes = res.data
+        const accessedRoutes = filterAsyncRoutes(routes)
+        console.log('【 ==== accessedRoutes ===== 】-117', accessedRoutes)
+        commit('SET_ROUTES', accessedRoutes)
+        resolve(accessedRoutes)
+      })
     })
   }
 }

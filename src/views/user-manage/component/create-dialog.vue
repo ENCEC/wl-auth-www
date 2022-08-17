@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-16 14:35:31
+ * @LastEditTime: 2022-08-16 16:31:12
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -230,7 +230,7 @@ export default {
 <style lang="scss">
 .user-dialog {
   .form-wrap {
-    height: 280px;
+    // height: 280px;
     // .input-width {
     //   width: 180px !important;
     // }

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-16 14:27:13
+ * @LastEditTime: 2022-08-17 11:16:46
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -78,6 +78,23 @@
             </el-col>
           </el-row>
           <el-row>
+            <el-col :span="12">
+              <el-form-item label="组件地址:" prop="component">
+                <el-input
+                  v-model="formData.component"
+                  placeholder="请输入组件地址"
+                  show-word-limit
+                  clearable
+                />
+              </el-form-item>
+            </el-col>
+            <el-col v-if="!formData.resourcePid" :span="12">
+              <el-form-item label="菜单Logo:" prop="resourceLogo">
+                <Upload :upload-data.sync="uploadData" :src="formData.resourceLogo" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="菜单说明:" prop="resourceRemark">
                 <el-input
@@ -116,8 +133,10 @@ import {
   queryResourceById,
   queryParentResource
 } from '@/api/menu-manage';
+import Upload from './Upload.vue'
+
 export default {
-  components: {},
+  components: { Upload },
   // inheritAttrs: false,
   props: {
     // 编辑信息
@@ -128,12 +147,20 @@ export default {
   },
   data() {
     return {
+      uploadData: {
+        systemId: process.env.VUE_APP_SYSTEMID, // 写死
+        fileName: '',
+        fileType: '',
+        uemUserId: ''
+      },
       formData: {
         resourceTitle: '',
         resourcePid: '',
         resourceUrl: '',
         resourceSort: '',
-        resourceRemark: ''
+        resourceRemark: '',
+        component: '',
+        resourceLogo: ''
       },
       rules: {
         resourceTitle: [
@@ -218,7 +245,7 @@ export default {
 </script>
 <style lang="scss">
 .form-wrap {
-  height: 190px;
+
 }
 .dialog-footer {
   width: 100%;
