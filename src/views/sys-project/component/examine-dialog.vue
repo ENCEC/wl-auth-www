@@ -109,7 +109,7 @@ export default {
       if (row) {
         this.examineRequest();
         this.dialogLoading = true;
-        this.temp = Object.assign({}, row);
+        this.temp = Object.assign({}, row, { genDemandUsers: row.genDemandUsers.join(','), genDevUsers: row.genDevUsers.join(',') });
         this.getChiefName();
         this.getDemandName();
         this.getDevDirectortName();
@@ -127,9 +127,9 @@ export default {
       });
     },
     getChiefName() {
-      if (this.temp.chiefName) {
+      if (this.temp.chiefId) {
         const nameArr = [];
-        queryViewDetailById(this.temp.chiefName).then((res) => {
+        queryViewDetailById(this.temp.chiefId).then((res) => {
           res.data.forEach((item) => {
             nameArr.push(item.name);
           });
@@ -141,9 +141,9 @@ export default {
       }
     },
     getDemandName() {
-      if (this.temp.demandName) {
+      if (this.temp.demandId) {
         const nameArr = [];
-        queryViewDetailById(this.temp.demandName).then((res) => {
+        queryViewDetailById(this.temp.demandId).then((res) => {
           res.data.forEach((item) => {
             nameArr.push(item.name);
           });
@@ -155,9 +155,9 @@ export default {
       }
     },
     getDevDirectortName() {
-      if (this.temp.devDirectorName) {
+      if (this.temp.devDirectorId) {
         const nameArr = [];
-        queryViewDetailById(this.temp.devDirectorName).then((res) => {
+        queryViewDetailById(this.temp.devDirectorId).then((res) => {
           res.data.forEach((item) => {
             nameArr.push(item.name);
           });
@@ -170,7 +170,7 @@ export default {
     },
     getDutyName() {
       const nameArr = [];
-      queryViewDetailById(this.temp.dutyName).then((res) => {
+      queryViewDetailById(this.temp.dutyId).then((res) => {
         res.data.forEach((item) => {
           nameArr.push(item.name);
         });
@@ -179,24 +179,32 @@ export default {
       });
     },
     getGenDemandUsers() {
-      const nameArr = [];
-      queryViewDetailById(this.temp.genDemandUsers.join(',')).then((res) => {
-        res.data.forEach((item) => {
-          nameArr.push(item.name);
+      if (this.temp.genDemandUsers) {
+        const nameArr = [];
+        queryViewDetailById(this.temp.genDemandUsers).then((res) => {
+          res.data.forEach((item) => {
+            nameArr.push(item.name);
+          });
+          this.genDemandUsers = nameArr.join(',');
+          this.successNum += 1;
         });
-        this.genDemandUsers = nameArr.join(',');
+      } else {
         this.successNum += 1;
-      });
+      }
     },
     getGenDevUsers() {
-      const nameArr = [];
-      queryViewDetailById(this.temp.genDevUsers.join(',')).then((res) => {
-        res.data.forEach((item) => {
-          nameArr.push(item.name);
+      if (this.temp.genDevUsers) {
+        const nameArr = [];
+        queryViewDetailById(this.temp.genDevUsers).then((res) => {
+          res.data.forEach((item) => {
+            nameArr.push(item.name);
+          });
+          this.genDevUsers = nameArr.join(',');
+          this.successNum += 1;
         });
-        this.genDevUsers = nameArr.join(',');
+      } else {
         this.successNum += 1;
-      });
+      }
     },
     handleDialogClose() {
       this.$nextTick(() => {

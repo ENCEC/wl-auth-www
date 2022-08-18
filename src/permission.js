@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import router from './router'
+import { asyncRoutes } from './router'
 import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
@@ -15,7 +16,7 @@ NProgress.configure({
   // minimum: 0.3 // 初始化时的最小百分比
 })
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/system/sys-project'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
   // 测试页面权限 start
@@ -81,6 +82,7 @@ router.beforeEach(async(to, from, next) => {
 
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
+      router.addRoutes(asyncRoutes)
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
