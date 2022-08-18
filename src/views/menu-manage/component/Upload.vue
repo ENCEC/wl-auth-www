@@ -10,9 +10,9 @@
     v-on="$listeners"
   >
     <el-image
-      v-if="imgUrl"
+      v-if="src"
       style="width:50px; height: 50px;background:#ccc"
-      :src="imgUrl"
+      :src="src"
       fit="contain"
     />
     <i v-else class="el-icon-plus avatar-uploader-icon" />

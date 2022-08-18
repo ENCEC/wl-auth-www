@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 14:43:35
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-17 16:02:32
+ * @LastEditTime: 2022-08-18 09:43:14
  * @Description:
 -->
 <template>
@@ -16,7 +16,7 @@
       style="width: 100%"
       border
     >
-      <el-table-column type="index" label="序号" width="60px" />
+      <el-table-column type="index" label="序号" width="80px" />
       <el-table-column prop="resourceTitle" label="菜单标题" width="120px" />
       <el-table-column prop="parentResourceTitle" label="父级菜单" width="120px" />
       <el-table-column prop="resourceUrl" label="资源地址" min-width="150px" />

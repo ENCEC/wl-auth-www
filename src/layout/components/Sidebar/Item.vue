@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-17 15:56:31
+ * @LastEditTime: 2022-08-18 09:52:07
  * @Description:
 -->
 <!--<template>
@@ -31,7 +31,7 @@ export default {
     }
   },
   render(h, context) {
-    console.log('【 context 】-23', context)
+    // console.log('【 context 】-23', context)
     const { icon, title } = context.props
     const vnodes = []
     const iconUrl = require('@/assets/menu-icon/icon_staff.png')

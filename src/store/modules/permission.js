@@ -1,4 +1,4 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+// import { asyncRoutes, constantRoutes } from '@/router'
 import { queryResource } from '@/api/user'
 import store from '@/store'
 import Layout from '@/layout'
@@ -28,24 +28,48 @@ export function filterAsyncRoutes(routes, level = 1) {
   // TODO:小图标
   const icon = level === 1 ? 'icon_staff' : ''// 图标
   routes.forEach(routeItem => {
-    const tmp = {
-      // ...routeItem,
-      path: routeItem.resourceUrl,
-      name: routeItem.resourceTitle,
-      meta: { title: routeItem.resourceTitle, icon },
-      children: routeItem.childrenResourceList
-    }
-    // 加载路由页面
-    if (routeItem.component) {
-      if (routeItem.component === 'Layout') { // Layout组件特殊处理
-        tmp.component = Layout
-      } else {
-        tmp.component = _import(routeItem.component)
+    let tmp = {}
+    // 父级菜单没有子菜单
+    if (level === 1 && !(routeItem.childrenResourceList && routeItem.childrenResourceList.length)) {
+      // console.log('【 routeItem 】-31', routeItem)
+      tmp = {
+        path: '/',
+        component: Layout,
+        redirect: routeItem.resourceUrl,
+        children: [
+          {
+            path: routeItem.resourceUrl,
+            component: _import(routeItem.component),
+            name: '', // routeItem.resourceTitle,
+            meta: {
+              title: routeItem.resourceTitle,
+              icon,
+              affix: true
+            }
+          }
+        ]
       }
-    }
-    // 子菜单
-    if (tmp.children) {
-      tmp.children = filterAsyncRoutes(tmp.children, level + 1)
+    } else {
+      // 父级菜单有子菜单
+      tmp = {
+        // ...routeItem,
+        path: routeItem.resourceUrl,
+        name: routeItem.resourceTitle,
+        meta: { title: routeItem.resourceTitle, icon },
+        children: routeItem.childrenResourceList
+      }
+      // 加载路由页面
+      if (routeItem.component) {
+        if (routeItem.component === 'Layout') { // Layout组件特殊处理
+          tmp.component = Layout
+        } else {
+          tmp.component = _import(routeItem.component)
+        }
+      }
+      // 子菜单
+      if (tmp.children) {
+        tmp.children = filterAsyncRoutes(tmp.children, level + 1)
+      }
     }
     res.push(tmp)
   })

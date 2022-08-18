@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-17 11:16:46
+ * @LastEditTime: 2022-08-18 09:50:07
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -96,6 +96,25 @@
           </el-row>
           <el-row>
             <el-col :span="24">
+              <el-form-item label="所属应用:" prop="sysApplicationId">
+                <el-select
+                  v-model="formData.sysApplicationId"
+                  placeholder="请选择所属应用"
+                  clearable
+                  style="width:180px"
+                >
+                  <el-option
+                    v-for="item in applicationList"
+                    :key="item.sysApplicationId"
+                    :label="item.applicationName"
+                    :value="item.sysApplicationId"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
               <el-form-item label="菜单说明:" prop="resourceRemark">
                 <el-input
                   v-model="formData.resourceRemark"
@@ -134,6 +153,9 @@ import {
   queryParentResource
 } from '@/api/menu-manage';
 import Upload from './Upload.vue'
+import {
+  queryAllApplication
+} from '@/api/select';
 
 export default {
   components: { Upload },
@@ -160,7 +182,8 @@ export default {
         resourceSort: '',
         resourceRemark: '',
         component: '',
-        resourceLogo: ''
+        resourceLogo: '',
+        sysApplicationId: ''
       },
       rules: {
         resourceTitle: [
@@ -188,9 +211,17 @@ export default {
             message: '请输入数字',
             trigger: 'blur'
           }
+        ],
+        sysApplicationId: [
+          {
+            required: true,
+            message: '请选择所属应用',
+            trigger: 'change'
+          }
         ]
       },
-      parentResourceList: []
+      parentResourceList: [],
+      applicationList: []
     };
   },
   computed: {
@@ -202,15 +233,15 @@ export default {
   },
   watch: {},
   created() {
-    this.getParentResource();
+    this.getSelectOptions();
   },
   mounted() {},
   methods: {
-    // 获取父级菜单下拉
-    getParentResource() {
-      queryParentResource().then(res => {
-        this.parentResourceList = res;
-      });
+    // 获取下拉信息
+    async getSelectOptions() {
+      this.parentResourceList = await queryParentResource()
+      const applicationList = await queryAllApplication()
+      this.applicationList = applicationList.data
     },
     // 关闭弹框
     close() {
