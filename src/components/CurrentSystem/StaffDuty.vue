@@ -33,6 +33,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    value: {
+      type: String, // 传入的值
+      require: true
     }
   },
   data() {

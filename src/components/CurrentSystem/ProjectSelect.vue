@@ -1,8 +1,8 @@
 <!--
  * @Author: Hongzf
- * @Date: 2022-08-11 09:56:10
+ * @Date: 2022-08-12 15:40:29
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-12 09:37:46
+ * @LastEditTime: 2022-08-18 16:05:30
  * @Description: 归属项目-下拉
 -->
 
@@ -17,9 +17,9 @@
   >
     <el-option
       v-for="(item, index) in optionsList"
-      :key="'projectId' + index + item.projectId"
+      :key="'uemProjectId' + index + item.uemProjectId"
       :label="item.projectName"
-      :value="item.projectId"
+      :value="item.uemProjectId"
     />
   </el-select>
 </template>
@@ -28,7 +28,12 @@ import {
   queryProjectNameBySelect
 } from '@/api/select';
 export default {
-  props: {},
+  props: {
+    value: {
+      type: String, // 传入的值
+      require: true
+    }
+  },
   data() {
     return {
       selectVal: this.value || '', // 选择的值
