@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-16 15:45:53
+ * @LastEditTime: 2022-08-17 17:15:43
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -56,7 +56,7 @@
               label="创建时间:"
             >
               <el-input
-                v-model="formData.createTime"
+                v-model="createTime"
                 placeholder="请输入创建时间"
                 clearable
                 class="input-width"
@@ -148,6 +148,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
         remark: '',
         sysResourceIdList: []
       },
+      createTime: '',
       rules: {
         roleName: [
           {
@@ -222,11 +223,11 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
         const { roleName, remark, creatorName, createTime } = obj
         this.formData = {
           ...this.formData, roleName, remark, creatorName,
-          createTime: this.$moment(createTime).format('YYYY-MM-DD'),
           // ...obj,creatorName
           sysResourceIdList,
           sysRoleResourceIdList
         };
+        this.createTime = this.$moment(createTime).format('YYYY-MM-DD')
         // console.log('【 this.formData 】-214', this.formData)
       });
     },
