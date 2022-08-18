@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-29 13:25:18
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:26:33
+ * @LastEditTime: 2022-08-18 17:08:08
  * @Description:字典
  */
 
@@ -98,12 +98,12 @@ export const COMPLETION_EN = {
   TODO: '待完成',
   REDO: '退回重做'
 }
-// TODO 拟同意类型
+// 拟同意类型
 export const INCLINED_AGREE_TYPE = {
   '0': '拟不同意',
   '1': '拟同意'
 }
-// TODO 拟同意类型
+// 拟同意类型
 export const AGREE_TYPE = {
   '0': '不同意',
   '1': '同意'

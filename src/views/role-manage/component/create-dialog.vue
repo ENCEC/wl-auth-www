@@ -2,126 +2,114 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-17 17:15:43
+ * @LastEditTime: 2022-08-18 18:12:29
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
 <template>
-  <div class="role-dialog">
-    <el-dialog
-      :title="dialogTitle"
-      v-bind="$attrs"
-      width="850px"
-      center
-      :close-on-click-modal="false"
-      z-index="1000"
-      :append-to-body="true"
-      v-on="$listeners"
+  <el-dialog
+    :title="dialogTitle"
+    class="role-dialog"
+    v-bind="$attrs"
+    width="850px"
+    center
+    :close-on-click-modal="false"
+    z-index="1000"
+    :append-to-body="true"
+    v-on="$listeners"
+  >
+    <el-form
+      ref="elForm"
+      :model="formData"
+      :rules="rules"
+      size="medium"
+      label-width="100px"
+      :inline="true"
+      destroy-on-close
+      :disabled="type === 'detail'"
     >
-      <el-form
-        ref="elForm"
-        :model="formData"
-        :rules="rules"
-        size="medium"
-        label-width="100px"
-        :inline="true"
-        destroy-on-close
-        :disabled="type === 'detail'"
-      >
-        <div class="form-box-wrap" style="display:flex">
-          <!-- 左侧 -->
-          <div class="left-part" style="width:50%">
-            <el-form-item label="角色名称:" prop="roleName">
-              <el-input
-                v-model="formData.roleName"
-                placeholder="请输入角色名称"
-                clearable
-                class="input-width"
-                style="width: 220px;"
-              />
-            </el-form-item>
-            <el-form-item label="角色描述:" prop="remark">
-              <el-input
-                v-model="formData.remark"
-                type="textarea"
-                placeholder="请输入角色描述"
-                :rows="3"
-                clearable
-                class="input-width"
-                style="width: 220px;"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="type === 'detail'"
-              label="创建时间:"
-            >
-              <el-input
-                v-model="createTime"
-                placeholder="请输入创建时间"
-                clearable
-                class="input-width"
-                style="width: 220px;"
-                disabled
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="type === 'detail'"
-              label="创建人:"
-            >
-              <el-input
-                v-model="formData.creatorName"
-                placeholder="请输入创建人"
-                clearable
-                class="input-width"
-                disabled
-                style="width: 220px;"
-              />
-            </el-form-item>
-          </div>
-          <!-- 右侧 -->
-          <div class="right-part" style="width:50%">
-            <el-form-item label="角色权限:" prop="sysResourceIdList">
-              <!-- TODO -->
-              <div
-                class="tree-wrap"
-                style=" border: 1px solid #dddddd;
-                  width: 240px;
-                  height: 340px;
-                  overflow:auto;"
-              >
-                <!-- :default-expanded-keys="[2, 3]" -->
-                <el-tree
-                  ref="treeRef"
-                  :data="treeData"
-                  :default-checked-keys="defaultCheckedKeys"
-                  :props="defaultProps"
-                  :expand-on-click-node="false"
-                  show-checkbox
-                  node-key="sysResourceId"
-                  default-expand-all
-                  @check-change="handleCheckChange"
-                />
-              </div>
-            </el-form-item>
-          </div>
+      <div class="form-box-wrap">
+        <!-- 左侧 -->
+        <div class="left-part">
+          <el-form-item label="角色名称:" prop="roleName">
+            <el-input
+              v-model="formData.roleName"
+              placeholder="请输入角色名称"
+              clearable
+              class="input-width"
+            />
+          </el-form-item>
+          <el-form-item label="角色描述:" prop="remark">
+            <el-input
+              v-model="formData.remark"
+              type="textarea"
+              placeholder="请输入角色描述"
+              :rows="3"
+              clearable
+              class="input-width"
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="type === 'detail'"
+            label="创建时间:"
+          >
+            <el-input
+              v-model="createTime"
+              placeholder="请输入创建时间"
+              clearable
+              class="input-width"
+              disabled
+            />
+          </el-form-item>
+          <el-form-item
+            v-if="type === 'detail'"
+            label="创建人:"
+          >
+            <el-input
+              v-model="formData.creatorName"
+              placeholder="请输入创建人"
+              clearable
+              class="input-width"
+              disabled
+            />
+          </el-form-item>
         </div>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button
-          v-if="type !== 'detail'"
-          type="primary"
-          size="medium"
-          @click="handleConfirm"
-        >提交</el-button>
-        <el-button
-          type="primary"
-          :plain="true"
-          size="medium"
-          @click="close"
-        >{{ type === 'detail'?'关闭':'取消' }}</el-button>
+        <!-- 右侧 -->
+        <div class="right-part">
+          <el-form-item label="角色权限:" prop="sysResourceIdList">
+            <div class="tree-wrap">
+              <!-- :default-expanded-keys="[2, 3]" -->
+              <el-tree
+                ref="treeRef"
+                :data="treeData"
+                :default-checked-keys="defaultCheckedKeys"
+                :props="defaultProps"
+                :expand-on-click-node="false"
+                show-checkbox
+                node-key="sysResourceId"
+                default-expand-all
+                @check-change="handleCheckChange"
+              />
+            </div>
+          </el-form-item>
+        </div>
       </div>
-    </el-dialog>
-  </div>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button
+        v-if="type !== 'detail'"
+        type="primary"
+        size="medium"
+        @click="handleConfirm"
+      >提交</el-button>
+      <el-button
+        type="primary"
+        :plain="true"
+        size="medium"
+        @click="close"
+      >{{ type === 'detail'?'关闭':'取消' }}</el-button>
+    </div>
+  </el-dialog>
 </template>
 <script>
 import { queryRoleAndResourceById, saveSysRole, updateSysRole } from '@/api/role-manage';
@@ -250,10 +238,10 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
 </script>
 <style lang="scss">
 .role-dialog{
-  width:850px !important;
   .form-box-wrap {
-    // $base-height: 340px;
     height: 340px;
+    // $base-height: 340px;
+    // height: 340px;
     display: flex;
     justify-content: space-between;
     .left-part {
@@ -264,7 +252,6 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     }
     .right-part {
       width: 50%;
-      height: 100%;
       .tree-wrap {
         border: 1px solid #dddddd;
         width: 240px;
@@ -279,9 +266,6 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     // background: #bcf;
     display: flex;
     justify-content: center;
-    .el-button--default.el-button--mini {
-      min-width: 92px;
-    }
   }
 }
 </style>
