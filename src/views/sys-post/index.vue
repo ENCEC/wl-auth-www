@@ -126,7 +126,7 @@ export default {
         inline: false,
         gutter: 5, // 栅格的间隔
         col: 6, // 栅格的格数
-        operateCol: 8,
+        operateCol: 24,
         labelWidth: '100px',
         labelPosition: 'right',
         filterList: [
