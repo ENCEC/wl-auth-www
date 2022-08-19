@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-04 17:34:53
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-05 11:00:28
+ * @LastEditTime: 2022-08-18 16:05:36
  * @Description: 所属部门-下拉
 -->
 
@@ -34,11 +34,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    value: {
+      type: String, // 传入的值
+      require: true
     }
-    // value: {
-    //   type: String, // 传入的值
-    //   require: true
-    // }
   },
   data() {
     return {

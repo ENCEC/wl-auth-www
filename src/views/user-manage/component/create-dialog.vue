@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 11:44:07
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-16 16:31:12
+ * @LastEditTime: 2022-08-18 16:07:08
  * @Description: 系统管理-用户管理-添加/编辑
 -->
 <template>
@@ -113,13 +113,11 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <!-- TODO:回显 -->
-              <el-form-item label="入职岗位:" prop="staffDutyCode">
-                <StaffDuty v-model="formData.staffDutyCode" placeholder="请选择入职岗位" class="input-width" />
+              <el-form-item label="入职岗位:" prop="staffDutyId">
+                <StaffDuty v-model="formData.staffDutyId" placeholder="请选择入职岗位" class="input-width" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <!-- TODO:回显 联想控件？ -->
               <el-form-item label="归属项目:" prop="projectId">
                 <ProjectSelect v-model="formData.projectId" placeholder="请选择归属项目" class="input-width" />
               </el-form-item>
@@ -171,7 +169,7 @@ export default {
         jobStatus: '', // 在职状态（0：试用员工 1：正式员工 2：离职员工）
         seniority: '', // 工作年限
         entryDate: '', // 入职时间
-        staffDutyCode: '',
+        staffDutyId: '',
         projectId: ''
       }
     };
@@ -204,7 +202,7 @@ export default {
         const _res = res.data
         for (const key in this.formData) {
           if (key === 'sex') {
-            this.formData[key] = _res[key] || '' // || false
+            this.formData[key] = _res[key] === true ? true : (_res[key] === false ? false : '')
           } else {
             this.formData[key] = _res[key] || ''
           }
@@ -217,9 +215,13 @@ export default {
         if (valid) {
           const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
           funcName(this.formData).then(res => {
-            this.$message.success(res.data);
-            this.$emit('getTableData', '');
-            this.close();
+            if (res.success) {
+              this.$message.success(res.data);
+              this.$emit('getTableData', '');
+              this.close();
+            } else {
+              this.$message.error(res.errorMessages[0]);
+            }
           });
         }
       });

@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-05 17:38:09
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-15 14:29:01
+ * @LastEditTime: 2022-08-18 17:07:20
  * @Description: 用户资料
 -->
 
@@ -71,7 +71,6 @@
             </el-col>
           </el-row>
           <el-row>
-            <!-- TODO -->
             <el-col :span="12">
               <el-form-item label="用户类型:" prop="userType">
                 <el-input
@@ -80,20 +79,6 @@
                   clearable
                   disabled
                 />
-                <!-- <el-select
-                  v-model="formData.userType"
-                  placeholder="请选择用户类型"
-                  clearable
-                  disabled
-                  class="input-width"
-                >
-                  <el-option
-                    v-for="(item, index) in userTypeOptions"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select> -->
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -179,17 +164,6 @@ export default {
         createTime: '',
         creatorName: ''
       }
-      // // TODO
-      // userTypeOptions: [
-      //   {
-      //     label: '选项一',
-      //     value: '1'
-      //   },
-      //   {
-      //     label: '选项二',
-      //     value: '2'
-      //   }
-      // ]
     };
   },
   computed: {},

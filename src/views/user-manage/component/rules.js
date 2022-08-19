@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-26 13:37:31
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-11 10:36:11
+ * @LastEditTime: 2022-08-18 16:16:53
  * @Description:
  */
 export const formRules = {
@@ -77,7 +77,7 @@ export const formRules = {
       trigger: 'change'
     }
   ],
-  staffDutyCode: [
+  staffDutyId: [
     {
       required: true,
       message: '请选择入职岗位',
