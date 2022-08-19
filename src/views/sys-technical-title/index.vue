@@ -108,6 +108,7 @@ export default {
             type: 'input',
             prop: 'technicalName',
             // width: "200px",
+            clearable: true,
             label: '职称名称',
             placeholder: '请输入职称名称'
           },
@@ -116,6 +117,7 @@ export default {
             class: 'filter-item',
             prop: 'postName',
             // width: "200px",
+            clearable: true,
             label: '所属岗位',
             placeholder: '请选择所属岗位',
             optionLabel: 'display_name',
@@ -127,6 +129,7 @@ export default {
           {
             type: 'input',
             prop: 'seniority',
+            clearable: true,
             label: '工作年限',
             placeholder: '请输入工作年限'
           }
@@ -145,8 +148,8 @@ export default {
             type: 'input',
             label: '职称名称',
             prop: 'technicalName',
+            clearable: true,
             width: '200px',
-            clearable: false,
             placeholder: '请输入职称名称',
             col: 8
           },
@@ -155,8 +158,8 @@ export default {
             label: '所属岗位',
             prop: 'postName',
             width: '200px',
-            col: 8,
             clearable: true,
+            col: 8,
             optionLabel: 'display_name',
             optionValue: 'key',
             optionKey: 'key',
@@ -170,6 +173,7 @@ export default {
             label: '状态',
             prop: 'status',
             col: 8,
+            clearable: true,
             width: '200px',
             optionLabel: 'display_name',
             optionValue: 'key',
@@ -215,7 +219,8 @@ export default {
         loading: false, // 是否添加表格loading加载动画
         highlightCurrentRow: true, // 是否支持当前行高亮显示
         mutiSelect: false, // 是否支持列表项选中功能
-        pagination: true
+        pagination: true,
+        height: '340px'
       }, // table 的参数
 
       columns: [
@@ -239,7 +244,7 @@ export default {
           label: '工作年限'
         },
         {
-          prop: 'createBy',
+          prop: 'creatorName',
           label: '创建人'
         },
         {
@@ -292,7 +297,7 @@ export default {
       listLoading: true,
       listQuery: {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         technicalName: '',
         postName: '',
@@ -393,7 +398,7 @@ export default {
     resetListQuery() {
       this.listQuery = {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         technicalName: '',
         postName: '',

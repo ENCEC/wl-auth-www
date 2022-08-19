@@ -107,6 +107,7 @@ export default {
           {
             type: 'input',
             prop: 'postName',
+            clearable: true,
             // width: "200px",
             label: '岗位名称',
             placeholder: '请输入岗位名称'
@@ -114,6 +115,7 @@ export default {
           {
             type: 'textarea',
             prop: 'remark',
+            clearable: true,
             col: 24,
             label: '岗位职责',
             autopageSize: { minRows: 2, maxRows: 4 },
@@ -135,7 +137,7 @@ export default {
             label: '岗位名称',
             prop: 'postName',
             width: '200px',
-            clearable: false,
+            clearable: true,
             placeholder: '请输入岗位名称',
             col: 8
           },
@@ -144,9 +146,9 @@ export default {
             label: '状态',
             prop: 'status',
             labelWidth: '40px',
+            clearable: true,
             col: 8,
             width: '200px',
-            clearable: true,
             placeholder: '请选择状态',
             optionLabel: 'display_name',
             optionValue: 'key',
@@ -192,7 +194,8 @@ export default {
         loading: false, // 是否添加表格loading加载动画
         highlightCurrentRow: true, // 是否支持当前行高亮显示
         mutiSelect: false, // 是否支持列表项选中功能
-        pagination: true
+        pagination: true,
+        height: '340px'
       }, // table 的参数
 
       columns: [
@@ -212,7 +215,7 @@ export default {
           label: '岗位职责'
         },
         {
-          prop: 'createBy',
+          prop: 'creatorName',
           label: '创建人'
         },
         {
@@ -265,7 +268,7 @@ export default {
       listLoading: false,
       listQuery: {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         postName: '',
         status: ''
@@ -349,7 +352,7 @@ export default {
     resetListQuery() {
       this.listQuery = {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         postName: '',
         status: ''

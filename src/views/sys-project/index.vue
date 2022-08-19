@@ -104,14 +104,16 @@ export default {
           {
             type: 'input',
             prop: 'projectName',
-            // width: "200px",
+            width: '200px',
             label: '项目名称',
-            placeholder: '请输入职称名称'
+            clearable: true,
+            placeholder: '请输入项目名称'
           },
           {
             type: 'input',
             prop: 'customer',
             // width: "200px",
+            clearable: true,
             label: '客户名称',
             placeholder: '请输入客户名称'
           },
@@ -119,6 +121,7 @@ export default {
             type: 'number',
             prop: 'fcy',
             // width: "200px",
+            clearable: true,
             label: '项目金额',
             placeholder: '请输入项目金额'
           },
@@ -127,6 +130,7 @@ export default {
             type: 'select',
             class: 'filter-item',
             prop: 'status',
+            clearable: true,
             // width: "200px",
 
             label: '项目状态',
@@ -239,12 +243,12 @@ export default {
             prop: 'planStartEndDate',
             label: '计划起止日期',
             col: 16,
+            clearable: true,
             format: 'yyyy-MM-dd',
             valueFormat: 'yyyy-MM-dd',
             subType: 'daterange',
             startPlaceholder: '开始日期',
             endPlaceholder: '结束日期',
-            clearable: false,
             changeDate: (date) => {
               this.temp.planStartTime = date[0];
               this.temp.planEndTime = date[1];
@@ -266,7 +270,7 @@ export default {
             label: '项目名称',
             prop: 'projectName',
             width: '200px',
-            clearable: false,
+            clearable: true,
             placeholder: '请输入项目名称'
           },
           {
@@ -274,12 +278,12 @@ export default {
             label: '项目经理',
             prop: 'dutyId',
             width: '200px',
+            clearable: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
             displayInit: 'name',
             columns: projectRolesColumns,
             multiple: false,
-            clearable: true,
             queryMethod: this.projectRolesQueryMethod,
             changeSelect: () => {
             }
@@ -288,6 +292,7 @@ export default {
             type: 'select',
             label: '项目状态',
             prop: 'status',
+            clearable: true,
             width: '200px',
             optionLabel: 'display_name',
             optionValue: 'key',
@@ -300,9 +305,9 @@ export default {
           {
             type: 'input',
             label: '项目客户',
+            clearable: true,
             prop: 'customer',
             width: '200px',
-            clearable: false,
             placeholder: '请输入客户名称'
           }
         ],
@@ -341,7 +346,8 @@ export default {
         loading: false, // 是否添加表格loading加载动画
         highlightCurrentRow: true, // 是否支持当前行高亮显示
         mutiSelect: false, // 是否支持列表项选中功能
-        pagination: true
+        pagination: true,
+        height: '340px'
       }, // table 的参数
 
       columns: [
@@ -457,7 +463,7 @@ export default {
       listLoading: false,
       listQuery: {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         projectName: '',
         dutyId: '',
@@ -597,7 +603,7 @@ export default {
     resetListQuery() {
       this.listQuery = {
         currentPage: 1,
-        pageSize: 20,
+        pageSize: 10,
         totalRecord: 0,
         projectName: '',
         dutyId: '',
