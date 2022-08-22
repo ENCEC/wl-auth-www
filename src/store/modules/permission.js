@@ -26,7 +26,8 @@ function hasPermission(roles, route) {
 export function filterAsyncRoutes(routes, level = 1) {
   const res = []
   // TODO:小图标
-  const icon = level === 1 ? 'icon_staff' : ''// 图标
+  const iconUrl = require('@/assets/menu-icon/icon_staff.png')
+  const icon = level === 1 ? iconUrl : ''// 图标
   routes.forEach(routeItem => {
     let tmp = {}
     // 父级菜单没有子菜单
@@ -43,9 +44,7 @@ export function filterAsyncRoutes(routes, level = 1) {
             name: '', // routeItem.resourceTitle,
             meta: {
               title: routeItem.resourceTitle,
-              icon,
-              affix: true
-            }
+              icon, affix: true }
           }
         ]
       }
@@ -97,6 +96,8 @@ const actions = {
         uemUserId: store.getters.userId
       }).then(res => {
         const routes = res.data
+        // const map = new Map(Object.entries(routes))
+        // const newList = formatData(map)
         const accessedRoutes = filterAsyncRoutes(routes)
         console.log('【 ==== accessedRoutes ===== 】-117', accessedRoutes)
         commit('SET_ROUTES', accessedRoutes)
