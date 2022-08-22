@@ -86,7 +86,7 @@
           }}</el-tag>
         </template> </el-table-column><el-table-column prop="createdTime" label="创建时间" width="200px" />
       ><el-table-column label="操作" width="220px">
-        <template slot-scope="scope">
+        <template>
           <el-button
             type="text"
           ><i class="fa fa-pencil" aria-hidden="true" />修改</el-button>
@@ -252,7 +252,6 @@ export default {
       return '';
     },
     load(tree, treeNode, resolve) {
-      debugger;
       setTimeout(() => {
         resolve([
           {

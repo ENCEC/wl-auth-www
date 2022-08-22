@@ -122,6 +122,7 @@ export default {
             type: 'input',
             prop: 'fcy',
             // width: "200px",
+            width: 'calc(100% - 32px)',
             suffixText: '万元',
             clearable: true,
             label: '项目金额',
@@ -362,7 +363,10 @@ export default {
         },
         {
           prop: 'fcy',
-          label: '项目金额'
+          label: '项目金额',
+          formatter: (row) => {
+            return Number(row.fcy) * 10000;
+          }
         },
         {
           prop: 'dutyId',
@@ -628,12 +632,13 @@ export default {
     handleUpdate(row) {
       this.temp = Object.assign({}, row); // copy obj
       this.dialogStatus = 'update';
+      this.associateDisplayInit(row);
       this.dialogFormVisible = true;
       this.$nextTick(() => {
         this.$refs['formPanel'].$refs['dataForm'].clearValidate();
       });
     },
-    associateDisplayInit(row) {
+    async associateDisplayInit(row) {
       const associateArr = [
         'chiefId',
         'dutyId',
@@ -648,21 +653,27 @@ export default {
         }).displayInit = this.getAssociateDisplayInit(row[item.toString()]);
       });
     },
-    getAssociateDisplayInit(id) {
-      if (id) {
-        const nameArr = [];
-        queryViewDetailById(id)
-          .then((res) => {
-            res.data.forEach((item) => {
-              nameArr.push(item.name);
-            });
-            return nameArr;
-          })
-          .catch(() => {
-            return '';
+    getAssociateDisplayInit(ids) {
+      if (Array.isArray(ids)) {
+        const result = [];
+        this.dutyNameOptions.forEach((item) => {
+          ids.forEach((id) => {
+            if (id === item.key) {
+              result.push(item.display_name);
+            }
           });
+        });
+        return result
+      } else {
+        const find = this.dutyNameOptions.find((item) => {
+          return item.key === ids;
+        });
+        if (find) {
+          return find.display_name
+        } else {
+          return ''
+        }
       }
-      return '';
     },
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
