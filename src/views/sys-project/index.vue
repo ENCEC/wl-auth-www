@@ -52,13 +52,14 @@ import {
   queryUemUserName,
   addUemProject,
   updateUemProject,
-  deleteUemProject
+  deleteUemProject,
+  queryViewDetailById
 } from '@/api/sys-project.js';
 import tableComponent from '@/components/TableComponent';
 import filterPanel from '@/components/FilterPanel';
 import formPanel from '@/components/FormPanel';
 import examineDialog from './component/examine-dialog';
-const dutyNameOptions = []
+const dutyNameOptions = [];
 const projectStatusOptions = [
   { key: 0, display_name: '未开始' },
   { key: 1, display_name: '进行中' },
@@ -118,9 +119,10 @@ export default {
             placeholder: '请输入客户名称'
           },
           {
-            type: 'number',
+            type: 'input',
             prop: 'fcy',
             // width: "200px",
+            suffixText: '万元',
             clearable: true,
             label: '项目金额',
             placeholder: '请输入项目金额'
@@ -149,13 +151,12 @@ export default {
             // width: "200px",
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'associate',
@@ -165,13 +166,12 @@ export default {
             examine: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'associate',
@@ -181,13 +181,12 @@ export default {
             examine: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'associate',
@@ -197,13 +196,12 @@ export default {
             examine: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: false,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'associate',
@@ -213,13 +211,12 @@ export default {
             examine: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: true,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'associate',
@@ -229,13 +226,12 @@ export default {
             examine: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            // displayInit: "name",
+            displayInit: '',
             columns: projectRolesColumns,
             multiple: true,
             clearable: true,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
 
           {
@@ -281,12 +277,10 @@ export default {
             clearable: true,
             valueProp: 'uemUserId',
             labelProp: 'name',
-            displayInit: 'name',
             columns: projectRolesColumns,
             multiple: false,
             queryMethod: this.projectRolesQueryMethod,
-            changeSelect: () => {
-            }
+            changeSelect: () => {}
           },
           {
             type: 'select',
@@ -399,7 +393,9 @@ export default {
           label: '实际开始时间',
           width: '120',
           formatter: (row) => {
-            return row.actualStartTime ? row.actualStartTime.substring(0, 11) : '';
+            return row.actualStartTime
+              ? row.actualStartTime.substring(0, 11)
+              : '';
           }
         },
         {
@@ -502,7 +498,14 @@ export default {
         customer: [
           { required: true, message: '请输入客户名称', trigger: 'change' }
         ],
-        fcy: [{ required: true, message: '请输入项目金额', trigger: 'change' }],
+        fcy: [
+          { required: true, message: '请输入项目金额', trigger: 'change' },
+          {
+            pattern: /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/,
+            message: '支持两位小数',
+            trigger: 'blur'
+          }
+        ],
         status: [
           { required: true, message: '请选择项目状态', trigger: 'change' }
         ],
@@ -546,13 +549,13 @@ export default {
         });
     },
     getDutyName(dutyId) {
-      const find = this.dutyNameOptions.find(item => {
-        return item.key === dutyId
-      })
+      const find = this.dutyNameOptions.find((item) => {
+        return item.key === dutyId;
+      });
       if (find) {
-        return find.display_name
+        return find.display_name;
       }
-      return ''
+      return '';
     },
     getProjectStatus(row) {
       if (row) {
@@ -596,8 +599,7 @@ export default {
           // Just to simulate the time of the request
           this.listLoading = false;
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
 
     resetListQuery() {
@@ -631,6 +633,37 @@ export default {
         this.$refs['formPanel'].$refs['dataForm'].clearValidate();
       });
     },
+    associateDisplayInit(row) {
+      const associateArr = [
+        'chiefId',
+        'dutyId',
+        'devDirectorId',
+        'demandId',
+        'genDevUsers',
+        'genDemandUsers'
+      ];
+      associateArr.forEach((item) => {
+        this.formConfig.formItemList.find((formItem) => {
+          return formItem.prop === item;
+        }).displayInit = this.getAssociateDisplayInit(row[item.toString()]);
+      });
+    },
+    getAssociateDisplayInit(id) {
+      if (id) {
+        const nameArr = [];
+        queryViewDetailById(id)
+          .then((res) => {
+            res.data.forEach((item) => {
+              nameArr.push(item.name);
+            });
+            return nameArr;
+          })
+          .catch(() => {
+            return '';
+          });
+      }
+      return '';
+    },
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
@@ -642,9 +675,11 @@ export default {
           addUemProject(tempData)
             .then((res) => {
               if (!res.success) {
-                this.$message.error(res.errorMessages ? res.errorMessages[0] : '创建失败')
+                this.$message.error(
+                  res.errorMessages ? res.errorMessages[0] : '创建失败'
+                );
                 this.dialogButtonLoading = false;
-                return
+                return;
               }
               this.$message({
                 title: '成功',
@@ -680,9 +715,11 @@ export default {
           updateUemProject(tempData)
             .then((res) => {
               if (!res.success) {
-                this.$message.error(res.errorMessages ? res.errorMessages[0] : '修改失败')
+                this.$message.error(
+                  res.errorMessages ? res.errorMessages[0] : '修改失败'
+                );
                 this.dialogButtonLoading = false;
-                return
+                return;
               }
               this.$message({
                 title: '成功',
