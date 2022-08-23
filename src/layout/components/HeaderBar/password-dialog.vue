@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-01 15:55:04
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-16 14:21:16
+ * @LastEditTime: 2022-08-22 17:50:25
  * @Description: 修改密码
 -->
 
@@ -16,7 +16,7 @@
       :modal="true"
       :modal-append-to-body="false"
       :close-on-click-modal="false"
-      z-index="1000"
+      z-index="100"
       :append-to-body="true"
       v-on="$listeners"
     >
@@ -85,8 +85,11 @@ export default {
       if (!value) {
         callback(new Error('请输入新密码'));
       }
-      const regex = /[\W]/g; //  /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]$/
-      if (regex.test(value)) {
+      // 只能是数字或字母
+      const regex1 = /^[A-Za-z0-9]+$/
+      // 必须同时包含数字或字母
+      const regex2 = /^(?=.*[a-zA-Z])(?=.*\d).+$/
+      if (!regex1.test(value) || !regex2.test(value)) {
         callback(new Error('只能输入数字或字母，且必须包含数字和字母'));
       } else {
         callback();
