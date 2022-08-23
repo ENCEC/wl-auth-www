@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-18 18:12:29
+ * @LastEditTime: 2022-08-23 19:05:26
  * @Description:系统管理-角色管理-添加/编辑
 -->
 
@@ -78,7 +78,7 @@
         <div class="right-part">
           <el-form-item label="角色权限:" prop="sysResourceIdList">
             <div class="tree-wrap">
-              <!-- :default-expanded-keys="[2, 3]" -->
+              <!--  :check-strictly="true" :default-expanded-keys="[2, 3]" -->
               <el-tree
                 ref="treeRef"
                 :data="treeData"
@@ -164,7 +164,7 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
   computed: {
     // 弹框标题
     dialogTitle() {
-      this.editData.sysRoleId && this.getDetailInfo();
+      // this.editData.sysRoleId && this.getDetailInfo();
       return this.editData.sysRoleId
         ? this.type === 'detail'
           ? '角色详细信息'
@@ -182,13 +182,13 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
     getAllResource() {
       queryAllValidResource().then(res => {
         this.treeData = res.data;
+        this.editData.sysRoleId && this.getDetailInfo();
       });
     },
     // 通过 key 获取
     getCheckedKeys() {
       const checkedKeys = this.$refs.treeRef.getCheckedKeys();
       this.formData.sysResourceIdList = checkedKeys;
-      // console.log('【 sysResourceIdList 】-179', checkedKeys);
     },
     handleCheckChange(data, checked, indeterminate) {
       this.getCheckedKeys();
@@ -198,25 +198,106 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
       this.$emit('update:visible', false);
       this.$refs['elForm'].resetFields();
     },
+    // 整理成树级结构
+    formatToTree(list) {
+      // 1. 定义两个中间变量
+      const treeList = []; // 最终要产出的树状数据的数组
+      const map = {} // 存储映射关系
+      // 2. 建立一个映射关系，并给每个元素补充children属性.
+      // 映射关系: 目的是让我们能通过id快速找到对应的元素
+      list.forEach(item => {
+        if (!item.children) {
+          item.children = [] // 补充children：让后边的计算更方便
+        }
+        map[item.sysResourceId] = item
+      })
+      // 3. 循环处理每个元素
+      list.forEach(item => {
+        // 对于每一个元素来说，先找它的上级
+        const parent = map[item.resourcePid]// 如果能找到，说明它有上级，则要把它添加到上级的children中去,找不到，说明它没有上级，直接添加到 treeList
+        // 如果存在则表示item不是最顶层的数据
+        if (parent) {
+          parent.children.push(item)
+        } else {
+          treeList.push(item)// 如果不存在 则是顶层数据
+        }
+      })
+      // 返回出去
+      return treeList
+    },
+    // 整理选中的数据
+    formatDefaultCheckedKeys(sysResourceIdList, treeDataList) {
+      const defaultTreeCheckedKeys = []
+      // 1.生成所有菜单一级map
+      const allTreeData = treeDataList
+      const allTreeMap = new Map() // 存储映射关系
+      allTreeData.forEach(item => {
+        if (!item.children) {
+          item.children = []
+        }
+        allTreeMap.set(item.sysResourceId.toString(), item)
+      })
+      // 2.生成权限菜单一级map
+      const roleTreeData = this.formatToTree(sysResourceIdList)
+      const roleTreeMap = new Map() // 存储映射关系
+      roleTreeData.forEach(item => {
+        if (!item.children) {
+          item.children = []
+        }
+        roleTreeMap.set(item.sysResourceId.toString(), item)
+      })
+
+      // 3.对比
+      roleTreeData.forEach(roleTreeItem => {
+        const rtId = roleTreeItem.sysResourceId
+        const roleTreeMapItem = roleTreeMap.get(rtId)
+        // 对比一级菜单下的元素/子元素
+        if (!roleTreeItem.resourcePid && allTreeMap.has(rtId)) {
+          const allTreeMapItem = allTreeMap.get(rtId)
+          // console.log('【 一级菜单-======== 】-269', roleTreeMapItem, roleTreeMapItem.resourceTitle)
+          // console.log('【roleTreeItem, allTreeItem ===】-267', roleTreeItem, allTreeItem)
+          // 一级菜单有子菜单,两边的children进行对比
+          if (roleTreeMapItem.children && roleTreeMapItem.children.length) {
+            const tempArr = roleTreeMapItem.children.filter(item1 => {
+              return allTreeMapItem.childrenResourceList.some(
+                item2 => item1.sysResourceId === item2.sysResourceId
+              )
+            }).map(item => item.sysResourceId)
+            // 若两边的子菜单个数相同，则加入父级菜单
+            if (tempArr.length === allTreeMapItem.childrenResourceList.length) {
+              tempArr.push(roleTreeMapItem.resourcePid)
+            }
+            defaultTreeCheckedKeys.push(...tempArr)
+          } else {
+            // 一级菜单本身
+            defaultTreeCheckedKeys.push(roleTreeMapItem.sysResourceId)
+          }
+        } else {
+          // console.log('【独立二级菜单 】-269', roleTreeMapItem, roleTreeMapItem.resourceTitle)
+          defaultTreeCheckedKeys.push(roleTreeMapItem.sysResourceId)
+        }
+      })
+      // 去重
+      const result = [...new Set(defaultTreeCheckedKeys)]
+      return result
+    },
     // 根据id获取信息
     getDetailInfo() {
       queryRoleAndResourceById({
         sysRoleId: this.editData.sysRoleId
       }).then(res => {
-        console.log('【 res 】-204', res)
         const obj = this.editData || {}
-        const sysResourceIdList = res.map(item => item.sysResourceId.toString())
+        // const sysResourceIdList = res.map(item => item.sysResourceId.toString())
+        // this.defaultCheckedKeys = sysResourceIdList
+        this.defaultCheckedKeys = this.formatDefaultCheckedKeys(res, this.treeData)
         const sysRoleResourceIdList = res.map(item => item.sysRoleResourceId.toString())
-        this.defaultCheckedKeys = sysResourceIdList
         const { roleName, remark, creatorName, createTime } = obj
         this.formData = {
           ...this.formData, roleName, remark, creatorName,
-          // ...obj,creatorName
-          sysResourceIdList,
+          sysResourceIdList: this.defaultCheckedKeys,
           sysRoleResourceIdList
         };
         this.createTime = this.$moment(createTime).format('YYYY-MM-DD')
-        // console.log('【 this.formData 】-214', this.formData)
       });
     },
     // 提交表单信息
@@ -226,9 +307,13 @@ import { queryAllValidResource } from '@/api/right-manage'; export default {
           const funcName = this.editData.sysRoleId ? updateSysRole : saveSysRole;
           this.formData.sysRoleId = this.editData.sysRoleId
           funcName(this.formData).then(res => {
-            this.$message.success(res.data);
-            this.$emit('getTableData', '');
-            this.close();
+            if (res.success) {
+              this.$message.success(res.data);
+              this.$emit('getTableData', '');
+              this.close();
+            } else {
+              this.$message.error(res.errorMessages[0] || '操作失败');
+            }
           });
         }
       });

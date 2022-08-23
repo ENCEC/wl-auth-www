@@ -1,3 +1,10 @@
+/*
+ * @Author: Hongzf
+ * @Date: 2022-08-18 18:49:17
+ * @LastEditors: Hongzf
+ * @LastEditTime: 2022-08-23 17:24:08
+ * @Description:
+ */
 import Vue from 'vue'
 import router from './router'
 import { asyncRoutes } from './router'
@@ -30,7 +37,7 @@ router.beforeEach(async(to, from, next) => {
     }
   }
   NProgress.start() // 开始进度条NProgress.start()和 next();的顺序对换？
-  console.log('【 开始进度条 】-30')
+  // console.log('【 开始进度条 】-30')
   next();
   // end
 
@@ -47,7 +54,7 @@ router.beforeEach(async(to, from, next) => {
       // if is logged in, redirect to the home page
       next({ path: '/' })
       NProgress.done() // // 在即将进入新的页面组件前，关闭掉进度条
-      console.log('【 在即将进入新的页面组件前，关闭掉进度条 】-42')
+      // console.log('【 在即将进入新的页面组件前，关闭掉进度条 】-42')
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
