@@ -196,7 +196,7 @@ export default {
                 }
                 // debugger
               } else {
-                this.$message.error('登录失败')
+                this.$message.error(res.errorMessages[0])
               }
               this.loading = false
             })
