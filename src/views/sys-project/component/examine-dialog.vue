@@ -45,7 +45,8 @@
           <el-col :span="12">
             <el-form-item label="开发组员">
               <el-input
-                :auto-size="{ minRows: 2, maxRows: 4 }"
+                class="prohibit-resize"
+                :auto-size="{ minRows: 2, maxRows: 2 }"
                 type="textarea"
                 :value="genDevUsers"
               />
@@ -54,7 +55,8 @@
           <el-col :span="12">
             <el-form-item label="需求组员">
               <el-input
-                :auto-size="{ minRows: 2, maxRows: 4 }"
+                class="prohibit-resize"
+                :auto-size="{ minRows: 2, maxRows: 2 }"
                 type="textarea"
                 :value="genDemandUsers"
               />
@@ -225,4 +227,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.prohibit-resize{
+  resize: none;
+  .el-textarea__inner{
+    resize: none;
+  }
+}
 </style>
