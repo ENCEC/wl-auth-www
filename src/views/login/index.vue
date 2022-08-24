@@ -182,6 +182,7 @@ export default {
             .then(async(res) => {
               if (res.success) {
                 const userInfo = await getInfo()
+                console.log('【 userInfo 】-185', userInfo)
                 const routerList = await queryResource({
                   clientId: process.env.VUE_APP_CLIENT_ID,
                   uemUserId: userInfo.data.uemUserId

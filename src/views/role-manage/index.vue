@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-27 17:05:05
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-15 19:10:41
+ * @LastEditTime: 2022-08-24 11:27:30
  * @Description:系统管理-角色管理
 -->
 
@@ -11,65 +11,17 @@
     <!-- 查询组件 -->
     <filter-panel :filter-config="filterConfig" :value="filterForm" />
     <!-- 表格 Start -->
-    <el-table
-      highlight-current-row
+    <table-component
       :data="records"
-      height="380px"
-      style="width: 100%"
-      border
-    >
-      <el-table-column type="index" label="序号" width="80px" />
-      <el-table-column prop="roleName" label="角色名称" />
-      <el-table-column prop="remark" label="角色描述" />
-      <el-table-column prop="creatorName" label="创建人" width="120px" />
-      <el-table-column prop="createTime" label="创建时间" width="120px">
-        <template slot-scope="scope">
-          {{ scope.row.createTime ? $moment(scope.row.createTime).format('YYYY-MM-DD') : '' }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="isValid" label="是否启用" width="120px">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.isValid"
-            active-color="#0050AC"
-            @change="changeStatus(scope.row)"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="200px">
-        <template slot-scope="scope">
-          <div class="operate-wrap">
-            <el-button
-              type="text"
-              @click="handleOpen(scope.row, 'edit')"
-            >编辑</el-button>
-            <el-button
-              type="text"
-              @click="handleOpen(scope.row, 'detail')"
-            >查看</el-button>
-            <el-button
-              type="text"
-              @click="handleDelete(scope.row.sysRoleId)"
-            >删除</el-button>
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 表格 End -->
-    <!-- 分页 -->
-    <el-pagination
-      class="pagination-wrap"
-      :current-page.sync="params.currentPage"
-      :page-size="params.pageSize"
-      :page-sizes="[10, 20, 50]"
-      prev-text="上一页"
-      next-text="下一页"
-      style="margin-top: 15px;text-align: center"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      :options="tableConfig"
+      :pagination="params"
+      :columns="columns"
+      :operates="operates"
+      :list-loading="listLoading"
+      @handleIndexChange="handleCurrentChange"
+      @handleSizeChange="handleSizeChange"
     />
+    <!-- 表格 End -->
     <!-- 新增/修改弹框 -->
     <CreateDialog
       v-if="dialogVisible"
@@ -82,7 +34,8 @@
 </template>
 <script>
 import filterPanel from '@/components/FilterPanel';
-import { filterConfig } from './config-data.js';
+import tableComponent from '@/components/TableComponent';
+import { filterConfig, tableConfig, columns, operates } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
   queryRoleByPage,
@@ -94,21 +47,27 @@ export default {
   name: 'RoleManage',
   components: {
     filterPanel,
+    tableComponent,
     CreateDialog
   },
   mixins: [tableMix],
   data() {
     return {
+      // 查询
       filterConfig: filterConfig(this),
       filterForm: {
         roleName: '',
         isValid: ''
       },
-      editData: {},
-      show: false,
-      dialogVisible: false,
+      // 表格
       records: [],
-      total: 0,
+      listLoading: false,
+      tableConfig,
+      columns: columns(this),
+      operates: operates(this),
+      // 弹框
+      editData: {},
+      dialogVisible: false,
       openType: ''
     };
   },
@@ -126,7 +85,7 @@ export default {
         ...this.filterForm
       }).then(res => {
         this.records = res.data.records;
-        this.total = res.data.totalRecord;
+        this.params.totalRecord = res.data.totalRecord;
       });
     },
     // 关闭弹框

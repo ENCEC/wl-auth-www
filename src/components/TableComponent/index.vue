@@ -11,12 +11,11 @@
       @row-click="handleRowClick"
       @selection-change="handleSelectionChange"
     >
-      <!--region 序号-->
+      <!-- 序号-->
       <el-table-column v-if="options.indexShow" type="index" label="序号" width="80px" align="center" />
-      <!--region 选择框-->
+      <!-- 选择框-->
       <el-table-column v-if="options.mutiSelect" type="selection" style="width: 55px;" />
-      <!--endregion-->
-      <!--region 数据列-->
+      <!-- 数据列-->
       <template v-for="(column, index) in columns">
         <el-table-column
           :key="column.label"
@@ -27,17 +26,25 @@
           :width="column.width"
         >
           <template slot-scope="scope">
-            <template v-if="!column.render">
+            <template v-if="!column.render && !column.customSlot">
+              <!-- 数据格式化 -->
               <template v-if="column.formatter">
                 <span :title="column.formatter(scope.row, column)" v-html="column.formatter(scope.row, column)" />
               </template>
+              <!-- 开关组件 -->
               <template v-else-if="column.component==='switch'">
                 <el-switch v-model="scope.row[column.prop]" @change="column.method(scope.row,scope.row[column.prop])" />
               </template>
+              <!-- 正常回显数据 -->
               <template v-else>
                 <span :title="scope.row[column.prop]">{{ scope.row[column.prop] }}</span>
               </template>
             </template>
+            <!-- 自定义插槽 -->
+            <template v-else-if="column.customSlot">
+              <slot :name="`${column.prop}`" :row="scope.row">自定义插槽</slot>
+            </template>
+            <!-- render函数 -->
             <template v-else>
               <expand-dom :column="column" :row="scope.row" :render="column.render" :index="index" />
             </template>
