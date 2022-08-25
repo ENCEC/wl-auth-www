@@ -115,7 +115,7 @@ export default {
           {
             type: 'select',
             class: 'filter-item',
-            prop: 'postName',
+            prop: 'postId',
             // width: "200px",
             clearable: true,
             label: '所属岗位',
@@ -156,7 +156,7 @@ export default {
           {
             type: 'select',
             label: '所属岗位',
-            prop: 'postName',
+            prop: 'postId',
             width: '200px',
             clearable: true,
             col: 8,
@@ -165,7 +165,7 @@ export default {
             optionKey: 'key',
             options: postTypeOptions,
             changeSelect: (optionVal) => {
-              this.listQuery.postName = optionVal;
+              this.listQuery.postId = optionVal;
             }
           },
           {
@@ -300,7 +300,7 @@ export default {
         pageSize: 10,
         totalRecord: 0,
         technicalName: '',
-        postName: '',
+        postId: '',
         status: ''
       },
       statusTypeOptions,
@@ -315,14 +315,13 @@ export default {
         technicalTitleId: 0,
         createBy: '',
         createTime: 0,
-        postId: 0,
         remark: '',
         seniority: '',
         status: '0',
         technicalName: '',
         updateBy: '',
         updateTime: '',
-        postName: ''
+        postId: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -335,7 +334,7 @@ export default {
         technicalName: [
           { required: true, message: '请输入职称名称', trigger: 'change' }
         ],
-        postName: [
+        postId: [
           { required: true, message: '请选择所属岗位', trigger: 'change' }
         ],
         seniority: [
@@ -360,7 +359,7 @@ export default {
           res.data.records
             .forEach((item) => {
               this.postTypeOptions.push({
-                key: item.postName,
+                key: item.postId,
                 display_name: item.postName
               });
             });
@@ -401,7 +400,7 @@ export default {
         pageSize: 10,
         totalRecord: 0,
         technicalName: '',
-        postName: '',
+        postId: '',
         status: ''
       };
       this.getList();
@@ -423,7 +422,6 @@ export default {
         });
     },
     handleAdd() {
-      console.log(this.temp.createTime);
       this.dialogStatus = 'create';
       this.dialogFormVisible = true;
       this.$nextTick(() => {
@@ -478,6 +476,7 @@ export default {
           const tempData = Object.assign({}, this.temp, {
             status: this.temp.status ? '0' : '1'
           });
+          debugger
           updateSysTechnicalTitle(tempData)
             .then((res) => {
               if (!res.success) {
@@ -546,14 +545,13 @@ export default {
         technicalTitleId: 0,
         createBy: '',
         createTime: 0,
-        postId: 0,
         remark: '',
         seniority: '',
         status: '0',
         technicalName: '',
         updateBy: '',
         updateTime: '',
-        postName: ''
+        postId: ''
       };
     },
     handleDialogClose() {

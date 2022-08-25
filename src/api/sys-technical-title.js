@@ -27,13 +27,11 @@ export function saveSysTechnicalTitle(data) {
   })
 }
 
-export function updateSysTechnicalTitle({ technicalTitleId, technicalName, seniority, postName }) {
+export function updateSysTechnicalTitle(data) {
   return request({
     url: shareAuthPrefix + '/sysTechnicalTitle/updateSysTechnicalTitle',
     method: 'post',
-    data: {
-      technicalTitleId, technicalName, seniority, postName
-    }
+    data
   })
 }
 
