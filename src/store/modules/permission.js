@@ -25,10 +25,9 @@ function hasPermission(roles, route) {
 // 遍历后台传来的路由字符串，转换为组件对象
 export function filterAsyncRoutes(routes, level = 1) {
   const res = []
-  // TODO:小图标
-  const iconUrl = require('@/assets/menu-icon/icon_staff.png')
-  const icon = level === 1 ? iconUrl : ''// 图标
   routes.forEach(routeItem => {
+    const iconUrl = routeItem.resourceLogo || require('@/assets/menu-icon/default_icon.png')
+    const icon = level === 1 ? iconUrl : '' // 图标
     let tmp = {}
     // 父级菜单没有子菜单
     if (level === 1 && !(routeItem.childrenResourceList && routeItem.childrenResourceList.length)) {
