@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-18 09:50:07
+ * @LastEditTime: 2022-08-25 10:43:40
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -90,7 +90,7 @@
             </el-col>
             <el-col v-if="!formData.resourcePid" :span="12">
               <el-form-item label="菜单Logo:" prop="resourceLogo">
-                <Upload :upload-data.sync="uploadData" :src="formData.resourceLogo" />
+                <Upload :src.sync="formData.resourceLogo" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -169,12 +169,6 @@ export default {
   },
   data() {
     return {
-      uploadData: {
-        systemId: process.env.VUE_APP_SYSTEMID, // 写死
-        fileName: '',
-        fileType: '',
-        uemUserId: ''
-      },
       formData: {
         resourceTitle: '',
         resourcePid: '',
