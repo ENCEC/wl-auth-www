@@ -678,6 +678,7 @@ export default {
     createData() {
       this.$refs['formPanel'].$refs['dataForm'].validate((valid) => {
         if (valid) {
+          console.log(this.temp.genDemandUsers);
           const tempData = Object.assign({}, this.temp, {
             genDemandUsers: this.temp.genDemandUsers.join(','),
             genDevUsers: this.temp.genDevUsers.join(',')
@@ -798,8 +799,8 @@ export default {
         dutyId: '',
         devDirectorId: '',
         demandId: '',
-        genDevUsers: '',
-        genDemandUsers: '',
+        genDevUsers: [],
+        genDemandUsers: [],
         planStartEndDate: [],
         planStartTime: '',
         planEndTime: '',
