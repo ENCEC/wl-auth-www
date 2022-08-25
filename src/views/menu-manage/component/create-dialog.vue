@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-07-25 16:05:47
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-25 10:43:40
+ * @LastEditTime: 2022-08-25 17:52:11
  * @Description: 系统管理-菜单管理-添加/编辑
 -->
 <template>
@@ -88,7 +88,7 @@
                 />
               </el-form-item>
             </el-col>
-            <el-col v-if="!formData.resourcePid" :span="12">
+            <el-col v-show="isRequired && !formData.resourcePid" :span="12">
               <el-form-item label="菜单Logo:" prop="resourceLogo">
                 <Upload :src.sync="formData.resourceLogo" />
               </el-form-item>
@@ -169,6 +169,7 @@ export default {
   },
   data() {
     return {
+      isRequired: false,
       formData: {
         resourceTitle: '',
         resourcePid: '',
@@ -247,7 +248,9 @@ export default {
       queryResourceById({
         sysResourceId: this.editData.sysResourceId
       }).then(res => {
+        console.log('【 res 】-251', res)
         this.formData = { ...this.formData, ...res };
+        this.isRequired = true
       });
     },
     // 提交表单

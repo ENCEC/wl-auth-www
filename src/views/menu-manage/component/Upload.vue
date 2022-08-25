@@ -2,7 +2,7 @@
  * @Author: Hongzf
  * @Date: 2022-08-18 10:05:34
  * @LastEditors: Hongzf
- * @LastEditTime: 2022-08-25 10:44:18
+ * @LastEditTime: 2022-08-25 17:53:41
  * @Description:
 -->
 <template>
@@ -61,7 +61,6 @@ export default {
     },
     // 上传成功
     handleSuccess(response, file, fileList) {
-      // console.log('【 response 】-68', response);
       this.imgUrl = response;
       this.$emit('update:src', this.imgUrl)
     }
