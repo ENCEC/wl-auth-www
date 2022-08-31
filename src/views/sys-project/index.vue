@@ -70,20 +70,8 @@ const projectStatusOptions = [
 ];
 const projectRolesColumns = [
   {
-    field: 'account',
-    title: '用户名'
-  },
-  {
     field: 'name',
     title: '姓名'
-  },
-  {
-    field: 'mobile',
-    title: '联系电话'
-  },
-  {
-    field: 'email',
-    title: '电子邮箱'
   }
 ];
 
