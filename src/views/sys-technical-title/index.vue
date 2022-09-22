@@ -219,8 +219,8 @@ export default {
         loading: false, // 是否添加表格loading加载动画
         highlightCurrentRow: true, // 是否支持当前行高亮显示
         mutiSelect: false, // 是否支持列表项选中功能
-        pagination: true,
-        height: '340px'
+        pagination: true
+        // height: '340px'
       }, // table 的参数
 
       columns: [
