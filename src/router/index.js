@@ -109,6 +109,13 @@ export const asyncRoutes = [
         name: 'SysTechnicalTitle',
         meta: { title: '岗位职称' }
       },
+      // 系统管理-标签管理
+      {
+        path: 'menu-manage',
+        component: () => import('@/views/tags-manage/index'),
+        name: 'TagsManage',
+        meta: { title: '标签管理' }
+      },
       // 系统管理-菜单管理
       {
         path: 'menu-manage',

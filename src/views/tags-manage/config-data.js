@@ -18,7 +18,7 @@ export const filterConfig = _this => {
       {
         type: 'input',
         label: '标签名称',
-        prop: 'account',
+        prop: 'tagName',
         width: '200px',
         clearable: true,
         placeholder: '请输入标签名称',
@@ -28,7 +28,7 @@ export const filterConfig = _this => {
       {
         type: 'select',
         label: '状态',
-        prop: 'isValid',
+        prop: 'status',
         width: '200px',
         clearable: true,
         placeholder: '请选择状态',
@@ -38,7 +38,7 @@ export const filterConfig = _this => {
         optionKey: 'value',
         options: _this.$dict.getDictOptions('VALID_STATUS'),
         changeSelect: optionVal => {
-          _this.filterForm.isValid = optionVal;
+          _this.filterForm.status = optionVal;
         }
       }
     ],
@@ -81,24 +81,24 @@ export const tableConfig = {
   highlightCurrentRow: true, // 是否支持当前行高亮显示
   mutiSelect: false, // 是否支持列表项选中功能
   indexShow: true,
-  pagination: true,
-  height: '380px'
+  pagination: true
+  // height: '380px'
 };
 
 // 表格列
 export const columns = _this => {
   return [
     {
-      prop: 'account',
+      prop: 'tagName',
       label: '标签名称'
     },
     {
-      prop: 'name',
+      prop: 'tagDescription',
       label: '标签描述'
 
     },
     {
-      prop: 'isValid',
+      prop: 'status',
       label: '是否启用',
       width: '100',
       component: 'switch',
@@ -132,7 +132,7 @@ export const operates = _this => {
         show: true,
         plain: false,
         method: (row) => {
-          _this.handleDelete(row.uemUserId)
+          _this.handleDelete(row.sysTagId)
         }
       }
     ]

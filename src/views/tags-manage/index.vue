@@ -22,7 +22,7 @@
       @handleSizeChange="handleSizeChange"
     />
     <!-- 表格 End -->
-    <!-- 新增/修改用户 -->
+    <!-- 新增/修改标签 -->
     <CreateDialog
       v-if="dialogVisible"
       :visible.sync="dialogVisible"
@@ -37,11 +37,10 @@ import tableComponent from '@/components/TableComponent';
 import { filterConfig, tableConfig, columns, operates } from './config-data.js';
 import CreateDialog from './component/create-dialog';
 import {
-  queryUemUser,
-  resetUemUserPassword,
-  uemUserStartStop,
-  deleteUemUser
-} from '@/api/user-manage';
+  querySysTag,
+  sysTagStartStop,
+  deleteSysTag
+} from '@/api/tags-manage';
 import tableMix from '@/mixins/table-mixin';
 export default {
   name: 'UserManage',
@@ -56,9 +55,9 @@ export default {
       // 查询
       filterConfig: filterConfig(this),
       filterForm: {
-        account: '',
-        name: '',
-        isValid: ''
+        tagName: '',
+        tagDescription: '',
+        status: ''
       },
       // 表格
       records: [],
@@ -80,11 +79,11 @@ export default {
     // 获取表格数据
     getTableData() {
       this.listLoading = true;
-      queryUemUser({
-        pageNo: this.params.currentPage,
+      querySysTag({
+        currentPage: this.params.currentPage,
         pageSize: this.params.pageSize,
         ...this.filterForm
-      }).then(res => {
+      }).then((res) => {
         this.records = res.data.records;
         this.params.totalRecord = res.data.totalRecord;
         this.listLoading = false;
@@ -97,18 +96,20 @@ export default {
     // 打开弹框
     handleOpen(item = {}) {
       this.dialogVisible = true;
-      this.editData = { uemUserId: item.uemUserId || '' };
+      this.editData = { sysTagId: item.sysTagId || '' };
     },
     // 启用/禁用
     changeStatus(item) {
-      const uemUserId = item.uemUserId;
-      const isValid = item.isValid;
-      uemUserStartStop({ uemUserId, isValid }).then(() => {
+      const params = {
+        sysTagId: item.sysTagId,
+        status: item.status
+      };
+      sysTagStartStop(params).then(() => {
         this.$message.success('操作成功');
       });
     },
     // 删除
-    handleDelete(uemUserId) {
+    handleDelete(sysTagId) {
       this.$confirm(
         '您确定要删除该标签信息吗？删除后该标签信息不可恢复。',
         '删除提示',
@@ -118,7 +119,7 @@ export default {
           type: 'warning'
         }
       ).then(() => {
-        deleteUemUser({ uemUserId }).then(() => {
+        deleteSysTag(sysTagId).then(() => {
           this.$message.success('操作成功');
           this.getTableData();
         });
@@ -129,5 +130,4 @@ export default {
 </script>
 <style lang="scss" scoped>
 // .user-manage {}
-
 </style>

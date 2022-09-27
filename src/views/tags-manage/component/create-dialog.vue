@@ -30,18 +30,18 @@
         <div class="form-wrap">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="标签名称:" prop="account">
+              <el-form-item label="标签名称:" prop="tagName">
                 <el-input
-                  v-model="formData.account"
+                  v-model="formData.tagName"
                   placeholder="请输入标签名称"
                   clearable
                 />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="标签描述:" prop="name">
+              <el-form-item label="标签描述:" prop="tagDescription">
                 <el-input
-                  v-model="formData.name"
+                  v-model="formData.tagDescription"
                   placeholder="请输入标签描述"
                   clearable
                 />
@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-import { getUemUser, saveUemUser, editUemUser } from '@/api/user-manage';
+import { getSysTag, saveSysTag, updateSysTag } from '@/api/tags-manage';
 
 export default {
   props: {
@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       rules: {
-        account: [
+        tagName: [
           {
             required: true,
             message: '请输入标签名称',
@@ -89,16 +89,18 @@ export default {
         ]
       }, // 验证规则
       formData: {
-        uemUserId: '',
-        account: ''
+        sysTagId: '',
+        tagName: '',
+        tagDescription: ''
+
       }
     };
   },
   computed: {
     // 弹框标题
     dialogTitle() {
-      this.editData.uemUserId && this.getDetailInfo();
-      return this.editData.uemUserId ? '编辑标签信息' : '新增标签';
+      this.editData.sysTagId && this.getDetailInfo();
+      return this.editData.sysTagId ? '编辑标签信息' : '新增标签';
     }
   },
   watch: {},
@@ -112,9 +114,8 @@ export default {
     },
     // 获取用户信息
     getDetailInfo() {
-      getUemUser({
-        uemUserId: this.editData.uemUserId
-      }).then(res => {
+      getSysTag(this.editData.sysTagId
+      ).then(res => {
         const _res = res.data
         for (const key in this.formData) {
           this.formData[key] = _res[key] || ''
@@ -125,7 +126,7 @@ export default {
     handleConfirm() {
       this.$refs['elForm'].validate(valid => {
         if (valid) {
-          const funcName = this.editData.uemUserId ? editUemUser : saveUemUser;
+          const funcName = this.editData.sysTagId ? updateSysTag : saveSysTag;
           funcName(this.formData).then(res => {
             if (res.success) {
               this.$message.success(res.data);
