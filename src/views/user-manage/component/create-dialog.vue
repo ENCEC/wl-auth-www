@@ -123,6 +123,26 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="归属地:" prop="attributionLand">
+                <el-select
+                  v-model="formData.attributionLand"
+                  placeholder="请选择归属地"
+                  clearable
+                  class="input-width"
+                >
+                  <el-option
+                    v-for="(item) in attributionLandOptions"
+                    :key="'attributionLand'+item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+
+          </el-row>
         </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -170,8 +190,11 @@ export default {
         seniority: '', // 工作年限
         entryDate: '', // 入职时间
         staffDutyId: '',
-        projectId: ''
-      }
+        projectId: '',
+        attributionLand: '' // 归属地
+      },
+      attributionLandOptions: this.$dict.getDictOptions('ATTRIBUTION_LAND')
+
     };
   },
   computed: {

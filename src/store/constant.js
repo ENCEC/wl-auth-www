@@ -23,6 +23,13 @@ export const USER_TYPE_CN = {
   '5': '部门领导'
 }
 
+// 归属地
+export const ATTRIBUTION_LAND = {
+  '1': '上海',
+  '2': '北京',
+  '3': '厦门'
+}
+
 // 禁用启用
 export const VALID_STATUS = {
   '': '所有',
